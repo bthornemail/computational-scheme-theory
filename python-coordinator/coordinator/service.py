@@ -115,8 +115,6 @@ class MetricsClient:
             
         TODO: Implement HTTP request to Racket service
         """
-        import requests
-        
         start_time = time.time()
         
         # HTTP/JSON API for MVP
@@ -127,13 +125,22 @@ class MetricsClient:
         }
         
         try:
-            # For now, placeholder
-            # response = requests.post(url, json=payload, timeout=30)
-            # response.raise_for_status()
-            # result = response.json()
-            # vg = result["v_g"]
+            # Try to use requests if available
+            try:
+                import requests
+                # For now, placeholder until Racket service is running
+                # response = requests.post(url, json=payload, timeout=30)
+                # response.raise_for_status()
+                # result = response.json()
+                # vg = result["v_g"]
+                
+                vg = 0  # Placeholder - will be computed when service is running
+                logger.warning(f"V(G) computation placeholder for {program_id} - Racket service not connected")
+                
+            except ImportError:
+                logger.warning("requests module not available - using placeholder")
+                vg = 0  # Placeholder
             
-            vg = 0  # Placeholder
             elapsed_ms = (time.time() - start_time) * 1000
             
             logger.debug(f"Computed V(G)={vg} for {program_id} in {elapsed_ms:.2f}ms")
@@ -245,6 +252,10 @@ def serve(port: int = 50053, **kwargs):
         **kwargs: Additional coordinator configuration
     """
     # TODO: Implement gRPC server after proto generation
+    if not GRPC_AVAILABLE:
+        logger.warning("gRPC not available - cannot start gRPC server")
+        logger.info("Install grpcio to enable gRPC server: pip install grpcio")
+        return
     logger.info(f"Coordinator service would start on port {port}")
     logger.info("gRPC server implementation pending proto code generation")
 
