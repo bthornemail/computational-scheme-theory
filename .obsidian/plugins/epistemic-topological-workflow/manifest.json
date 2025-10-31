@@ -1,0 +1,11 @@
+{
+	"id": "epistemic-topological-workflow",
+	"name": "Workflow Plugin",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Using JSON Canvas as the visualization format, we create a workflow model that guides implementation through explicit knowledge states and reasoning transitions.",
+	"author": "Brian Thorne",
+	"authorUrl": "https://github.com/bthornemail/workflow-canvas-plugin.md",
+	"fundingUrl": "https://github.com/bthornemail/funding",
+	"isDesktopOnly": false
+}

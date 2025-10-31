@@ -1,0 +1,333 @@
+/*
+Epistemic Topological Workflow Plugin Styles
+Color scheme based on epistemic states from research document
+*/
+
+.epistemic-workflow-container {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+}
+
+.epistemic-workflow-header {
+	padding: 10px;
+	border-bottom: 1px solid var(--background-modifier-border);
+	flex-shrink: 0;
+}
+
+.epistemic-workflow-header h3 {
+	margin: 0 0 10px 0;
+	font-size: 1.2em;
+}
+
+.epistemic-legend {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	font-size: 0.85em;
+}
+
+.epistemic-legend-item {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.epistemic-legend-color {
+	width: 16px;
+	height: 16px;
+	border-radius: 3px;
+	border: 1px solid var(--background-modifier-border);
+}
+
+.epistemic-workflow-viewport {
+	flex: 1;
+	overflow: auto;
+	padding: 20px;
+	background: var(--background-secondary);
+}
+
+.epistemic-workflow-canvas {
+	position: relative;
+	background: var(--background-primary);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	min-width: 100%;
+	min-height: 100%;
+}
+
+/* Epistemic State Colors */
+.epistemic-unknown-unknown {
+	background-color: #ef4444; /* Red */
+	border-color: #dc2626;
+	color: white;
+}
+
+.epistemic-known-unknown {
+	background-color: #f97316; /* Orange */
+	border-color: #ea580c;
+	color: white;
+}
+
+.epistemic-transitional {
+	background-color: #eab308; /* Yellow */
+	border-color: #ca8a04;
+	color: #1f2937;
+}
+
+.epistemic-known-known {
+	background-color: #22c55e; /* Green */
+	border-color: #16a34a;
+	color: white;
+}
+
+.epistemic-meta-knowledge {
+	background-color: #06b6d4; /* Cyan */
+	border-color: #0891b2;
+	color: white;
+}
+
+.epistemic-foundational {
+	background-color: #a855f7; /* Purple */
+	border-color: #9333ea;
+	color: white;
+}
+
+/* Node Styles */
+.epistemic-node {
+	position: absolute;
+	border: 2px solid;
+	border-radius: 4px;
+	padding: 8px;
+	cursor: pointer;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	transition: all 0.2s ease;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	min-width: 100px;
+	min-height: 50px;
+}
+
+.epistemic-node:hover {
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	transform: translateY(-2px);
+	z-index: 10;
+}
+
+.epistemic-node.selected {
+	border-width: 3px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	z-index: 20;
+}
+
+.epistemic-node.file-node {
+	cursor: pointer;
+}
+
+.epistemic-node.file-node:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+.epistemic-node-icon {
+	font-size: 1.2em;
+	margin-bottom: 4px;
+}
+
+.epistemic-node-content {
+	flex: 1;
+	overflow: hidden;
+}
+
+.epistemic-file-name {
+	font-size: 0.9em;
+	font-weight: 500;
+	word-break: break-word;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.epistemic-node-text {
+	font-size: 0.85em;
+	line-height: 1.4;
+	word-break: break-word;
+}
+
+.epistemic-node-text h1,
+.epistemic-node-text h2,
+.epistemic-node-text h3 {
+	margin: 0 0 4px 0;
+	font-size: 1em;
+	font-weight: 600;
+}
+
+.epistemic-node-text p {
+	margin: 2px 0;
+}
+
+.epistemic-node-state-label {
+	font-size: 0.7em;
+	opacity: 0.8;
+	margin-top: 4px;
+	padding-top: 4px;
+	border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Edge Styles */
+.epistemic-edge {
+	position: absolute;
+	height: 2px;
+	background-color: var(--text-muted);
+	opacity: 0.4;
+	pointer-events: none;
+	z-index: 1;
+}
+
+.epistemic-edge-label {
+	position: absolute;
+	top: -10px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: var(--background-primary);
+	padding: 2px 6px;
+	border-radius: 3px;
+	font-size: 0.7em;
+	color: var(--text-muted);
+	white-space: nowrap;
+	pointer-events: auto;
+}
+
+/* Empty State */
+.epistemic-empty-state {
+	padding: 40px;
+	text-align: center;
+	color: var(--text-muted);
+}
+
+.epistemic-empty-state h3 {
+	margin-bottom: 10px;
+	color: var(--text-normal);
+}
+
+/* Editor Decorations for Epistemic Entities */
+
+.epistemic-entity-mark {
+	border-bottom: 2px solid;
+	cursor: help;
+	transition: opacity 0.2s ease;
+}
+
+.epistemic-entity-mark:hover {
+	opacity: 0.8;
+}
+
+/* Known Known - Green */
+.epistemic-entity-known-known {
+	border-bottom-color: #22c55e;
+	background-color: rgba(34, 197, 94, 0.1);
+}
+
+/* Known Unknown - Orange */
+.epistemic-entity-known-unknown {
+	border-bottom-color: #f97316;
+	background-color: rgba(249, 115, 22, 0.1);
+}
+
+/* Unknown Known - Yellow */
+.epistemic-entity-unknown-known {
+	border-bottom-color: #eab308;
+	background-color: rgba(234, 179, 8, 0.1);
+}
+
+/* Unknown Unknown - Red */
+.epistemic-entity-unknown-unknown {
+	border-bottom-color: #ef4444;
+	background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Transitional - Yellow */
+.epistemic-entity-transitional {
+	border-bottom-color: #eab308;
+	background-color: rgba(234, 179, 8, 0.1);
+}
+
+/* Meta-knowledge - Cyan */
+.epistemic-entity-meta-knowledge {
+	border-bottom-color: #06b6d4;
+	background-color: rgba(6, 182, 212, 0.1);
+}
+
+/* Foundational - Purple */
+.epistemic-entity-foundational {
+	border-bottom-color: #a855f7;
+	background-color: rgba(168, 85, 247, 0.1);
+}
+
+/* Mathematical Concept - Blue */
+.epistemic-entity-mathematical-concept {
+	border-bottom-color: #3b82f6;
+	background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Workflow Stage - Teal */
+.epistemic-entity-workflow-stage {
+	border-bottom-color: #14b8a6;
+	background-color: rgba(20, 184, 166, 0.1);
+}
+
+/* Entity Badge Widget */
+.epistemic-entity-badge {
+	display: inline-block;
+	padding: 1px 4px;
+	border-radius: 3px;
+	font-weight: 500;
+	margin-left: 2px;
+	cursor: help;
+	vertical-align: middle;
+}
+
+.epistemic-entity-badge.epistemic-entity-known-known {
+	background-color: #22c55e;
+	color: white;
+}
+
+.epistemic-entity-badge.epistemic-entity-known-unknown {
+	background-color: #f97316;
+	color: white;
+}
+
+.epistemic-entity-badge.epistemic-entity-unknown-known {
+	background-color: #eab308;
+	color: #1f2937;
+}
+
+.epistemic-entity-badge.epistemic-entity-unknown-unknown {
+	background-color: #ef4444;
+	color: white;
+}
+
+.epistemic-entity-badge.epistemic-entity-transitional {
+	background-color: #eab308;
+	color: #1f2937;
+}
+
+.epistemic-entity-badge.epistemic-entity-meta-knowledge {
+	background-color: #06b6d4;
+	color: white;
+}
+
+.epistemic-entity-badge.epistemic-entity-foundational {
+	background-color: #a855f7;
+	color: white;
+}
+
+.epistemic-entity-badge.epistemic-entity-mathematical-concept {
+	background-color: #3b82f6;
+	color: white;
+}
+
+.epistemic-entity-badge.epistemic-entity-workflow-stage {
+	background-color: #14b8a6;
+	color: white;
+}
