@@ -1,0 +1,183 @@
+{
+  "main": {
+    "id": "31f6cd0735fb47aa",
+    "type": "split",
+    "children": [
+      {
+        "id": "8d45f7feb885a5ee",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4ab5cd44956a2308",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "docs/01 - RESEARCH/Epistemic Topological Workflow - Knowledge Representation and Reasoning in Codebases.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Epistemic Topological Workflow - Knowledge Representation and Reasoning in Codebases"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "864f01a5246a4da1",
+    "type": "split",
+    "children": [
+      {
+        "id": "9307a3f64a0c03e2",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b6087d50ecf82a3c",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "9b1a657b35af3121",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "df3d66fe7852a45d",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "64ca029e68658e3d",
+    "type": "split",
+    "children": [
+      {
+        "id": "d4a21f0a30b8f86a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2edb9122287521ee",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "1ab41b2be485eca7",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "2db0990f7d7807d6",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "d63e4fc9a2cdc23e",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "4ab5cd44956a2308",
+  "lastOpenFiles": [
+    "docs/AA - CANVAS/Computational Scheme Theory Documentation Map.canvas",
+    "docs/10 - IMPLEMENTATION/07-combinator-algebra-extension.md",
+    "docs/10 - IMPLEMENTATION/06-project-roadmap.md",
+    "docs/10 - IMPLEMENTATION/05-four-layer-architecture-integration.md",
+    "docs/10 - IMPLEMENTATION/00-IMPLEMENTATION-OVERVIEW.md",
+    "docs/01 - RESEARCH/Epistemic Topological Workflow - Knowledge Representation and Reasoning in Codebases.md",
+    "docs/00 - INBOX/jsoncanvas.spec.1.0.md",
+    "canvas/Documentation Flow Map.canvas",
+    "canvas/Computational Scheme Theory Documentation Map.canvas",
+    "canvas/Computation Scheme Theory.canvas",
+    "docs/00 - INBOX/Computation Scheme Theory.canvas"
+  ]
+}

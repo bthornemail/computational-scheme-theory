@@ -1,0 +1,43 @@
+{
+	"version":"8.2",
+	"nodes":[
+		{"id":"node0","type":"text","text":"# 00 - INBOX\n\n- Unified Tuple Computation Framework.Complete.canvas.json\n- Unified Tuple Computation Framework.Complete.Reduced.canvas.json","x":-2500,"y":50,"width":400,"height":500,"color":"#22c55e"},
+		{"id":"node1","type":"text","text":"# 01 - RESEARCH\n\n- Rumsfeldian Analysis - Computational Scheme Theory Automaton Lattice Specification Strategy.md\n- Rumsfeldian Analysis - Empirical Validation Strategy for Computational Scheme Theory.md","x":-2000,"y":50,"width":400,"height":500,"color":"#3b82f6"},
+		{"id":"node2","type":"text","text":"# 02 - ANALYSIS\n\n- Deep Analysis - The Commutative Algebra of R5RS Binding and the Homological Duality of Program Invariants.md\n- R5RS Scheme as an Affine Grothendieck Scheme.md","x":-1500,"y":50,"width":400,"height":500,"color":"#ef4444"},
+		{"id":"node3","type":"text","text":"# 03 - ASSESMENTS\n\n- A Formal Geometrization of Computation - R5RS Scheme as a Grothendieck Scheme.md\n- Finite State Machines - ES - UDF - PubSub.md\n- Symbolic Grammar Parser - The Problem with Just a Parser.md\n- The Bipartite Realization - Two Dual Computational Layers.md\n- The Idempotent Geometry of Distributed State - A Rig-Based Hypergraph Model for Decentralized RPC Causality.md\n- THE M-EXPRESSION - S-EXPRESSION DUALITY.md","x":-1000,"y":50,"width":400,"height":500,"color":"#f97316"},
+		{"id":"node4","type":"text","text":"# 04 - REFLECTIONS\n\n- The Fundamental Pattern - Mathematics IS Computation.md\n- The Grand Unification - The Trinity of Structure.md\n- The Standard Model - Mathematical Primitives.md","x":-500,"y":50,"width":400,"height":500,"color":"#a855f7"},
+		{"id":"node5","type":"text","text":"# 05 - FORMALIZATIONS\n\n- FORMAL DEFINITION - Evaluation Scheme.md\n- Formalization of Assumptions - Symbolic Grammar Parsing Automaton Semantic Lattice Network.md\n- FORMALIZING THE EVAL-APPLY - SPEC CONNECTION.md\n- Formal Proof Sketch - R5RS Scheme as Grothendieck Scheme.md\n- M-Expression - S-Expression Duality - The Self-Describing System.md\n- Symbolic Grammar Parsing - Formalized Grammar and Definitions.md\n- The Complete FSM-Based Computational Architecture.md","x":0,"y":50,"width":400,"height":500,"color":"#ec4899"},
+		{"id":"node6","type":"text","text":"# 05 - SPECIFICATIONS\n\n- Computational Scheme Theory Unified Protocol Specification Abstract.v1.1.md\n- RFCXXXX - Computational Scheme Theory Protocol Specification - Appendix Z - Combinator Algebra Extension.md\n- RFCXXXX - Computational Scheme Theory Protocol Specification.v1.md\n- RFCXXXX - Symbolic Grammar Parsing Automaton Semantic Lattice Network Specification.md","x":500,"y":50,"width":400,"height":500,"color":"#14b8a6"},
+		{"id":"node7","type":"text","text":"# 06 - PROPOSALS\n\n- Formal Proposal - Symbolic Grammar Parsing Automaton Semantic Lattice Network.v2.md\n- Project Proposal - Empirical Validation of Computational Scheme Theory.md","x":1000,"y":50,"width":400,"height":500,"color":"#3f6212"},
+		{"id":"node8","type":"text","text":"# 07 - DEPRECIATIONS\n\n## 00 - inbox\n- CONTINUING FROM APPENDIX A - Computational Scheme Theory Protocol Specification.md\n- RFCXXXX - Computational Scheme Theory Protocol Specification.md\n\n## 01- research\n- A Critical Meta-Rumsfeldian Review of Scheme and Topological Program Analysis.md\n- Rumsfeldian Analysis - Implementation Strategy for Computational Scheme Theory.md\n- The Known Unknowns of the Computational Scheme Theory - Formal Constructions via Grothendieck Schemes.md\n\n## 05 - formalizations\n- Formal Proposal - Symbolic Grammar Parsing Automaton Semantic Lattice Network.md\n- Formal Proposal - Symbolic Grammar Parsing Automaton Semantic Lattice Network.v2.md\n\n## 09 - guidance\n- Agent Guidance - Computational Trinity Operating Principles.md","x":1500,"y":50,"width":400,"height":500,"color":"#1d4ed8"},
+		{"id":"node9","type":"text","text":"# 08 - EXPLANATIONS\n\n- Computational Scheme Theory - A Human-Readable Guide.md","x":2000,"y":50,"width":400,"height":500,"color":"#b91c1c"},
+		{"id":"node10","type":"text","text":"# 09 - GUIDANCE\n\n- Agent Guidance: Implementation Principles.md","x":2500,"y":50,"width":400,"height":500,"color":"#7c3aed"},
+		{"id":"root_node","type":"text","text":"# Knowledge Tree Root\n\n- canvas (empty)\n- docs (categories below)\n- README.md","x":0,"y":-300,"width":400,"height":200,"color":"#22c55e"}
+	],
+	"connections":[
+		{"id":"conn0","fromNode":"node0","fromSide":"right","toNode":"node1","toSide":"left"},
+		{"id":"conn1","fromNode":"node1","fromSide":"right","toNode":"node2","toSide":"left"},
+		{"id":"conn2","fromNode":"node2","fromSide":"right","toNode":"node3","toSide":"left"},
+		{"id":"conn3","fromNode":"node3","fromSide":"right","toNode":"node4","toSide":"left"},
+		{"id":"conn4","fromNode":"node4","fromSide":"right","toNode":"node5","toSide":"left"},
+		{"id":"conn5","fromNode":"node5","fromSide":"right","toNode":"node6","toSide":"left"},
+		{"id":"conn6","fromNode":"node6","fromSide":"right","toNode":"node7","toSide":"left"},
+		{"id":"conn7","fromNode":"node7","fromSide":"right","toNode":"node8","toSide":"left"},
+		{"id":"conn8","fromNode":"node8","fromSide":"right","toNode":"node9","toSide":"left"},
+		{"id":"conn9","fromNode":"node9","fromSide":"right","toNode":"node10","toSide":"left"},
+		{"id":"root_to_first","fromNode":"root_node","fromSide":"bottom","toNode":"node0","toSide":"top"}
+	],
+	"groups":[
+		{"id":"group0","position":{"x":-2500,"y":0},"width":400,"height":600,"title":"00 - INBOX"},
+		{"id":"group1","position":{"x":-2000,"y":0},"width":400,"height":600,"title":"01 - RESEARCH"},
+		{"id":"group2","position":{"x":-1500,"y":0},"width":400,"height":600,"title":"02 - ANALYSIS"},
+		{"id":"group3","position":{"x":-1000,"y":0},"width":400,"height":600,"title":"03 - ASSESMENTS"},
+		{"id":"group4","position":{"x":-500,"y":0},"width":400,"height":600,"title":"04 - REFLECTIONS"},
+		{"id":"group5","position":{"x":0,"y":0},"width":400,"height":600,"title":"05 - FORMALIZATIONS"},
+		{"id":"group6","position":{"x":500,"y":0},"width":400,"height":600,"title":"05 - SPECIFICATIONS"},
+		{"id":"group7","position":{"x":1000,"y":0},"width":400,"height":600,"title":"06 - PROPOSALS"},
+		{"id":"group8","position":{"x":1500,"y":0},"width":400,"height":600,"title":"07 - DEPRECIATIONS"},
+		{"id":"group9","position":{"x":2000,"y":0},"width":400,"height":600,"title":"08 - EXPLANATIONS"},
+		{"id":"group10","position":{"x":2500,"y":0},"width":400,"height":600,"title":"09 - GUIDANCE"}
+	]
+}
