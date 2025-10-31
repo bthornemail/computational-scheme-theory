@@ -331,3 +331,255 @@ Color scheme based on epistemic states from research document
 	background-color: #14b8a6;
 	color: white;
 }
+
+/* File Details Panel */
+.epistemic-file-details {
+	position: fixed;
+	right: 0;
+	top: 0;
+	width: 400px;
+	height: 100%;
+	background: var(--background-primary);
+	border-left: 1px solid var(--background-modifier-border);
+	box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+	z-index: 1000;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+}
+
+.epistemic-file-details-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 15px;
+	border-bottom: 1px solid var(--background-modifier-border);
+	background: var(--background-secondary);
+	flex-shrink: 0;
+}
+
+.epistemic-file-details-header h4 {
+	margin: 0;
+	font-size: 1em;
+	font-weight: 600;
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.epistemic-close-button {
+	background: transparent;
+	border: none;
+	font-size: 1.5em;
+	cursor: pointer;
+	color: var(--text-muted);
+	padding: 0;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 3px;
+	transition: background 0.2s ease;
+}
+
+.epistemic-close-button:hover {
+	background: var(--background-modifier-hover);
+	color: var(--text-normal);
+}
+
+.epistemic-file-details-content {
+	padding: 15px;
+	flex: 1;
+	overflow-y: auto;
+}
+
+.epistemic-metadata-section {
+	margin-bottom: 20px;
+	padding-bottom: 15px;
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.epistemic-metadata-section:last-child {
+	border-bottom: none;
+	margin-bottom: 0;
+}
+
+.epistemic-metadata-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.epistemic-metadata-header h5 {
+	margin: 0;
+	font-size: 0.9em;
+	font-weight: 600;
+	color: var(--text-normal);
+}
+
+.epistemic-edit-button,
+.epistemic-save-button,
+.epistemic-cancel-button {
+	background: var(--interactive-normal);
+	color: var(--text-on-accent);
+	border: none;
+	padding: 4px 12px;
+	border-radius: 4px;
+	font-size: 0.85em;
+	cursor: pointer;
+	transition: background 0.2s ease;
+}
+
+.epistemic-edit-button:hover,
+.epistemic-save-button:hover {
+	background: var(--interactive-hover);
+}
+
+.epistemic-cancel-button {
+	background: var(--background-modifier-border);
+	color: var(--text-normal);
+	margin-left: 8px;
+}
+
+.epistemic-cancel-button:hover {
+	background: var(--background-modifier-hover);
+}
+
+.epistemic-edit-controls {
+	display: flex;
+}
+
+.epistemic-tags-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.epistemic-tag {
+	background: var(--tag-background);
+	color: var(--tag-color);
+	padding: 3px 8px;
+	border-radius: 4px;
+	font-size: 0.85em;
+	font-weight: 500;
+}
+
+.epistemic-no-tags {
+	color: var(--text-muted);
+	font-size: 0.85em;
+	font-style: italic;
+}
+
+.epistemic-tag-input {
+	width: 100%;
+	padding: 8px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	background: var(--background-primary);
+	color: var(--text-normal);
+	font-size: 0.9em;
+}
+
+.epistemic-tag-input:focus {
+	outline: none;
+	border-color: var(--interactive-accent);
+	box-shadow: 0 0 0 2px var(--background-modifier-border);
+}
+
+.epistemic-frontmatter-display {
+	background: var(--background-secondary);
+	padding: 10px;
+	border-radius: 4px;
+	font-family: var(--font-monospace);
+	font-size: 0.8em;
+	overflow-x: auto;
+	margin: 0;
+	color: var(--text-normal);
+}
+
+.epistemic-frontmatter-input {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	background: var(--background-primary);
+	color: var(--text-normal);
+	font-family: var(--font-monospace);
+	font-size: 0.85em;
+	resize: vertical;
+}
+
+.epistemic-frontmatter-input:focus {
+	outline: none;
+	border-color: var(--interactive-accent);
+	box-shadow: 0 0 0 2px var(--background-modifier-border);
+}
+
+.epistemic-links-list {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.epistemic-link-button {
+	background: transparent;
+	border: 1px solid var(--background-modifier-border);
+	color: var(--text-accent);
+	padding: 6px 10px;
+	border-radius: 4px;
+	font-size: 0.85em;
+	cursor: pointer;
+	text-align: left;
+	transition: background 0.2s ease;
+}
+
+.epistemic-link-button:hover {
+	background: var(--background-modifier-hover);
+	border-color: var(--interactive-accent);
+}
+
+.epistemic-headings-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.epistemic-headings-list li {
+	padding: 4px 0;
+	font-size: 0.85em;
+	color: var(--text-normal);
+}
+
+.epistemic-heading-level-1 {
+	font-weight: 600;
+	font-size: 1em;
+}
+
+.epistemic-heading-level-2 {
+	padding-left: 15px;
+	font-weight: 500;
+	font-size: 0.95em;
+}
+
+.epistemic-heading-level-3 {
+	padding-left: 30px;
+	font-size: 0.9em;
+}
+
+.epistemic-heading-level-4 {
+	padding-left: 45px;
+	font-size: 0.85em;
+}
+
+.epistemic-heading-level-5 {
+	padding-left: 60px;
+	font-size: 0.8em;
+}
+
+.epistemic-heading-level-6 {
+	padding-left: 75px;
+	font-size: 0.75em;
+}

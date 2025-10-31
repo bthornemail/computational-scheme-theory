@@ -11,14 +11,17 @@
             "id": "4ab5cd44956a2308",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "canvas",
               "state": {
-                "file": "docs/06 - PROPOSALS/Formal Proposal - Symbolic Grammar Parsing Automaton Semantic Lattice Network.v2.md",
-                "mode": "preview",
-                "source": false
+                "file": "canvas/Documentation Flow Map.canvas",
+                "viewState": {
+                  "x": -2170.4321149038715,
+                  "y": -25.066605587384288,
+                  "zoom": -1.2000000000000006
+                }
               },
-              "icon": "lucide-file",
-              "title": "Formal Proposal - Symbolic Grammar Parsing Automaton Semantic Lattice Network.v2"
+              "icon": "lucide-layout-dashboard",
+              "title": "Documentation Flow Map"
             }
           }
         ]
@@ -140,16 +143,17 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "canvas/Documentation Flow Map.canvas",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of Documentation Flow Map"
             }
           },
           {
-            "id": "26840931e5eb456c",
+            "id": "d05be8a8c3588b50",
             "type": "leaf",
             "state": {
               "type": "epistemic-workflow-view",
@@ -163,7 +167,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 354.5
+    "width": 393.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -177,10 +181,17 @@
       "epistemic-topological-workflow:Open Epistemic Workflow": false
     }
   },
-  "active": "26840931e5eb456c",
+  "active": "4ab5cd44956a2308",
   "lastOpenFiles": [
-    "docs/06 - PROPOSALS/Project Proposal - Empirical Validation of Computational Scheme Theory.md",
+    "05 - FORMALIZATIONS/The Complete FSM-Based Computational Architecture.md",
+    "05 - FORMALIZATIONS",
+    "docs/05 - SPECIFICATIONS/Computational Scheme Theory Unified Protocol Specification Abstract.v1.1.md",
+    "Untitled.md",
+    "docs/07 - DEPRECIATIONS/01- research/A Critical Meta-Rumsfeldian Review of Scheme and Topological Program Analysis.md",
+    "docs/07 - DEPRECIATIONS/01- research/Rumsfeldian Analysis - Implementation Strategy for Computational Scheme Theory.md",
+    "docs/07 - DEPRECIATIONS/05 - formalizations/Formal Proposal - Symbolic Grammar Parsing Automaton Semantic Lattice Network.md",
     "docs/06 - PROPOSALS/Formal Proposal - Symbolic Grammar Parsing Automaton Semantic Lattice Network.v2.md",
+    "docs/06 - PROPOSALS/Project Proposal - Empirical Validation of Computational Scheme Theory.md",
     "docs/01 - RESEARCH/Epistemic Topological Workflow - Knowledge Representation and Reasoning in Codebases.md",
     "docs/AA - CANVAS/Computational Scheme Theory Documentation Map.canvas",
     "docs/10 - IMPLEMENTATION/07-combinator-algebra-extension.md",
