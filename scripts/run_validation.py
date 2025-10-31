@@ -176,9 +176,15 @@ def main():
     logger.info(f"Loaded {len(programs)} programs")
     
     # Initialize coordinator
-    # Note: This will use placeholder clients until services are running
-    from coordinator.service import ValidationCoordinator
-    coordinator = ValidationCoordinator()
+    # Try direct computation first, fall back to service coordinator
+    try:
+        from coordinator.direct_compute import DirectComputeCoordinator
+        coordinator = DirectComputeCoordinator()
+        logger.info("Using direct computation (Haskell/Racket executables)")
+    except Exception as e:
+        logger.info("Direct computation not available, using service coordinator")
+        from coordinator.service import ValidationCoordinator
+        coordinator = ValidationCoordinator()
     
     # Run validation
     results = run_validation(programs, coordinator)
