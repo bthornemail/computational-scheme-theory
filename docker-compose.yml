@@ -1,0 +1,86 @@
+version: '3.8'
+
+# Docker Compose configuration for Computational Scheme Theory
+# Phase 1: Basic services for development and testing
+
+services:
+  # PostgreSQL - Event store for Phase 2 (placeholder for Phase 1)
+  postgres:
+    image: postgres:15-alpine
+    container_name: cst-postgres
+    environment:
+      POSTGRES_USER: cst_user
+      POSTGRES_PASSWORD: cst_pass
+      POSTGRES_DB: computational_scheme_theory
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cst_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # Phase 1: Not required, will be used in Phase 2
+    profiles:
+      - phase2
+
+  # Haskell Mathematical Core Service
+  # Note: Dockerfile to be created in Month 4, Week 1
+  # math-core:
+  #   build:
+  #     context: ./haskell-core
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "50051:50051"
+  #   environment:
+  #     - PORT=50051
+  #     - LOG_LEVEL=INFO
+  #   healthcheck:
+  #     test: ["CMD", "grpc_health_probe", "-addr=:50051"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 3
+
+  # Racket Metrics Calculator Service
+  # Note: Dockerfile to be created in Month 4, Week 1
+  # metrics-calc:
+  #   build:
+  #     context: ./racket-metrics
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "50052:50052"
+  #   environment:
+  #     - PORT=50052
+  #     - LOG_LEVEL=INFO
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:50052/health"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 3
+
+  # Python Coordinator Service
+  # Note: Dockerfile to be created in Month 4, Week 1
+  # coordinator:
+  #   build:
+  #     context: ./python-coordinator
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "50053:50053"
+  #   environment:
+  #     - PORT=50053
+  #     - MATH_CORE_HOST=math-core:50051
+  #     - METRICS_HOST=metrics-calc:50052
+  #     - LOG_LEVEL=INFO
+  #   depends_on:
+  #     - math-core
+  #     - metrics-calc
+  #   healthcheck:
+  #     test: ["CMD", "grpc_health_probe", "-addr=:50053"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 3
+
+volumes:
+  postgres_data:
+

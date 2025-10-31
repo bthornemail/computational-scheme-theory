@@ -1,0 +1,117 @@
+// proto/math_core.proto
+syntax = "proto3";
+
+package computational_scheme.math_core;
+
+import "common.proto";
+
+service MathematicalCore {
+  // Compute full cohomology analysis
+  rpc ComputeCohomology(CohomologyRequest) returns (CohomologyResult);
+
+  // Extract binding algebra only (for debugging)
+  rpc ExtractBindingAlgebra(common.SchemeProgram) returns (BindingAlgebraResult);
+
+  // Extract scope topology only (for debugging)
+  rpc ExtractScopeTopology(common.SchemeProgram) returns (ScopeTopologyResult);
+
+  // Build Čech complex only (for debugging)
+  rpc BuildCechComplex(common.SchemeProgram) returns (CechComplexResult);
+
+  // Health check
+  rpc HealthCheck(common.Empty) returns (common.HealthStatus);
+}
+
+// Request for cohomology computation
+message CohomologyRequest {
+  common.SchemeProgram program = 1;
+  bool include_debug_info = 2;    // Include intermediate results
+  int32 max_dimension = 3;         // Compute up to H^n (0 = auto)
+}
+
+// Result of cohomology computation
+message CohomologyResult {
+  string program_id = 1;
+
+  // Betti numbers (primary result)
+  int32 beta_0 = 2;  // Connected components
+  int32 beta_1 = 3;  // 1-dimensional holes (cycles) - OUR TARGET
+  int32 beta_2 = 4;  // 2-dimensional holes
+  repeated int32 beta_higher = 5;  // Higher Betti numbers
+
+  // Computation metrics
+  int32 num_bindings = 6;
+  int32 num_simplices_0 = 7;  // Vertices
+  int32 num_simplices_1 = 8;  // Edges
+  int32 num_simplices_2 = 9;  // Triangles
+  double computation_time_ms = 10;
+
+  // Debug information (if requested)
+  BindingAlgebraResult binding_algebra = 11;
+  ScopeTopologyResult scope_topology = 12;
+  CechComplexResult cech_complex = 13;
+
+  // Error handling
+  common.ErrorDetails error = 14;
+  bool success = 15;
+}
+
+// Binding algebra (R_Scheme)
+message BindingAlgebraResult {
+  string program_id = 1;
+  repeated Binding bindings = 2;
+  bool success = 3;
+  common.ErrorDetails error = 4;
+}
+
+message Binding {
+  string id = 1;                    // Unique ID after α-conversion
+  string original_name = 2;         // Original variable name
+  BindingType type = 3;             // lambda, let, define, etc.
+  common.SourceLocation location = 4;
+  repeated ScopeRegion visibility = 5;  // Where this binding is visible
+}
+
+enum BindingType {
+  BINDING_UNKNOWN = 0;
+  BINDING_LAMBDA = 1;
+  BINDING_LET = 2;
+  BINDING_LETREC = 3;
+  BINDING_DEFINE = 4;
+  BINDING_PARAMETER = 5;
+}
+
+message ScopeRegion {
+  int32 start_pos = 1;
+  int32 end_pos = 2;
+  string description = 3;
+}
+
+// Scope topology (Zariski topology)
+message ScopeTopologyResult {
+  string program_id = 1;
+  repeated OpenSet open_sets = 2;  // Collection {D(f)}
+  bool success = 3;
+  common.ErrorDetails error = 4;
+}
+
+message OpenSet {
+  string binding_id = 1;           // Which binding f
+  repeated ScopeRegion regions = 2;  // Visibility regions D(f)
+}
+
+// Čech complex
+message CechComplexResult {
+  string program_id = 1;
+  repeated Simplex simplices_0 = 2;
+  repeated Simplex simplices_1 = 3;
+  repeated Simplex simplices_2 = 4;
+  bool success = 5;
+  common.ErrorDetails error = 6;
+}
+
+message Simplex {
+  repeated int32 vertices = 1;  // Vertex IDs
+  int32 dimension = 2;           // 0, 1, 2, ...
+}
+

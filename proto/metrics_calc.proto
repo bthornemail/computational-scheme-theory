@@ -1,0 +1,91 @@
+// proto/metrics_calc.proto
+syntax = "proto3";
+
+package computational_scheme.metrics;
+
+import "common.proto";
+
+service MetricsCalculator {
+  // Compute cyclomatic complexity V(G)
+  rpc ComputeVG(MetricsRequest) returns (MetricsResult);
+
+  // Build CFG only (for visualization)
+  rpc BuildCFG(common.SchemeProgram) returns (CFGResult);
+
+  // Health check
+  rpc HealthCheck(common.Empty) returns (common.HealthStatus);
+}
+
+message MetricsRequest {
+  common.SchemeProgram program = 1;
+  bool include_cfg = 2;          // Include CFG in response
+  bool include_dot_graph = 3;    // Include Graphviz DOT format
+}
+
+message MetricsResult {
+  string program_id = 1;
+
+  // Cyclomatic complexity (primary result)
+  int32 v_g = 2;
+
+  // CFG statistics
+  int32 num_nodes = 3;
+  int32 num_edges = 4;
+  int32 num_components = 5;  // Connected components (usually 1)
+
+  // Formula used
+  string formula = 6;  // "E - N + 2P"
+
+  // Computation metrics
+  double computation_time_ms = 7;
+
+  // Debug information (if requested)
+  CFGResult cfg = 8;
+
+  // Error handling
+  common.ErrorDetails error = 9;
+  bool success = 10;
+}
+
+// Control Flow Graph
+message CFGResult {
+  string program_id = 1;
+  repeated CFGNode nodes = 2;
+  repeated CFGEdge edges = 3;
+  int32 entry_node_id = 4;
+  int32 exit_node_id = 5;
+  string dot_graph = 6;  // Graphviz DOT format
+}
+
+message CFGNode {
+  int32 id = 1;
+  CFGNodeType type = 2;
+  repeated string statements = 3;  // Source code snippets
+  common.SourceLocation location = 4;
+}
+
+enum CFGNodeType {
+  NODE_UNKNOWN = 0;
+  NODE_ENTRY = 1;
+  NODE_EXIT = 2;
+  NODE_BASIC = 3;
+  NODE_BRANCH = 4;
+  NODE_JOIN = 5;
+}
+
+message CFGEdge {
+  int32 from_node = 1;
+  int32 to_node = 2;
+  CFGEdgeType type = 3;
+  string condition = 4;  // For conditional edges
+}
+
+enum CFGEdgeType {
+  EDGE_UNKNOWN = 0;
+  EDGE_NORMAL = 1;
+  EDGE_TRUE_BRANCH = 2;
+  EDGE_FALSE_BRANCH = 3;
+  EDGE_RETURN = 4;
+  EDGE_BACK = 5;  // For loops/recursion
+}
+

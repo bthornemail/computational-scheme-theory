@@ -1,0 +1,85 @@
+# Computational Scheme Theory - Git Ignore Rules
+
+# Haskell
+haskell-core/dist/
+haskell-core/dist-newstyle/
+haskell-core/.ghc.environment.*
+haskell-core/cabal.project.local
+haskell-core/*.hi
+haskell-core/*.o
+haskell-core/*.exe
+haskell-core/**/*.hi
+haskell-core/**/*.o
+haskell-core/**/*.exe
+
+# Racket
+racket-metrics/compiled/
+racket-metrics/**/compiled/
+
+# Python
+python-coordinator/venv/
+python-coordinator/env/
+python-coordinator/.venv/
+python-coordinator/__pycache__/
+python-coordinator/**/__pycache__/
+python-coordinator/*.pyc
+python-coordinator/**/*.pyc
+python-coordinator/*.pyo
+python-coordinator/**/*.pyo
+python-coordinator/build/
+python-coordinator/dist/
+python-coordinator/*.egg-info/
+python-coordinator/**/*.egg-info/
+python-coordinator/.pytest_cache/
+python-coordinator/.mypy_cache/
+python-coordinator/.coverage
+python-coordinator/htmlcov/
+
+# Protocol Buffers - Generated Code
+**/Proto/
+**/proto-gen/
+**/proto_*_pb2.py
+**/proto_*_pb2_grpc.py
+**/*_pb2.py
+**/*_pb2_grpc.py
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Test artifacts
+test-corpus/**/*.json.bak
+test-corpus/**/*.scm.bak
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+logs/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Documentation builds
+docs/_build/
+docs/.doctrees/
+

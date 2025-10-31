@@ -1,0 +1,98 @@
+// proto/coordinator.proto
+syntax = "proto3";
+
+package computational_scheme.coordinator;
+
+import "common.proto";
+import "math_core.proto";
+import "metrics_calc.proto";
+
+service ValidationCoordinator {
+  // Run validation experiment on a single program
+  rpc ValidateProgram(ValidationRequest) returns (ValidationResult);
+
+  // Run validation on entire test corpus
+  rpc ValidateCorpus(CorpusRequest) returns (stream CorpusProgress);
+
+  // Get validation statistics
+  rpc GetStatistics(StatisticsRequest) returns (StatisticsResult);
+
+  // Health check
+  rpc HealthCheck(common.Empty) returns (common.HealthStatus);
+}
+
+message ValidationRequest {
+  common.SchemeProgram program = 1;
+  bool include_debug_info = 2;
+}
+
+message ValidationResult {
+  string program_id = 1;
+
+  // Primary results
+  int32 h1 = 2;  // From Haskell service
+  int32 vg = 3;  // From Racket service
+
+  // Hypothesis test
+  int32 k = 4;              // Normalization constant
+  int32 difference = 5;     // |H¹ - V(G)|
+  bool hypothesis_holds = 6;  // Is H¹ = V(G) - k?
+
+  // Full results (if requested)
+  math_core.CohomologyResult cohomology = 7;
+  metrics.MetricsResult metrics = 8;
+
+  // Timing
+  double total_time_ms = 9;
+  double h1_time_ms = 10;
+  double vg_time_ms = 11;
+
+  // Error handling
+  common.ErrorDetails error = 12;
+  bool success = 13;
+}
+
+message CorpusRequest {
+  repeated string program_ids = 1;  // If empty, run all
+  string corpus_path = 2;           // Path to test corpus
+  bool parallel = 3;                // Run tests in parallel
+  int32 max_workers = 4;            // Number of parallel workers
+}
+
+message CorpusProgress {
+  int32 total_programs = 1;
+  int32 completed = 2;
+  int32 succeeded = 3;
+  int32 failed = 4;
+  ValidationResult current_result = 5;  // Most recent result
+  double elapsed_seconds = 6;
+  double estimated_remaining_seconds = 7;
+}
+
+message StatisticsRequest {
+  string corpus_run_id = 1;  // Which run to get stats for
+}
+
+message StatisticsResult {
+  string corpus_run_id = 1;
+  int32 total_programs = 2;
+  int32 succeeded = 3;
+  int32 failed = 4;
+
+  // Hypothesis validation
+  int32 hypothesis_holds_count = 5;
+  int32 hypothesis_fails_count = 6;
+  double hypothesis_success_rate = 7;
+
+  // Difference statistics
+  double mean_difference = 8;
+  double std_dev_difference = 9;
+  double max_difference = 10;
+  double min_difference = 11;
+
+  // Timing statistics
+  double mean_h1_time_ms = 12;
+  double mean_vg_time_ms = 13;
+  double total_time_seconds = 14;
+}
+

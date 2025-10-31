@@ -1,0 +1,41 @@
+// proto/common.proto
+syntax = "proto3";
+
+package computational_scheme.common;
+
+// Empty message for RPCs that need no input
+message Empty {}
+
+// Health check response
+message HealthStatus {
+  bool healthy = 1;
+  string version = 2;
+  string service_name = 3;
+  int64 uptime_seconds = 4;
+}
+
+// Source location in program
+message SourceLocation {
+  string file = 1;
+  int32 line = 2;
+  int32 column = 3;
+  int32 start_pos = 4;
+  int32 end_pos = 5;
+}
+
+// A Scheme program to analyze
+message SchemeProgram {
+  string program_id = 1;        // Unique identifier
+  string source_code = 2;       // R5RS Scheme source
+  string description = 3;       // Human-readable description
+  map<string, string> metadata = 4;  // Additional info
+}
+
+// Error details
+message ErrorDetails {
+  string error_code = 1;        // Machine-readable error code
+  string message = 2;           // Human-readable message
+  SourceLocation location = 3;  // Where error occurred (if applicable)
+  repeated string stack_trace = 4;  // Stack trace for debugging
+}
+
