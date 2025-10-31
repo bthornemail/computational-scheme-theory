@@ -1,0 +1,13 @@
+{
+  "program_id": "recursion-001",
+  "category": "recursion",
+  "description": "Factorial function",
+  "expected_h1": 2,
+  "expected_vg": 2,
+  "features": {
+    "recursion": true,
+    "call_cc": false,
+    "macros": false
+  },
+  "source": "synthetic"
+}

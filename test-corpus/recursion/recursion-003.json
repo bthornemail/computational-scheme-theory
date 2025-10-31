@@ -1,0 +1,13 @@
+{
+  "program_id": "recursion-003",
+  "category": "recursion",
+  "description": "Sum from 1 to n",
+  "expected_h1": 2,
+  "expected_vg": 2,
+  "features": {
+    "recursion": true,
+    "call_cc": false,
+    "macros": false
+  },
+  "source": "synthetic"
+}

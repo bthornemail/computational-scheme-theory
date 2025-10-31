@@ -1,0 +1,13 @@
+{
+  "program_id": "baseline-004",
+  "category": "baseline",
+  "description": "Simple addition function",
+  "expected_h1": 0,
+  "expected_vg": 1,
+  "features": {
+    "recursion": false,
+    "call_cc": false,
+    "macros": false
+  },
+  "source": "synthetic"
+}

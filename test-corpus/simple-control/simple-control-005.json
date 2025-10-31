@@ -1,0 +1,13 @@
+{
+  "program_id": "simple-control-005",
+  "category": "simple-control",
+  "description": "Nested if statements",
+  "expected_h1": 3,
+  "expected_vg": 3,
+  "features": {
+    "recursion": false,
+    "call_cc": false,
+    "macros": false
+  },
+  "source": "synthetic"
+}

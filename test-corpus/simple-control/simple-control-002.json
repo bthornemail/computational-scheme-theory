@@ -1,0 +1,13 @@
+{
+  "program_id": "simple-control-002",
+  "category": "simple-control",
+  "description": "Absolute value function",
+  "expected_h1": 2,
+  "expected_vg": 2,
+  "features": {
+    "recursion": false,
+    "call_cc": false,
+    "macros": false
+  },
+  "source": "synthetic"
+}

@@ -1,0 +1,13 @@
+{
+  "program_id": "baseline-005",
+  "category": "baseline",
+  "description": "Sequence of definitions",
+  "expected_h1": 0,
+  "expected_vg": 1,
+  "features": {
+    "recursion": false,
+    "call_cc": false,
+    "macros": false
+  },
+  "source": "synthetic"
+}

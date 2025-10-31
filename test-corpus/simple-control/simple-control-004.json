@@ -1,0 +1,13 @@
+{
+  "program_id": "simple-control-004",
+  "category": "simple-control",
+  "description": "Cond with multiple clauses",
+  "expected_h1": 4,
+  "expected_vg": 4,
+  "features": {
+    "recursion": false,
+    "call_cc": false,
+    "macros": false
+  },
+  "source": "synthetic"
+}
