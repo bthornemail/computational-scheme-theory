@@ -1,4 +1,4 @@
-# Computational Scheme Theory: Unified Protocol Specification v1.0
+# Computational Scheme Theory: Unified Protocol Specification Abstract v1.0
 
 ## Executive Summary
 
