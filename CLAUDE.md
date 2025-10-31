@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a theoretical research repository exploring **Computational Scheme Theory** - a mathematical framework that unifies program semantics with algebraic geometry, distributed systems coordination, and natural language interfaces. The work is purely theoretical documentation with no implementation code yet.
+This is a research repository for **Computational Scheme Theory** - a mathematical framework that unifies program semantics with algebraic geometry, distributed systems coordination, and natural language interfaces.
+
+**Current Status**: Planning phase complete. Ready to begin implementation.
 
 **Central Hypothesis**: The static binding structure of R5RS Scheme programs forms a commutative algebraic object (rig) whose geometric spectrum captures program complexity through the equation: `H¹(X_Comp, O_Comp) = V(G) - k`
 
@@ -27,6 +29,7 @@ The `docs/` directory is organized by document type:
 - **07 - DEPRECIATIONS**: Deprecated documents
 - **08 - EXPLANATIONS**: Human-readable guides for practitioners
 - **09 - GUIDANCE**: **Implementation mandates for AI agents (READ THIS FIRST)**
+- **10 - IMPLEMENTATION**: **Complete implementation designs (START HERE TO BUILD)**
 
 ## Key Documents for Understanding the Theory
 
@@ -35,6 +38,20 @@ The `docs/` directory is organized by document type:
 3. **Validation strategy**: `docs/06 - PROPOSALS/Project Proposal - Empirical Validation of Computational Scheme Theory.md`
 4. **Protocol spec**: `docs/05 - SPECIFICATIONS/RFCXXXX - Computational Scheme Theory Protocol Specification.v1.md`
 5. **Architecture**: `docs/05 - FORMALIZATIONS/The Complete FSM-Based Computational Architecture.md`
+
+## Implementation Documents (NEW - Ready to Build)
+
+The `docs/10 - IMPLEMENTATION/` directory contains complete design specifications for building the validation system:
+
+0. **Overview**: `00-IMPLEMENTATION-OVERVIEW.md` - Start here for implementation guidance
+1. **Mathematical Core**: `01-mathematical-core-architecture.md` - Haskell H¹ calculator design
+2. **Metrics Calculator**: `02-metrics-calculator-design.md` - Racket V(G) calculator design
+3. **gRPC Architecture**: `03-grpc-service-architecture.md` - Service integration design
+4. **Test Corpus**: `04-test-corpus-design.md` - 350-program validation suite design
+5. **Four-Layer Integration**: `05-four-layer-architecture-integration.md` - Complete system architecture
+6. **Project Roadmap**: `06-project-roadmap.md` - 16-month implementation timeline
+
+**Status**: All planning complete. Ready to begin Month 1, Week 1 implementation.
 
 ## Core Architecture Principles
 
