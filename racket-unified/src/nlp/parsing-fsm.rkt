@@ -51,67 +51,67 @@
 ;; FSM Transition function: δ: Q × Σ → Q
 (define (parse-step state token)
   "Execute single FSM transition step"
-  (match state
-    [(parse-state START-PARSE tokens stack kg)
-     ;; Transition: δ(q₀, ε) = q₁
-     (let ([new-state (parse-state EXPECTING-INTENT tokens stack kg)])
-       ;; Recursively call parse-step with new state
-       (if (null? tokens)
-           (values new-state #f)
-           (parse-step new-state token)))]
-    
-    [(parse-state EXPECTING-INTENT tokens stack kg)
-     ;; Transition: δ(q₁, <ActionVerb>) = q₂
-     (if (eq? (token-type token) 'action-verb)
-         (let* ([verb (token-value token)]
-                [event (verb-parsed-event verb)]
-                [new-state (parse-state EXPECTING-VERB tokens stack kg)])
-           (values new-state event))
-         (let ([event (parse-failed-event token "Expected action verb")])
-           (values (parse-state PARSE-ERROR tokens stack kg) event)))]
-    
-    [(parse-state EXPECTING-VERB tokens stack kg)
-     ;; Transition: δ(q₂, <Object>) = q₃
-     (if (eq? (token-type token) 'object)
-         (let* ([event (parse-step-event EXPECTING-VERB RESOLVING-ENTITY token)]
-                [new-state (parse-state RESOLVING-ENTITY tokens stack kg)])
-           (values new-state event))
-         (let ([event (parse-failed-event token "Expected object")])
-           (values (parse-state PARSE-ERROR tokens stack kg) event)))]
-    
-    [(parse-state RESOLVING-ENTITY tokens stack kg)
-     ;; Transition: δ(q₃, <Modifier> | <Parameter>) = q₄
-     (cond
-       [(eq? (token-type token) 'modifier-keyword)
-        (let* ([event (parse-step-event RESOLVING-ENTITY BUILDING-LATTICE token)]
-               [new-state (parse-state BUILDING-LATTICE tokens stack kg)])
-          (values new-state event))]
-       [(eq? (token-type token) 'parameter)
-        (let* ([event (parse-step-event RESOLVING-ENTITY BUILDING-LATTICE token)]
-               [new-state (parse-state BUILDING-LATTICE tokens stack kg)])
-          (values new-state event))]
-       [else
-        ;; Optional modifier/parameter - can complete here
-        (let* ([event (parse-step-event RESOLVING-ENTITY PARSE-COMPLETE token)]
-               [new-state (parse-state PARSE-COMPLETE tokens stack kg)])
-          (values new-state event))])]
-    
-    [(parse-state BUILDING-LATTICE tokens stack kg)
-     ;; Transition: δ(q₄, ε) = q₅
-     (let* ([event (parse-step-event BUILDING-LATTICE PARSE-COMPLETE token)]
-            [new-state (parse-state PARSE-COMPLETE tokens stack kg)])
-       (values new-state event))]
-    
-    [(parse-state PARSE-COMPLETE tokens stack kg)
-     ;; Already complete - no transitions
-     (values state #f)]
-    
-    [(parse-state PARSE-ERROR tokens stack kg)
-     ;; Error state - no transitions
-     (values state #f)]
-    
-    [else
-     (error "Unknown parse state:" state)]))
+  (let ([current-state (parse-state-current-state state)]
+        [tokens (parse-state-tokens state)]
+        [stack (parse-state-semantic-stack state)]
+        [kg (parse-state-knowledge-graph state)])
+    (cond
+      [(eq? current-state START-PARSE)
+       ;; Transition: δ(q₀, ε) = q₁
+       (values (parse-state EXPECTING-INTENT tokens stack kg) #f)]
+      
+      [(eq? current-state EXPECTING-INTENT)
+       ;; Transition: δ(q₁, <ActionVerb>) = q₂
+       (if (eq? (token-type token) 'action-verb)
+           (let* ([verb (token-value token)]
+                  [event (verb-parsed-event verb)]
+                  [new-state (parse-state EXPECTING-VERB tokens stack kg)])
+             (values new-state event))
+           (let ([event (parse-failed-event token "Expected action verb")])
+             (values (parse-state PARSE-ERROR tokens stack kg) event)))]
+      
+      [(eq? current-state EXPECTING-VERB)
+       ;; Transition: δ(q₂, <Object>) = q₃
+       (if (eq? (token-type token) 'object)
+           (let* ([event (parse-step-event EXPECTING-VERB RESOLVING-ENTITY token)]
+                  [new-state (parse-state RESOLVING-ENTITY tokens stack kg)])
+             (values new-state event))
+           (let ([event (parse-failed-event token "Expected object")])
+             (values (parse-state PARSE-ERROR tokens stack kg) event)))]
+      
+      [(eq? current-state RESOLVING-ENTITY)
+       ;; Transition: δ(q₃, <Modifier> | <Parameter> | ε) = q₄ or q₅
+       (cond
+         [(eq? (token-type token) 'modifier-keyword)
+          (let* ([event (parse-step-event RESOLVING-ENTITY BUILDING-LATTICE token)]
+                 [new-state (parse-state BUILDING-LATTICE tokens stack kg)])
+            (values new-state event))]
+         [(eq? (token-type token) 'parameter)
+          (let* ([event (parse-step-event RESOLVING-ENTITY BUILDING-LATTICE token)]
+                 [new-state (parse-state BUILDING-LATTICE tokens stack kg)])
+            (values new-state event))]
+         [else
+          ;; No modifier/parameter - complete here (object was processed)
+          (let* ([event (parse-step-event RESOLVING-ENTITY PARSE-COMPLETE token)]
+                 [new-state (parse-state PARSE-COMPLETE tokens stack kg)])
+            (values new-state event))])]
+      
+      [(eq? current-state BUILDING-LATTICE)
+       ;; Transition: δ(q₄, ε) = q₅ (after processing modifier/parameter)
+       (let* ([event (parse-step-event BUILDING-LATTICE PARSE-COMPLETE token)]
+              [new-state (parse-state PARSE-COMPLETE tokens stack kg)])
+         (values new-state event))]
+      
+      [(eq? current-state PARSE-COMPLETE)
+       ;; Already complete - no transitions
+       (values state #f)]
+      
+      [(eq? current-state PARSE-ERROR)
+       ;; Error state - no transitions
+       (values state #f)]
+      
+      [else
+       (error "Unknown parse state:" current-state)])))
 
 ;; Parse entire query through FSM
 (define (parse-query-fsm nl-text)
@@ -122,13 +122,39 @@
   (define events '())
   (define current-state-box (box initial-state))
   
-  ;; Process each token
-  (for ([tok (in-list tokens)]
-        #:break (eq? (parse-state-current-state (unbox current-state-box)) PARSE-ERROR))
-    (let-values ([(new-state event) (parse-step (unbox current-state-box) tok)])
-      (set-box! current-state-box new-state)
-      (when event
-        (set! events (cons event events)))))
+  ;; Process each token sequentially
+  (let loop ([remaining-tokens tokens]
+             [current-state initial-state])
+    (cond
+      [(null? remaining-tokens)
+       ;; No more tokens - check if we can complete
+       (let* ([state-name (parse-state-current-state current-state)]
+              [final-state
+               (cond
+                 [(eq? state-name RESOLVING-ENTITY)
+                  ;; Can complete after resolving entity
+                  (parse-state PARSE-COMPLETE '() '() '())]
+                 [(eq? state-name BUILDING-LATTICE)
+                  ;; Can complete after building lattice
+                  (parse-state PARSE-COMPLETE '() '() '())]
+                 [(eq? state-name EXPECTING-VERB)
+                  ;; Error - expected object but none found
+                  (parse-state PARSE-ERROR '() '() '())]
+                 [else
+                  current-state])])
+         (set-box! current-state-box final-state))]
+      [else
+       ;; Process next token
+       (let ([tok (car remaining-tokens)])
+         (let-values ([(new-state event) (parse-step current-state tok)])
+           (set-box! current-state-box new-state)
+           (when event
+             (set! events (cons event events)))
+           ;; Continue with remaining tokens if not in error or complete state
+           (let ([next-state-name (parse-state-current-state new-state)])
+             (unless (or (eq? next-state-name PARSE-ERROR)
+                         (eq? next-state-name PARSE-COMPLETE))
+               (loop (cdr remaining-tokens) new-state)))))]))
   
   ;; If complete, create final query-parsed event
   (when (eq? (parse-state-current-state (unbox current-state-box)) PARSE-COMPLETE)

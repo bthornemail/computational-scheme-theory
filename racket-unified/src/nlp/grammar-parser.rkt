@@ -20,7 +20,8 @@
 
 ;; Grammar non-terminals and terminals from Formalized Grammar spec
 (define ACTION-VERBS '("compute" "validate" "analyze" "compare" "explain" "show"))
-(define OBJECTS '("H1" "H¹" "V(G)" "cohomology" "complexity" "binding algebra" "topology" "beta1"))
+;; Objects: include lowercase variants since tokenizer lowercases input
+(define OBJECTS '("H1" "H¹" "h1" "h¹" "V(G)" "v(g)" "cohomology" "complexity" "binding algebra" "topology" "beta1"))
 (define MODIFIER-KEYWORDS '("for" "with" "against" "using"))
 (define ENTITY-TYPES '("program" "corpus" "hypothesis"))
 

@@ -1,6 +1,7 @@
 #lang racket/base
 
 (require racket/match
+         racket/list
          "../m-expression.rkt"
          "../s-expression.rkt"
          "grammar-parser.rkt"
@@ -29,17 +30,20 @@
 ;; Process NL query - full pipeline
 (define (process-nl-query nl-text)
   "Process NL query: parse → enrich → map to M-expression → generate events"
-  ;; Step 1: Parse using FSM
+  ;; Step 1: Parse using grammar parser first to get semantic frame
+  (define-values (parsed-frame frame2) (parse-query nl-text))
+  
+  ;; Step 2: Also parse using FSM to get events
   (define-values (parse-state events) (parse-query-fsm nl-text))
   
-  ;; Step 2: Extract semantic frame
-  (define frame (make-semantic-frame))
+  ;; Step 3: Use parsed frame or create default
+  (define frame (if (semantic-frame? parsed-frame) parsed-frame (make-semantic-frame)))
   
-  ;; Step 3: Enrich with knowledge graph (placeholder - would use actual KG)
+  ;; Step 4: Enrich with knowledge graph
   (define lattice (empty-lattice))
   (define enriched-frame (enrich-frame frame lattice))
   
-  ;; Step 4: Map to M-expression
+  ;; Step 5: Map to M-expression
   (define m-expr-result
     (if (eq? (parse-state-current-state parse-state) 'ParseComplete)
         (map-to-m-expression enriched-frame)

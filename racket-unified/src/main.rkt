@@ -7,7 +7,9 @@
          "prolog-engine.rkt"
          "m-s-compiler.rkt"
          "algorithms/unified-pipeline.rkt"
-         "bridge/racket-bridge.rkt")
+         "bridge/racket-bridge.rkt"
+         "nlp/layer4-core.rkt"
+         "nlp-integration.rkt")
 
 ;; ============================================================
 ;; THE UNIFIED LISP SUBSTRATE
@@ -150,7 +152,35 @@
   
   (test-h1-pipeline)
   
+  ;; Part 3: Natural Language Query Processing
+  (displayln "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+  (displayln "PART 3: Natural Language Query Processing (SGP-ASLN)")
+  (displayln "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+  (displayln "")
+  
+  (displayln "Example 1: Parse NL query 'compute H1'")
+  (let-values ([(m-expr events kg) (process-nl-query "compute H1")])
+    (if m-expr
+        (begin
+          (displayln (format "  ✓ Parsed to M-expression: ~a" (m-expr->string m-expr)))
+          (displayln (format "  ✓ Generated ~a parse events" (length events))))
+        (displayln "  ✗ Parse failed")))
+  (displayln "")
+  
+  (displayln "Example 2: Full pipeline - 'compute H1' with inline source")
+  (displayln "  (Using default test source: (lambda (x) x))")
+  (let-values ([(result success) (process-nl-query-to-computation "compute H1")])
+    (if success
+        (if (pipeline-result? result)
+            (begin
+              (displayln (format "  ✓ H¹ = ~a" (pipeline-result-h1 result)))
+              (displayln (format "  ✓ Bindings: ~a" (pipeline-result-num-bindings result))))
+            (displayln (format "  ✓ Result: ~a" result)))
+        (displayln (format "  ✗ Error: ~a" result))))
+  (displayln "")
+  
   (displayln "")
   (displayln "╔══════════════════════════════════════════════════════════╗")
   (displayln "║              ✓ SYSTEM DEMO COMPLETE ✓                   ║")
+  (displayln "║       Including Natural Language Query Processing       ║")
   (displayln "╚══════════════════════════════════════════════════════════╝"))

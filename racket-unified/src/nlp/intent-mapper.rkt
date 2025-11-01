@@ -42,19 +42,25 @@
   (define intent-type (semantic-frame-intent-type frame))
   (define objects (filter (lambda (c) (eq? (car c) 'object))
                           (semantic-frame-concepts frame)))
+  (define object-values (map cadr objects))
+  (define object-values-lower (map string-downcase object-values))
   
   (cond
-    [(and intent-type (eq? intent-type "compute"))
-     (if (member "H1" (map cadr objects))
-         'compute-h1
-         (if (member "V(G)" (map cadr objects))
-             'compute-vg
-             'compute-operation))]
-    [(and intent-type (eq? intent-type "validate"))
+    [(and intent-type (string=? (string-downcase intent-type) "compute"))
+     (cond
+       [(ormap (lambda (v) (string-prefix? (string-downcase v) "h1")) object-values)
+        'compute-h1]
+       [(ormap (lambda (v) (string-prefix? (string-downcase v) "h¹")) object-values)
+        'compute-h1]
+       [(ormap (lambda (v) (member (string-downcase v) '("v(g)" "vg"))) object-values)
+        'compute-vg]
+       [else
+        'compute-operation])]
+    [(and intent-type (string=? (string-downcase intent-type) "validate"))
      'validate-hypothesis]
-    [(and intent-type (eq? intent-type "analyze"))
+    [(and intent-type (string=? (string-downcase intent-type) "analyze"))
      'analyze-patterns]
-    [(and intent-type (eq? intent-type "compare"))
+    [(and intent-type (string=? (string-downcase intent-type) "compare"))
      'compare-metrics]
     [else
      #f]))

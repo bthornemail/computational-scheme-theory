@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "computational-scheme": {
+      "command": "racket",
+      "args": [
+        "/absolute/path/to/computational-scheme-theory/racket-mcp/src/mcp-server.rkt"
+      ],
+      "env": {}
+    }
+  }
+}
+
