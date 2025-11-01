@@ -129,7 +129,7 @@
               (begin
                 (hash-update! stats 'errors add1)
                 (displayln (format "  ✗ Lisp error: ~a" (pipeline-result-error lisp-result))))))
-        (displayln "")))
+        (displayln ""))))
   
   ;; Print summary
   (displayln "")
@@ -147,7 +147,7 @@
   (displayln (format "Mismatches: ~a" (hash-ref stats 'mismatches)))
   (displayln (format "Errors: ~a" (hash-ref stats 'errors)))
   (displayln (format "Haskell service calls: ~a" (hash-ref stats 'haskell-available)))
-  (displayln (format "Racket service calls: ~a" (hash-ref stats 'racket-available)))
+  (displayln (format "Racket service calls: ~a" (hash-ref stats 'racket-available))))
 
 (module+ main
   (displayln "╔══════════════════════════════════════════════════════════╗")
