@@ -78,8 +78,8 @@
 ;; Add edge to CFG
 (define (add-cfg-edge graph edge)
   "Add edge to control flow graph"
-  (let ([edges (cfg-edges graph)]
-        [new-edges (cons edge edges)])
+  (let* ([current-edges (cfg-edges graph)]
+         [new-edges (cons edge current-edges)])
     (struct-copy cfg graph [edges new-edges])))
 
 ;; Export node types

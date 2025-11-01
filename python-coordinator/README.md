@@ -122,14 +122,31 @@ See `docs/10 - IMPLEMENTATION/03-grpc-service-architecture.md` for detailed serv
 
 ## Phase 1 MVP Notes
 
-- Racket service uses JSON over HTTP (gRPC in Week 13 if available)
+- Both H¹ and V(G) use unified Racket implementation
+- Direct computation mode available via `DirectComputeCoordinator`
 - No event sourcing or FSM yet (Phase 2)
-- Simple sequential validation for first 50 programs
+- Simple sequential validation for test corpus
+
+## Usage Examples
+
+### Using Direct Compute Coordinator
+
+```python
+from coordinator.direct_compute import DirectComputeCoordinator
+
+coordinator = DirectComputeCoordinator()
+result = coordinator.validate_program(
+    "test-001",
+    "(lambda (x) (if (> x 0) 1 -1))"
+)
+
+print(f"H¹={result.h1}, V(G)={result.vg}, Hypothesis holds: {result.hypothesis_holds}")
+```
 
 ## Next Steps
 
-1. Implement coordinator service (Month 4, Week 1)
-2. Add integration tests (Month 4, Week 1-2)
-3. Create test corpus runner (Month 4, Week 2)
+1. ✅ Implement direct computation coordinator **COMPLETE**
+2. Add comprehensive integration tests
+3. Create automated test corpus runner
 4. Add event sourcing and FSM (Phase 2)
 

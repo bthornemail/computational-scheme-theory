@@ -47,7 +47,8 @@ def compute_h1_direct(source_code: str, program_id: str, project_root: Path) -> 
         try:
             with open(script_file, 'w') as f:
                 f.write(f"""#lang racket/base
-(require "algorithms/unified-pipeline.rkt")
+(require racket/file
+         "algorithms/unified-pipeline.rkt")
 
 (define source (file->string "{temp_file}"))
 (with-handlers ([exn? (lambda (e) (displayln "0"))])
@@ -57,10 +58,10 @@ def compute_h1_direct(source_code: str, program_id: str, project_root: Path) -> 
       (displayln "0")))
 """)
             
-            # Run Racket script from racket_unified_dir
+            # Run Racket script from racket_unified_dir using absolute path
             result = subprocess.run(
-                ["racket", str(script_file)],
-                cwd=racket_unified_dir,
+                ["racket", str(script_file.resolve())],
+                cwd=str(racket_unified_dir.resolve()),
                 capture_output=True,
                 text=True,
                 timeout=30
@@ -132,7 +133,8 @@ def compute_vg_direct(source_code: str, program_id: str, project_root: Path) -> 
         try:
             with open(script_file, 'w') as f:
                 f.write(f"""#lang racket/base
-(require "algorithms/cfg-builder.rkt"
+(require racket/file
+         "algorithms/cfg-builder.rkt"
          "algorithms/cyclomatic.rkt")
 
 (define source (file->string "{temp_file}"))
@@ -142,10 +144,10 @@ def compute_vg_direct(source_code: str, program_id: str, project_root: Path) -> 
   (displayln (complexity-metrics-v-g metrics)))
 """)
             
-            # Run Racket script from racket_unified_dir
+            # Run Racket script from racket_unified_dir using absolute path
             result = subprocess.run(
-                ["racket", str(script_file)],
-                cwd=racket_unified_dir,
+                ["racket", str(script_file.resolve())],
+                cwd=str(racket_unified_dir.resolve()),
                 capture_output=True,
                 text=True,
                 timeout=30

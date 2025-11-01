@@ -5,7 +5,12 @@
          "cfg-types.rkt")
 
 (provide compute-cyclomatic-complexity
-         compute-vg-from-source)
+         compute-vg-from-source
+         complexity-metrics?
+         complexity-metrics-v-g
+         complexity-metrics-nodes
+         complexity-metrics-edges
+         complexity-metrics-components)
 
 ;; ============================================================
 ;; CYCLOMATIC COMPLEXITY CALCULATOR

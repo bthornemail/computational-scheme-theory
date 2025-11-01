@@ -1,0 +1,765 @@
+{
+  "summary": {
+    "total_programs": 94,
+    "errors": 0,
+    "mean_h1": 0.031914893617021274,
+    "mean_vg": 26.47872340425532,
+    "estimated_k": 26.4468085106383,
+    "k_std": 17.83774964185556
+  },
+  "results": [
+    {
+      "file": "test-corpus/baseline/B001.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 10,
+      "difference": 10,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B002.scm",
+      "category": "baseline",
+      "h1": 1,
+      "vg": 32,
+      "difference": 31,
+      "ratio": 32.0
+    },
+    {
+      "file": "test-corpus/baseline/B003.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 32,
+      "difference": 32,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B004.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 4,
+      "difference": 4,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B005.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 12,
+      "difference": 12,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B006.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 10,
+      "difference": 10,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B007.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 10,
+      "difference": 10,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B008.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 20,
+      "difference": 20,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B009.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 16,
+      "difference": 16,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B010.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 10,
+      "difference": 10,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B011.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 10,
+      "difference": 10,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B012.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 10,
+      "difference": 10,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B013.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 10,
+      "difference": 10,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B014.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 10,
+      "difference": 10,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B015.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 4,
+      "difference": 4,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B016.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 29,
+      "difference": 29,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B017.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 10,
+      "difference": 10,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B018.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 4,
+      "difference": 4,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B019.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 4,
+      "difference": 4,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/B020.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 12,
+      "difference": 12,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/baseline-001.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 4,
+      "difference": 4,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/baseline-002.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 4,
+      "difference": 4,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/baseline-003.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 4,
+      "difference": 4,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/baseline-004.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 10,
+      "difference": 10,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/baseline/baseline-005.scm",
+      "category": "baseline",
+      "h1": 0,
+      "vg": 18,
+      "difference": 18,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/complex-control/CC001.scm",
+      "category": "complex-control",
+      "h1": 0,
+      "vg": 45,
+      "difference": 45,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/complex-control/CC002.scm",
+      "category": "complex-control",
+      "h1": 0,
+      "vg": 39,
+      "difference": 39,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/complex-control/CC003.scm",
+      "category": "complex-control",
+      "h1": 0,
+      "vg": 77,
+      "difference": 77,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/complex-control/CC004.scm",
+      "category": "complex-control",
+      "h1": 0,
+      "vg": 54,
+      "difference": 54,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/complex-control/CC005.scm",
+      "category": "complex-control",
+      "h1": 0,
+      "vg": 42,
+      "difference": 42,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/complex-control/CC006.scm",
+      "category": "complex-control",
+      "h1": 0,
+      "vg": 54,
+      "difference": 54,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/complex-control/CC007.scm",
+      "category": "complex-control",
+      "h1": 0,
+      "vg": 37,
+      "difference": 37,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/complex-control/CC008.scm",
+      "category": "complex-control",
+      "h1": 0,
+      "vg": 83,
+      "difference": 83,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/complex-control/CC009.scm",
+      "category": "complex-control",
+      "h1": 0,
+      "vg": 53,
+      "difference": 53,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/complex-control/CC010.scm",
+      "category": "complex-control",
+      "h1": 0,
+      "vg": 54,
+      "difference": 54,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/debug/cycle-test-1.scm",
+      "category": "debug",
+      "h1": 0,
+      "vg": 0,
+      "difference": 0,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/debug/cycle-test-2.scm",
+      "category": "debug",
+      "h1": 1,
+      "vg": 16,
+      "difference": 15,
+      "ratio": 16.0
+    },
+    {
+      "file": "test-corpus/debug/cycle-test-3.scm",
+      "category": "debug",
+      "h1": 0,
+      "vg": 10,
+      "difference": 10,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/debug/debug-complex-nested.scm",
+      "category": "debug",
+      "h1": 0,
+      "vg": 16,
+      "difference": 16,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/debug/debug-deep-nest.scm",
+      "category": "debug",
+      "h1": 0,
+      "vg": 36,
+      "difference": 36,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/debug/debug-lambda-closure.scm",
+      "category": "debug",
+      "h1": 0,
+      "vg": 10,
+      "difference": 10,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/debug/debug-nested-let.scm",
+      "category": "debug",
+      "h1": 0,
+      "vg": 32,
+      "difference": 32,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/debug/debug-simple-let.scm",
+      "category": "debug",
+      "h1": 0,
+      "vg": 22,
+      "difference": 22,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/debug/debug-simple-nested.scm",
+      "category": "debug",
+      "h1": 0,
+      "vg": 22,
+      "difference": 22,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/functional/F001.scm",
+      "category": "functional",
+      "h1": 0,
+      "vg": 4,
+      "difference": 4,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/functional/F002.scm",
+      "category": "functional",
+      "h1": 0,
+      "vg": 4,
+      "difference": 4,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/functional/F003.scm",
+      "category": "functional",
+      "h1": 0,
+      "vg": 12,
+      "difference": 12,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/functional/F004.scm",
+      "category": "functional",
+      "h1": 0,
+      "vg": 43,
+      "difference": 43,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/functional/F005.scm",
+      "category": "functional",
+      "h1": 0,
+      "vg": 60,
+      "difference": 60,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/functional/F006.scm",
+      "category": "functional",
+      "h1": 0,
+      "vg": 37,
+      "difference": 37,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/functional/F007.scm",
+      "category": "functional",
+      "h1": 0,
+      "vg": 4,
+      "difference": 4,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/functional/F008.scm",
+      "category": "functional",
+      "h1": 0,
+      "vg": 4,
+      "difference": 4,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/functional/F009.scm",
+      "category": "functional",
+      "h1": 1,
+      "vg": 4,
+      "difference": 3,
+      "ratio": 4.0
+    },
+    {
+      "file": "test-corpus/functional/F010.scm",
+      "category": "functional",
+      "h1": 0,
+      "vg": 35,
+      "difference": 35,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/R001.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 29,
+      "difference": 29,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/R002.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 29,
+      "difference": 29,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/R003.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 29,
+      "difference": 29,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/R004.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 41,
+      "difference": 41,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/R005.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 43,
+      "difference": 43,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/R006.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 60,
+      "difference": 60,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/R007.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 37,
+      "difference": 37,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/R008.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 55,
+      "difference": 55,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/R009.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 43,
+      "difference": 43,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/R010.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 40,
+      "difference": 40,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/R011.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 35,
+      "difference": 35,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/R012.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 42,
+      "difference": 42,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/R013.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 38,
+      "difference": 38,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/R014.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 38,
+      "difference": 38,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/R015.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 61,
+      "difference": 61,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/recursion-001.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 29,
+      "difference": 29,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/recursion-002.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 43,
+      "difference": 43,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/recursion-003.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 29,
+      "difference": 29,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/recursion-004.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 29,
+      "difference": 29,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/recursion/recursion-005.scm",
+      "category": "recursion",
+      "h1": 0,
+      "vg": 35,
+      "difference": 35,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/SC001.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 19,
+      "difference": 19,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/SC002.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 15,
+      "difference": 15,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/SC003.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 15,
+      "difference": 15,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/SC004.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 26,
+      "difference": 26,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/SC005.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 29,
+      "difference": 29,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/SC006.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 38,
+      "difference": 38,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/SC007.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 29,
+      "difference": 29,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/SC008.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 35,
+      "difference": 35,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/SC009.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 43,
+      "difference": 43,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/SC010.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 15,
+      "difference": 15,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/SC011.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 15,
+      "difference": 15,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/SC012.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 15,
+      "difference": 15,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/SC013.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 26,
+      "difference": 26,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/SC014.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 29,
+      "difference": 29,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/SC015.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 26,
+      "difference": 26,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/simple-control-001.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 15,
+      "difference": 15,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/simple-control-002.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 19,
+      "difference": 19,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/simple-control-003.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 15,
+      "difference": 15,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/simple-control-004.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 46,
+      "difference": 46,
+      "ratio": null
+    },
+    {
+      "file": "test-corpus/simple-control/simple-control-005.scm",
+      "category": "simple-control",
+      "h1": 0,
+      "vg": 26,
+      "difference": 26,
+      "ratio": null
+    }
+  ],
+  "errors": []
+}

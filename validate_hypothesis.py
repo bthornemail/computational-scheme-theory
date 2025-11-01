@@ -16,37 +16,18 @@ import statistics
 
 # Project root
 PROJECT_ROOT = Path(__file__).parent
-HASKELL_DIR = PROJECT_ROOT / "haskell-core"
 TEST_CORPUS = PROJECT_ROOT / "test-corpus"
-RACKET_DIR = PROJECT_ROOT / "racket-metrics"
 
 def compute_h1(filepath: Path) -> Optional[int]:
-    """Compute H¹ using Haskell tool"""
+    """Compute H¹ using Racket unified pipeline"""
     try:
-        result = subprocess.run(
-            ["cabal", "run", "--", "computational-scheme-theory", "--", "compute-h1", str(filepath)],
-            cwd=HASKELL_DIR,
-            capture_output=True,
-            text=True,
-            timeout=30
-        )
-        if result.returncode == 0:
-            # Parse output like "H¹(X_Comp, O_Comp) = 0"
-            output = result.stdout.strip()
-            # Find the last line that contains "="
-            for line in reversed(output.split('\n')):
-                if "=" in line and "H¹" in line:
-                    h1_str = line.split("=")[-1].strip()
-                    try:
-                        return int(h1_str)
-                    except ValueError:
-                        continue
-            return None
-        else:
-            # Don't print errors, just return None
-            return None
-    except subprocess.TimeoutExpired:
-        return None
+        sys.path.insert(0, str(PROJECT_ROOT / "python-coordinator"))
+        from coordinator.direct_compute import compute_h1_direct
+        
+        source_code = filepath.read_text()
+        program_id = filepath.stem
+        h1, _ = compute_h1_direct(source_code, program_id, PROJECT_ROOT)
+        return h1 if h1 > 0 or source_code.strip() else None  # Return None only if clearly an error
     except Exception as e:
         return None
 

@@ -11,6 +11,12 @@
  binding?
  r-scheme?
  r-scheme-bindings
+ ;; Source location
+ source-loc
+ source-loc?
+ source-loc-file
+ source-loc-line
+ source-loc-col
  ;; AST structs and predicates
  ast-const
  ast-const?

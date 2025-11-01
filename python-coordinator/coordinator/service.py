@@ -1,9 +1,13 @@
 """
 Python Coordinator Service
 
-Orchestrates validation experiments by communicating with:
-- Haskell Mathematical Core service (H¹ computation)
-- Racket Metrics Calculator service (V(G) computation)
+This module provides gRPC-based service clients for future distributed deployment.
+For direct computation (current implementation), use DirectComputeCoordinator from direct_compute.py.
+
+NOTE: The classes in this module (MathCoreClient, MetricsClient, ValidationCoordinator)
+are designed for gRPC service architecture and currently contain placeholder implementations.
+The working implementation is DirectComputeCoordinator which uses subprocess calls to
+the unified Racket pipeline.
 """
 
 import logging
