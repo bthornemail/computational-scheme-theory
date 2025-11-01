@@ -229,6 +229,7 @@ analyzeScopesExprEnhanced expr = do
     
     Var name loc' -> do
       -- Track usage of variable
+      -- When a binding is referenced, it becomes visible in the current scope
       let bindingId = BindingId name
       state <- get
       case Map.lookup bindingId (bindingMap state) of
@@ -240,10 +241,24 @@ analyzeScopesExprEnhanced expr = do
                   usageContexts = getCurrentContext state : usageContexts p
                 }
                 Nothing -> UsagePattern bindingId [locPos loc'] [getCurrentContext state]
-          modify $ \s -> s
-            { bindingMap = Map.insert bindingId (region { usagePattern = pattern }) (bindingMap s)
-            , usagePatterns = Map.insert bindingId pattern (usagePatterns s)
-            }
+          
+          -- IMPORTANT: Add current scope to binding's scope visibility
+          -- This creates overlaps when bindings are referenced in nested scopes
+          currentScopeId <- gets currentScope
+          case currentScopeId of
+            Just scopeId -> do
+              let updatedScopeIds = Set.insert scopeId (scopeIds region)
+              let updatedRegion = region { scopeIds = updatedScopeIds, usagePattern = pattern }
+              modify $ \s -> s
+                { bindingMap = Map.insert bindingId updatedRegion (bindingMap s)
+                , usagePatterns = Map.insert bindingId pattern (usagePatterns s)
+                }
+            Nothing -> do
+              -- Top-level reference, no scope to add
+              modify $ \s -> s
+                { bindingMap = Map.insert bindingId (region { usagePattern = pattern }) (bindingMap s)
+                , usagePatterns = Map.insert bindingId pattern (usagePatterns s)
+                }
         Nothing -> return ()  -- Undefined variable, ignore
     
     If form loc' -> do

@@ -1,0 +1,30 @@
+[
+  {
+    "file": "B001.scm",
+    "category": "baseline",
+    "h1": 0,
+    "vg": 10,
+    "k": 10
+  },
+  {
+    "file": "CC001.scm",
+    "category": "complex-control",
+    "h1": 0,
+    "vg": 47,
+    "k": 47
+  },
+  {
+    "file": "SC001.scm",
+    "category": "simple-control",
+    "h1": 0,
+    "vg": 19,
+    "k": 19
+  },
+  {
+    "file": "R001.scm",
+    "category": "recursion",
+    "h1": 0,
+    "vg": 29,
+    "k": 29
+  }
+]
