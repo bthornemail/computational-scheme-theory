@@ -103,30 +103,29 @@ def compute_vg_direct(source_code: str, program_id: str, project_root: Path) -> 
     try:
         racket_dir = project_root / "racket-metrics"
         
-        # Create a Racket script to compute V(G)
-        racket_script = f"""
-#lang racket
+        # Create a Racket script file in racket_dir so modules can be found
+        script_file = racket_dir / "compute_vg_temp.rkt"
+        try:
+            with open(script_file, 'w') as f:
+                f.write(f"""#lang racket
 (require "cyclomatic.rkt"
          "cfg-builder.rkt"
-         "r5rs-parser.rkt")
+         "r5rs-parser.rkt"
+         "cfg-types.rkt")
 
 (define source (file->string "{temp_file}"))
 (define ast-list (parse-r5rs source))
-(when (not (null? ast-list))
-  (define cfg (build-cfg (first ast-list)))
-  (define metrics (compute-cyclomatic-complexity cfg))
-  (displayln (complexity-metrics-v-g metrics)))
-"""
-        
-        # Write Racket script
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.rkt', delete=False) as script_file:
-            script_file.write(racket_script)
-            script_path = script_file.name
-        
-        try:
-            # Run Racket
+(cond
+  [(null? ast-list) (displayln "0")]
+  [else
+   (define cfg (build-cfg (first ast-list)))
+   (define metrics (compute-cyclomatic-complexity cfg))
+   (displayln (complexity-metrics-v-g metrics))])
+""")
+            
+            # Run Racket script from racket_dir
             result = subprocess.run(
-                ["racket", script_path],
+                ["racket", str(script_file)],
                 cwd=racket_dir,
                 capture_output=True,
                 text=True,
@@ -146,8 +145,10 @@ def compute_vg_direct(source_code: str, program_id: str, project_root: Path) -> 
             return 0, (time.time() - start_time) * 1000
             
         finally:
+            # Clean up script file
             try:
-                os.unlink(script_path)
+                if script_file.exists():
+                    os.unlink(script_file)
             except:
                 pass
         

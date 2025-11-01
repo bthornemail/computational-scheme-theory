@@ -99,17 +99,20 @@
     ;; Application: may create cycle if recursive
     [(ast-app loc operator operands)
      (let ([id (fresh-node-id!)])
-       (let-values ([(op-nodes op-edges) (ast->cfg operator entry-id exit-id)]
-                     [(arg-nodes arg-edges) (foldl (λ (arg acc)
-                                                      (let-values ([(n e) (ast->cfg arg entry-id exit-id)])
-                                                        (values (append (list n) (first acc))
-                                                                (append e (second acc)))))
-                                                   '(() ()) operands)])
-         (values (hash-set* (make-hash)
-                            id (cfg-node id NODE-BASIC (list node) loc)
-                            op-nodes
-                            (apply hash-set* (make-hash) arg-nodes))
-                 (append op-edges arg-edges))))]
+       (let-values ([(op-nodes op-edges) (ast->cfg operator entry-id exit-id)])
+         (let-values ([(arg-nodes arg-edges)
+                        (for/fold ([all-nodes '()]
+                                   [all-edges '()])
+                                  ([arg operands])
+                          (let-values ([(n e) (ast->cfg arg entry-id exit-id)])
+                            (values (cons n all-nodes)
+                                    (append all-edges e))))])
+           (values (hash-set* (for/fold ([result (make-hash)])
+                                         ([node-hash arg-nodes])
+                                 (hash-union result node-hash))
+                             id (cfg-node id NODE-BASIC (list node) loc)
+                             op-nodes)
+                   (append op-edges arg-edges)))))]
 
     ;; Begin: sequence of statements
     [(ast-begin loc exprs)
@@ -158,7 +161,11 @@
                           (values (hash-union all-nodes n)
                                   (append all-edges e))))])
        (values (hash-union binding-nodes body-nodes)
-               (append binding-edges body-edges))))])
+               (append binding-edges body-edges)))]
+    
+    ;; Define: extract the value/body and build CFG for it
+    [(ast-define loc name value)
+     (ast->cfg value entry-id exit-id)]))
 
 ;; Helper: get first node ID from a hash of nodes
 (define (get-first-node-id nodes)
