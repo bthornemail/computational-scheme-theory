@@ -34,8 +34,8 @@ programParser = spaceConsumer *> many exprParser <* eof
 -- | Parse a single expression
 exprParser :: Parser Expr
 exprParser = lexeme $ choice
-  [ constantParser
-  , variableParser
+  [ variableParser  -- Try variables before constants to avoid parsing operators as numbers
+  , constantParser
   , listParser
   ]
 
@@ -53,7 +53,7 @@ constantParser = lexeme $ do
     ]
 
 numberConstant :: Parser Constant
-numberConstant = Number <$> L.signed space (try L.float <|> (fromIntegral <$> L.decimal :: Parser Double))
+numberConstant = Number <$> (try (L.signed space L.float) <|> (fromIntegral <$> L.signed space L.decimal :: Parser Double))
 
 stringConstant :: Parser Constant
 stringConstant = String . T.pack <$> (char '"' *> manyTill L.charLiteral (char '"'))

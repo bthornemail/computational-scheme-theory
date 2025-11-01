@@ -37,28 +37,12 @@ def compute_h1_direct(source_code: str, program_id: str, project_root: Path) -> 
         temp_file = f.name
     
     try:
-        # Try to call Haskell executable
+        # Use cabal run instead of finding executable path
         haskell_dir = project_root / "haskell-core"
-        exe_path = haskell_dir / "dist" / "build" / "computational-scheme-theory" / "computational-scheme-theory"
         
-        # Check if built
-        if not exe_path.exists():
-            logger.warning(f"Haskell executable not found at {exe_path}")
-            logger.info("Building Haskell project...")
-            # Try to build
-            result = subprocess.run(
-                ["cabal", "build"],
-                cwd=haskell_dir,
-                capture_output=True,
-                timeout=120
-            )
-            if result.returncode != 0:
-                logger.warning("Haskell build failed, using placeholder")
-                return 0, (time.time() - start_time) * 1000
-        
-        # Call executable
+        # Call via cabal run (handles finding executable automatically)
         result = subprocess.run(
-            [str(exe_path), "compute-h1", temp_file],
+            ["cabal", "run", "computational-scheme-theory", "--", "compute-h1", temp_file],
             capture_output=True,
             text=True,
             timeout=30,
