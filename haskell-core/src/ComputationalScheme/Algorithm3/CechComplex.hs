@@ -15,6 +15,7 @@ import ComputationalScheme.Algorithm2.Topology
 import ComputationalScheme.Algorithm3.Nerve
 import ComputationalScheme.Algorithm3.SimplicialComplex
 import Data.Text (Text)
+import qualified Data.Set as Set
 
 -- | Build Čech complex from topology
 -- This is the main entry point for Algorithm 3.
@@ -78,10 +79,12 @@ reachableVertices start edges visited
   | Set.member start visited = visited
   | otherwise = 
       let newVisited = Set.insert start visited
-          -- Find all edges containing this vertex
-          connected = Set.filter (\edge -> Set.member start (vertices edge)) edges
-          -- Get all vertices connected via these edges
-          neighbors = Set.unions $ map vertices (Set.toList connected)
-          -- Recursively visit neighbors
-      in foldl (\acc v -> reachableVertices v edges acc) newVisited (Set.toList neighbors)
+          startVerts = vertices start  -- Get the Int values from the start simplex
+          -- Find all edges that share vertices with start
+          connected = Set.filter (\edge -> not $ Set.null (Set.intersection startVerts (vertices edge))) edges
+          -- Get all vertices (as Int sets) connected via these edges
+          neighborInts = Set.unions $ map vertices (Set.toList connected)
+          -- Convert Int sets back to Simplices and recursively visit
+          neighborSimplices = Set.fromList [Simplex (Set.singleton i) | i <- Set.toList neighborInts]
+      in foldl (\acc v -> reachableVertices v edges acc) newVisited (Set.toList neighborSimplices)
 

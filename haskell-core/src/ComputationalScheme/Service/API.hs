@@ -16,7 +16,8 @@ import ComputationalScheme.Algorithm2.Topology
 import ComputationalScheme.Algorithm2.OpenCover
 import ComputationalScheme.Algorithm3.CechComplex
 import ComputationalScheme.Algorithm3.SimplicialComplex
-import ComputationalScheme.Algorithm4.Cohomology
+import ComputationalScheme.Algorithm4.Cohomology hiding (H1Result(..))
+import ComputationalScheme.Algorithm4.ChainComplex (CohomologyGroup(..))
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Set as Set
@@ -99,7 +100,7 @@ computeH1FromSourceDetailed source =
           , errorMessage = Just err
           }
         Right rig -> 
-          let bindingCount = bindingCount rig
+          let numBindings = ComputationalScheme.Rig.bindingCount rig
               exprs = case parseProgram source of
                 Left _ -> []
                 Right es -> es
@@ -108,10 +109,10 @@ computeH1FromSourceDetailed source =
               topo = buildTopology rig scopeMap
               complex = buildCechComplex topo
           in PipelineResult
-            { h1Value = h1
+            { h1Value = h1  -- PipelineResult.h1Value
             , beta0 = 1  -- Simplified
             , beta1 = h1
-            , numBindings = bindingCount
+            , numBindings = numBindings
             , numSimplices0 = Set.size (simplices0 complex)
             , numSimplices1 = Set.size (simplices1 complex)
             , numSimplices2 = Set.size (simplices2 complex)

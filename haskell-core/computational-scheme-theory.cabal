@@ -73,7 +73,15 @@ executable computational-scheme-theory
   build-depends:
     base >=4.17 && <5.0,
     computational-scheme-theory,
-    optparse-applicative >=0.17
+    optparse-applicative >=0.17,
+    semirings >=0.6,
+    hmatrix >=0.20,
+    megaparsec >=9.0,
+    containers >=0.6,
+    text >=2.0,
+    bytestring >=0.11,
+    vector >=0.13,
+    mtl >=2.3
 
   default-language: Haskell2010
 

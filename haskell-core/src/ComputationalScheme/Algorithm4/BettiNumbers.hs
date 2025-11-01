@@ -13,6 +13,7 @@ import ComputationalScheme.Algorithm3.SimplicialComplex (SimplicialComplex(..), 
 import ComputationalScheme.Algorithm4.Cohomology (computeH1, computeHn)
 import ComputationalScheme.Algorithm4.ChainComplex (CohomologyGroup(..))
 import Numeric.LinearAlgebra
+import qualified Data.Set as Set
 
 -- | Compute first Betti number β₁
 -- This is the dimension of H¹, which measures "1-dimensional holes" (cycles).
@@ -26,8 +27,8 @@ computeBettiNumbers maxDim complex =
 
 -- | Compute Betti number β_k
 computeBetaN :: Int -> SimplicialComplex -> Int
-computeBetaN 0 = computeBeta0
-computeBetaN 1 = computeBeta1
+computeBetaN 0 complex = computeBeta0 complex
+computeBetaN 1 complex = computeBeta1 complex
 computeBetaN k complex
   | k > getComplexDimension complex = 0
   | otherwise = dimension $ computeHn k complex

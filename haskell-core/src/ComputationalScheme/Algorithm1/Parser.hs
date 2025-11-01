@@ -78,7 +78,7 @@ variableParser = lexeme $ do
 
 -- | Parse identifier (variable name)
 identifier :: Parser Text
-identifier = T.pack <$> some (alphaNumChar <|> oneOf "-!$%&*+/:<=>?@^_~")
+identifier = T.pack <$> some (alphaNumChar <|> oneOf ['-', '!', '$', '%', '&', '*', '+', '/', ':', '<', '=', '>', '?', '@', '^', '_', '~'])
 
 -- | Parse list forms (lambda, let, define, if, cond, application, etc.)
 listParser :: Parser Expr
