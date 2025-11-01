@@ -25,7 +25,7 @@ A single, elegant Racket implementation that:
 2. **Computes H¹** from Scheme source (pure Lisp)
 3. **Validates** using Prolog-style queries
 4. **Infers** using Datalog fixpoint computation
-5. **Compares** with existing Haskell/Racket services
+5. **Validates** with optional Racket V(G) service (for hypothesis validation)
 6. **Validates** hypothesis H¹ = V(G) - k
 
 ### ✅ All Components Working

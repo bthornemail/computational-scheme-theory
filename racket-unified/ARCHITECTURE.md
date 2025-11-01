@@ -45,8 +45,7 @@
               ▼
 ┌─────────────────────────────────────────┐
 │  Service Bridges (Optional)              │
-│  - Haskell H¹ service                   │
-│  - Racket V(G) service                  │
+│  - Racket V(G) service (for validation)  │
 └─────────────────────────────────────────┘
 ```
 

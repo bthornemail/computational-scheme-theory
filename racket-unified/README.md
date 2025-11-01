@@ -88,8 +88,7 @@ racket-unified/
 - **Datalog**: Bottom-up inference (custom with Z-combinator)
 
 ### Service Bridges
-- **Haskell bridge**: Call existing H¹ service
-- **Racket bridge**: Call existing V(G) service
+- **Racket bridge**: Optional bridge to existing V(G) service for hypothesis validation (H¹ = V(G) - k)
 
 ## 📚 Documentation
 

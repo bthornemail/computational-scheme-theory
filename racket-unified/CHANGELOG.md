@@ -3,7 +3,7 @@
 ## [0.2.0] - 2025-01-31
 
 ### Enhanced
-- ✅ Enhanced scope visibility computation to match Haskell implementation
+- ✅ Enhanced scope visibility computation
 - ✅ Improved descendant scope calculation for lexical scoping
 - ✅ Better error handling in topology and Čech complex construction
 - ✅ Fixed matrix rank computation with proper mutation handling
@@ -37,7 +37,7 @@
 - ✅ M/S-expression system
 - ✅ Prolog/Datalog engines
 - ✅ Y/Z combinators
-- ✅ Service bridges
+- ✅ Racket service bridge (Haskell bridge removed - pure Lisp only)
 - ✅ Main pipeline integration
 
 ### Core Features

@@ -20,8 +20,7 @@
 - Unified pipeline: Source → H¹
 
 ### Phase 5: Service Bridges (100% ✅)
-- Haskell bridge: HTTP client for H¹ service
-- Racket bridge: HTTP client for V(G) service
+- Racket bridge: HTTP client for V(G) service (Haskell bridge removed)
 - Result comparison utilities
 - Hypothesis validation
 
@@ -41,7 +40,7 @@ The system can now:
 - ✅ Parse and execute M-expressions
 - ✅ Compile M→S with validation
 - ✅ Run complete H¹ computation pipeline
-- ✅ Call existing Haskell service for H¹ (if available)
+- ✅ Call optional Racket V(G) service for hypothesis validation (if available)
 - ✅ Call existing Racket service for V(G) (if available)
 - ✅ Compare results between implementations
 - ✅ Validate H¹ = V(G) - k hypothesis
@@ -65,9 +64,8 @@ racket-unified/
 │   │   ├── algorithm3.rkt            ✅
 │   │   ├── algorithm4.rkt            ✅
 │   │   └── unified-pipeline.rkt     ✅
-│   ├── bridge/
-│   │   ├── haskell-bridge.rkt       ✅
-│   │   └── racket-bridge.rkt        ✅
+│   └── bridge/
+│       └── racket-bridge.rkt        ✅ (Haskell removed)
 │   ├── main.rkt                     ✅ Integrated
 │   └── validation-demo.rkt           ✅ NEW
 ├── test/
@@ -110,7 +108,7 @@ raco test test/
 
 ### Near-term
 5. Performance testing and optimization
-6. Create comparison reports (Lisp vs Haskell/Racket)
+6. Create validation reports using optional Racket V(G) service
 7. Complete documentation
 
 ## Status Summary

@@ -20,7 +20,7 @@ This demonstrates:
 racket src/validation-demo.rkt
 ```
 
-Compares Lisp results with existing Haskell/Racket services.
+Compares Lisp results with optional Racket V(G) service for hypothesis validation.
 
 ### Run Tests
 
@@ -54,27 +54,23 @@ raco test test/
   (printf "0-simplices: ~a\n" (pipeline-result-num-simplices0 result)))
 ```
 
-### Use Service Bridges
+### Use Service Bridge (Optional)
+
+The Racket bridge is optional and used only for hypothesis validation (H¹ = V(G) - k):
 
 ```racket
-(require "src/bridge/haskell-bridge.rkt")
 (require "src/bridge/racket-bridge.rkt")
 
 ;; Check service availability
-(if (haskell-service-available?)
-    (printf "Haskell service is up\n")
-    (printf "Haskell service is down\n"))
+(if (racket-service-available?)
+    (printf "Racket service is up\n")
+    (printf "Racket service is down\n"))
 
-;; Call Haskell service
-(let-values ([(h1 error) (call-haskell-h1 "(lambda (x) x)")])
+;; Call Racket V(G) service
+(let-values ([(vg error) (call-racket-vg "(lambda (x) x)")])
   (if error
       (printf "Error: ~a\n" error)
-      (printf "Haskell H¹ = ~a\n" h1)))
-
-;; Compare results
-(let-values ([(match? diff msg) 
-               (compare-h1-results lisp-h1 haskell-h1 0)])
-  (printf "~a\n" msg))
+      (printf "Racket V(G) = ~a\n" vg)))
 ```
 
 ### Validate Hypothesis
@@ -94,13 +90,11 @@ raco test test/
 
 ### Service URLs
 
-Set custom service URLs:
+Set custom service URL:
 
 ```racket
-(require "src/bridge/haskell-bridge.rkt")
 (require "src/bridge/racket-bridge.rkt")
 
-(*haskell-service-url* "http://custom-host:8080/api/compute-h1")
 (*racket-service-url* "http://custom-host:8081/api/compute-vg")
 ```
 
@@ -126,27 +120,28 @@ Set custom service URLs:
       (printf "Error: ~a\n" (pipeline-result-error result))))
 ```
 
-### Example 2: Service Comparison
+### Example 2: Hypothesis Validation with Racket Service
 
 ```racket
 (require "src/algorithms/unified-pipeline.rkt"
-         "src/bridge/haskell-bridge.rkt")
+         "src/bridge/racket-bridge.rkt")
 
 (define source "(lambda (x) x)")
 (let ([lisp-result (compute-h1-from-source-detailed source)])
   (when (and (pipeline-result-success lisp-result)
-             (haskell-service-available?))
-    (let-values ([(haskell-h1 error) (call-haskell-h1 source)])
-      (if haskell-h1
-          (let-values ([(match? diff msg) 
-                         (compare-h1-results
+             (racket-service-available?))
+    (let-values ([(vg error) (call-racket-vg source)])
+      (if vg
+          (let-values ([(valid? diff msg) 
+                         (validate-hypothesis
                           (pipeline-result-h1 lisp-result)
-                          haskell-h1
+                          vg
+                          0
                           0)])
             (printf "Lisp H¹: ~a\n" (pipeline-result-h1 lisp-result))
-            (printf "Haskell H¹: ~a\n" haskell-h1)
-            (printf "Comparison: ~a\n" msg))
-          (printf "Haskell error: ~a\n" error)))))
+            (printf "Racket V(G): ~a\n" vg)
+            (printf "Validation: ~a\n" msg))
+          (printf "Racket error: ~a\n" error)))))
 ```
 
 ### Example 3: Hypothesis Validation
@@ -176,8 +171,8 @@ All functions return `(values result error)` or structured results:
 
 - `compute-h1-from-source` → `(values h1 #f)` or `(values #f "error message")`
 - `compute-h1-from-source-detailed` → `pipeline-result` struct
-- `call-haskell-h1` → `(values h1 #f)` or `(values #f "error message")`
 - `call-racket-vg` → `(values vg #f)` or `(values #f "error message")`
+- `validate-hypothesis` → `(values valid? diff message)`
 
 Always check for errors:
 
@@ -192,15 +187,18 @@ Always check for errors:
 
 ### Services Not Available
 
-If services are unavailable, the system works in pure Lisp mode:
+If the Racket service is unavailable, the system works in pure Lisp mode:
 
 ```racket
-;; This always works (pure Lisp)
+;; This always works (pure Lisp computation)
 (compute-h1-from-source-detailed "(lambda (x) x)")
 
-;; This only works if service is up
-(when (haskell-service-available?)
-  (call-haskell-h1 source))
+;; Optional: Only works if Racket service is up
+(when (racket-service-available?)
+  (let-values ([(vg error) (call-racket-vg source)])
+    (if vg
+        (validate-hypothesis h1-value vg 0 0)
+        (printf "Service unavailable\n"))))
 ```
 
 ### Parse Errors

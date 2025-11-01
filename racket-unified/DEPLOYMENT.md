@@ -4,7 +4,7 @@
 
 - **Racket** 7.0 or later
 - **No external dependencies** (pure Racket)
-- **Optional**: Existing Haskell/Racket services for comparison
+- **Optional**: Existing Racket V(G) service for hypothesis validation
 
 ## Installation
 
@@ -28,20 +28,17 @@ raco pkg install --link
 
 ### Service URLs (Optional)
 
-If using service bridges, configure URLs:
+If using the service bridge, configure the URL:
 
 ```racket
-(require "src/bridge/haskell-bridge.rkt")
 (require "src/bridge/racket-bridge.rkt")
 
-(*haskell-service-url* "http://localhost:8080/api/compute-h1")
 (*racket-service-url* "http://localhost:8081/api/compute-vg")
 ```
 
 ### Default Configuration
 
-- Haskell service: `http://localhost:8080/api/compute-h1`
-- Racket service: `http://localhost:8081/api/compute-vg`
+- Racket V(G) service: `http://localhost:8081/api/compute-vg`
 
 ## Running
 
@@ -90,32 +87,27 @@ CMD ["racket", "src/main.rkt"]
 
 ## Service Integration
 
-The system works in three modes:
+The system works in two modes:
 
-1. **Pure Lisp** (default): All computation in Racket
-2. **Hybrid**: Lisp + existing services (for comparison)
-3. **Service-only**: Call external services directly
+1. **Pure Lisp** (default): All computation in Racket (no external dependencies)
+2. **Hybrid**: Lisp + optional Racket V(G) service (for hypothesis validation)
 
-### Enabling Services
+### Enabling Optional Service
 
-1. Start Haskell service:
-```bash
-# Legacy: Previously in haskell-core/ (now removed - see git history)
-stack run
-```
+The Racket V(G) service bridge is optional and used only for validating the hypothesis H¹ = V(G) - k:
 
-2. Start Racket service:
+1. Start Racket V(G) service (if available):
 ```bash
 # In racket-metrics/
 racket main.rkt
 ```
 
-3. Run unified system:
+2. Run unified system:
 ```bash
 racket src/main.rkt
 ```
 
-The system automatically detects and uses available services.
+The system automatically detects if the Racket service is available. If not, it runs in pure Lisp mode.
 
 ## Performance
 
@@ -135,15 +127,18 @@ The system automatically detects and uses available services.
 
 ### Services Not Available
 
-If services are unavailable, the system works in pure Lisp mode:
+If the Racket service is unavailable, the system works in pure Lisp mode:
 
 ```racket
-;; This always works
+;; This always works (pure Lisp computation)
 (compute-h1-from-source-detailed source)
 
-;; This only works if service is up
-(when (haskell-service-available?)
-  (call-haskell-h1 source))
+;; Optional: Only works if Racket service is up
+(when (racket-service-available?)
+  (let-values ([(vg error) (call-racket-vg source)])
+    (if vg
+        (validate-hypothesis (pipeline-result-h1 result) vg 0 0)
+        (printf "Service unavailable\n"))))
 ```
 
 ### Parse Errors

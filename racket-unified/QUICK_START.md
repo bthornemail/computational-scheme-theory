@@ -43,15 +43,14 @@ Tests hypothesis: H¹ = V(G) - k
 - `src/main.rkt` - Complete integrated demo
 - `src/validation-demo.rkt` - Service comparison demo
 - `src/algorithms/unified-pipeline.rkt` - H¹ computation pipeline
-- `src/bridge/*.rkt` - Service bridges (Haskell/Racket)
+- `src/bridge/*.rkt` - Service bridges (Racket V(G) service)
 
 ## Configuration
 
 Services are optional. The system works in pure Lisp mode if services are unavailable.
 
-To use services, ensure:
-- Haskell service running on `localhost:8080`
-- Racket service running on `localhost:8081`
+To use the optional Racket V(G) service for hypothesis validation, ensure:
+- Racket V(G) service running on `localhost:8081`
 
 ## Example Output
 

@@ -24,8 +24,7 @@ Successfully implemented a **complete unified Lisp substrate** in pure Racket th
 - Unified pipeline: Source → H¹
 
 ### ✅ Phase 5: Service Bridges (100%)
-- Haskell bridge: HTTP client for H¹ service
-- Racket bridge: HTTP client for V(G) service
+- Racket bridge: HTTP client for V(G) service (Haskell bridge removed)
 - Result comparison and validation
 
 ### ✅ Phase 6: Integration (100%)
@@ -50,7 +49,7 @@ The unified system can now:
 2. ✅ **Compute H¹** from Scheme source (pure Lisp)
 3. ✅ **Validate** using Prolog-style queries
 4. ✅ **Infer** using Datalog fixpoint computation
-5. ✅ **Compare** with existing Haskell/Racket services
+5. ✅ **Validate** with optional Racket V(G) service (for hypothesis validation)
 6. ✅ **Validate hypothesis** H¹ = V(G) - k
 7. ✅ **Run complete demo** showing all features
 
@@ -74,8 +73,7 @@ racket-unified/
 │   │   ├── algorithm4.rkt              ✅
 │   │   └── unified-pipeline.rkt       ✅
 │   └── bridge/
-│       ├── haskell-bridge.rkt         ✅
-│       └── racket-bridge.rkt          ✅
+│       └── racket-bridge.rkt          ✅ (Haskell removed)
 ├── test/
 │   ├── test-pipeline.rkt              ✅
 │   └── run-tests.rkt                  ✅

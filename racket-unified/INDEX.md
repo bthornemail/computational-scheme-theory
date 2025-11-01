@@ -83,8 +83,7 @@ racket test/corpus-validation.rkt     # Corpus validation
 (require "src/api.rkt")
 
 (compute-h1-from-source-detailed source)  # Main API
-(call-haskell-h1 source)                   # Haskell bridge
-(call-racket-vg source)                   # Racket bridge
+(call-racket-vg source)                   # Racket bridge (optional)
 (validate-hypothesis h1 vg)               # Hypothesis test
 ```
 

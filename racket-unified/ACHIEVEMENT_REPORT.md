@@ -46,9 +46,8 @@
 - ✅ `algorithm4.rkt` - Cohomology computation (H¹)
 - ✅ `unified-pipeline.rkt` - Complete pipeline integration
 
-#### Service Bridges (2 modules)
-- ✅ `haskell-bridge.rkt` - HTTP client for H¹ service
-- ✅ `racket-bridge.rkt` - HTTP client for V(G) service
+#### Service Bridges (1 module)
+- ✅ `racket-bridge.rkt` - HTTP client for V(G) service (Haskell bridge removed)
 
 #### Integration (5 modules)
 - ✅ `main.rkt` - Complete integrated demo
@@ -101,7 +100,7 @@
 
 ### 2. Complete Algorithm Suite ✅
 - Algorithm 1: Binding extraction with alpha conversion
-- Algorithm 2: Enhanced scope visibility (matching Haskell)
+- Algorithm 2: Enhanced scope visibility computation
 - Algorithm 3: Čech complex from topology
 - Algorithm 4: H¹ cohomology via matrix rank
 
@@ -139,7 +138,7 @@ The unified system can:
 2. ✅ **Compute H¹** from Scheme source (pure Lisp)
 3. ✅ **Validate** using Prolog-style queries
 4. ✅ **Infer** using Datalog fixpoint computation
-5. ✅ **Compare** with existing Haskell/Racket services
+5. ✅ **Validate** with optional Racket V(G) service (for hypothesis validation)
 6. ✅ **Validate hypothesis** H¹ = V(G) - k
 7. ✅ **Run complete pipeline** demonstrating all features
 

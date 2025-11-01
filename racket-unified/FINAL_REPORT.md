@@ -24,8 +24,7 @@ Successfully implemented a **complete unified Lisp substrate** in pure Racket th
    - Algorithm 4: Cohomology computation ✅ (Fixed)
 
 3. **Service Integration**
-   - Haskell bridge for H¹ service ✅
-   - Racket bridge for V(G) service ✅
+   - Racket bridge for V(G) service ✅ (Haskell bridge removed - pure Lisp only)
    - Result comparison utilities ✅
 
 4. **Testing & Validation**
@@ -47,7 +46,7 @@ The unified system can:
 - ✅ Compute H¹ from Scheme source (pure Lisp)
 - ✅ Validate using Prolog-style queries
 - ✅ Infer using Datalog fixpoint computation
-- ✅ Compare with existing Haskell/Racket services
+- ✅ Validate with optional Racket V(G) service (for hypothesis validation)
 - ✅ Validate hypothesis H¹ = V(G) - k
 - ✅ Run complete integrated demo
 
@@ -68,7 +67,7 @@ The unified system can:
 
 ### ✅ Enhanced Scope Visibility
 - Now correctly computes descendant scopes (lexical scoping)
-- Matches Haskell implementation behavior
+- Enhanced scope visibility computation
 - Proper scope tree construction with parent-child relationships
 
 ### ✅ Fixed Matrix Rank Computation

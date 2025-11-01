@@ -45,9 +45,8 @@ The **Unified Lisp Substrate** has been successfully implemented in pure Racket.
 - ✅ `algorithm4.rkt` - Cohomology (H¹)
 - ✅ `unified-pipeline.rkt` - Complete pipeline
 
-#### Service Bridges (2 modules)
-- ✅ `haskell-bridge.rkt` - Haskell H¹ service
-- ✅ `racket-bridge.rkt` - Racket V(G) service
+#### Service Bridges (1 module)
+- ✅ `racket-bridge.rkt` - Racket V(G) service (Haskell bridge removed - pure Lisp only)
 
 #### Integration (5 modules)
 - ✅ `main.rkt` - Complete demo
@@ -98,7 +97,7 @@ The unified system can:
 2. ✅ **Compute H¹** from Scheme source (pure Lisp)
 3. ✅ **Validate** using Prolog-style queries
 4. ✅ **Infer** using Datalog fixpoint computation
-5. ✅ **Compare** with existing Haskell/Racket services
+5. ✅ **Compare** with optional Racket V(G) service (for hypothesis validation)
 6. ✅ **Validate hypothesis** H¹ = V(G) - k
 7. ✅ **Run complete pipeline** demonstrating all features
 

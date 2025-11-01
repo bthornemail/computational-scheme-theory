@@ -20,8 +20,7 @@
 - Unified pipeline: Source → H¹
 
 ### Phase 5: Service Bridges (100% ✅)
-- Haskell bridge: HTTP client for H¹ service
-- Racket bridge: HTTP client for V(G) service
+- Racket bridge: HTTP client for V(G) service (Haskell bridge removed)
 - Result comparison utilities
 - Hypothesis validation
 
@@ -46,7 +45,7 @@
 
 The unified Lisp substrate is now fully functional and ready for:
 - H¹ computation from Scheme source
-- Comparison with existing Haskell service
+- Optional validation with Racket V(G) service
 - Validation against V(G) metrics
 - Hybrid operation (pure Lisp + service bridges)
 

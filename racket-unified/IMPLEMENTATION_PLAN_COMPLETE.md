@@ -47,8 +47,7 @@
 
 ### Phase 5: Service Bridges ✅ **COMPLETE**
 
-- ✅ Haskell bridge (`src/bridge/haskell-bridge.rkt`)
-- ✅ Racket bridge (`src/bridge/racket-bridge.rkt`)
+- ✅ Racket bridge (`src/bridge/racket-bridge.rkt`) (Haskell bridge removed)
 - ✅ Main pipeline with hybrid operation (`src/main.rkt`)
 
 **Status**: 100% Complete ✅
@@ -83,7 +82,7 @@ From the original implementation plan:
 - [x] Port Algorithm 2 (scope topology construction) to pure Racket ✅
 - [x] Port Algorithm 3 (Čech complex construction) to pure Racket ✅
 - [x] Port Algorithm 4 (H¹ cohomology computation) to pure Racket ✅
-- [x] Create HTTP bridge to call existing Haskell H¹ service ✅
+- [x] Create HTTP bridge to call existing Racket V(G) service ✅ (Haskell bridge removed)
 - [x] Create interface to existing Racket V(G) metrics service ✅
 - [x] Create main pipeline that tries Lisp first, falls back to services ✅
 - [x] Create comprehensive test suite (unit, integration, comparison) ✅
@@ -113,9 +112,8 @@ From the original implementation plan:
 - `algorithm4.rkt` - Cohomology (H¹)
 - `unified-pipeline.rkt` - Complete pipeline
 
-#### Service Bridges (2 modules) ✅
-- `haskell-bridge.rkt` - Haskell H¹ service
-- `racket-bridge.rkt` - Racket V(G) service
+#### Service Bridges (1 module) ✅
+- `racket-bridge.rkt` - Racket V(G) service (Haskell bridge removed)
 
 #### Integration (5 modules) ✅
 - `main.rkt` - Complete demo
@@ -168,7 +166,7 @@ The unified system successfully:
 2. ✅ **Computes H¹** from Scheme source (pure Lisp)
 3. ✅ **Validates** using Prolog-style queries
 4. ✅ **Infers** using Datalog fixpoint computation
-5. ✅ **Compares** with existing Haskell/Racket services
+5. ✅ **Validates** with optional Racket V(G) service (for hypothesis validation)
 6. ✅ **Validates hypothesis** H¹ = V(G) - k
 7. ✅ **Runs complete pipeline** demonstrating all features
 8. ✅ **Validates corpus** of programs in batch

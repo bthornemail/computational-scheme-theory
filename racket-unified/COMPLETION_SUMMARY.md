@@ -27,8 +27,7 @@ Successfully created a **complete unified Lisp substrate** in pure Racket that:
 - ✅ **Unified Pipeline**: Source → H¹ working
 
 ### Service Bridges (100%)
-- ✅ **Haskell Bridge**: HTTP client for H¹ service
-- ✅ **Racket Bridge**: HTTP client for V(G) service
+- ✅ **Racket Bridge**: HTTP client for V(G) service (Haskell bridge removed)
 - ✅ Result comparison utilities
 - ✅ Hypothesis validation (H¹ = V(G) - k)
 
@@ -54,8 +53,11 @@ Successfully created a **complete unified Lisp substrate** in pure Racket that:
 
 ### 2. Service Integration
 ```racket
-(when (haskell-service-available?)
-  (call-haskell-h1 source))
+(when (racket-service-available?)
+  (let-values ([(vg error) (call-racket-vg source)])
+    (if vg
+        (validate-hypothesis h1-value vg 0 0)
+        (printf "Service unavailable\n"))))
 ```
 
 ### 3. Full Pipeline Demo

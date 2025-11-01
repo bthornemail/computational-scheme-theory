@@ -19,7 +19,7 @@ The Unified Lisp Substrate implementation is **100% complete** and fully operati
 | 1-2: Foundation | M/S-expressions, Combinators | ✅ 100% | Complete |
 | 3: Logic Engines | Prolog, Datalog | ✅ 100% | Custom implementations working |
 | 4: Algorithms | All 4 algorithms | ✅ 100% | All operational |
-| 5: Service Bridges | Haskell, Racket | ✅ 100% | Ready for hybrid operation |
+| 5: Service Bridges | Racket (Haskell removed) | ✅ 100% | Optional Racket V(G) service for validation |
 | 6: Integration | Tests, Docs | ✅ 100% | Comprehensive |
 
 ---

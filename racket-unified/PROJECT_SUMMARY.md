@@ -61,7 +61,7 @@ H¹ Computation
 ## Impact
 
 ### Before
-- Multiple languages (Haskell, Prolog, Datalog, Python)
+- Multiple languages (Python for coordination, pure Racket for computation)
 - FFI complexity
 - Deployment complexity
 - Multiple runtimes

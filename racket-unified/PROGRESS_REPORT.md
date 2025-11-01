@@ -12,12 +12,12 @@
 **Solution**: 
 - Added `compute-descendant-scopes` function to recursively collect all descendant scopes
 - Updated `analyze-scopes-enhanced` to expand visibility regions after initial analysis
-- Now matches Haskell implementation's `computeFinalVisibility` behavior
+- Correctly computes descendant scopes for lexical scoping
 
 **Impact**: 
 - Correct H¹ computation for nested scopes
 - Accurate visibility regions matching lexical scoping rules
-- Alignment with existing Haskell implementation
+- Accurate scope visibility computation
 
 ### ✅ Improved Matrix Rank Computation
 
@@ -74,7 +74,7 @@ All test cases passing:
 ## Next Steps
 
 1. **Validation**: Run validation suite against full corpus
-2. **Comparison**: Compare with Haskell/Racket implementations
+2. **Validation**: Validate with optional Racket V(G) service
 3. **Performance**: Optimize matrix operations if needed
 4. **miniKanren**: Upgrade Prolog engine when ready
 
