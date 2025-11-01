@@ -61,3 +61,62 @@ data ScopeRegion = ScopeRegion
 newtype VisibilityRegion = VisibilityRegion
   { regions :: Set.Set ScopeRegion }
   deriving stock (Eq, Ord, Show)
+
+-- | Scope identifier for tree structure
+newtype ScopeId = ScopeId Int
+  deriving newtype (Eq, Ord, Show)
+
+-- | Control flow context where a binding is used
+data ControlContext
+  = IfTrueBranch       -- ^ Inside if true branch
+  | IfFalseBranch      -- ^ Inside if false branch
+  | LoopBody           -- ^ Inside loop body
+  | RecursiveCall      -- ^ At recursive call site
+  | NormalContext      -- ^ Normal evaluation context
+  | ContinuationContext -- ^ Inside call/cc continuation
+  deriving (Eq, Ord, Show)
+
+-- | Usage pattern for a binding - tracks where and how it's used
+data UsagePattern = UsagePattern
+  { bindingId :: BindingId
+  , usageLocations :: [Int]           -- ^ Source positions where binding is referenced
+  , usageContexts :: [ControlContext] -- ^ Control flow contexts where used
+  }
+  deriving (Eq, Show)
+
+-- | Scope tree node - represents a lexical scope in the program
+data ScopeTreeNode = ScopeTreeNode
+  { nodeId :: ScopeId
+  , parent :: Maybe ScopeId           -- ^ Parent scope (Nothing for root)
+  , children :: [ScopeId]              -- ^ Child scopes
+  , scopeBindings :: Set.Set BindingId -- ^ Bindings declared in this scope
+  , scopeType :: ScopeType             -- ^ Type of scope (lambda, let, etc.)
+  , scopeDepth :: Int                  -- ^ Depth in tree (0 for root)
+  }
+  deriving (Eq, Show)
+
+-- | Type of scope
+data ScopeType
+  = TopLevelScope
+  | LambdaScope
+  | LetScope
+  | LetRecScope
+  | IfScope
+  | LoopScope
+  deriving (Eq, Ord, Show)
+
+-- | Scope tree - hierarchical representation of lexical scopes
+data ScopeTree = ScopeTree
+  { nodes :: Map.Map ScopeId ScopeTreeNode
+  , root :: ScopeId
+  , nextId :: Int                      -- ^ Next available scope ID
+  }
+  deriving (Eq, Show)
+
+-- | Enhanced visibility region with scope tree information
+data EnhancedVisibilityRegion = EnhancedVisibilityRegion
+  { baseRegion :: VisibilityRegion    -- ^ Original position-based region
+  , scopeIds :: Set.Set ScopeId       -- ^ Scope tree nodes where binding is visible
+  , usagePattern :: UsagePattern      -- ^ Usage pattern information
+  }
+  deriving (Eq, Show)

@@ -26,8 +26,15 @@ import qualified Data.Set as Set
 --   3. Return simplicial complex
 buildCechComplex :: Topology -> SimplicialComplex
 buildCechComplex topo = 
-  let cover = buildOpenCover topo
-  in computeNerve cover
+  case scopeTree topo of
+    Just _ -> 
+      -- Use enhanced open cover with tree-based overlap
+      let enhancedCover = buildEnhancedOpenCover topo
+      in computeNerveEnhanced enhancedCover
+    Nothing ->
+      -- Use regular open cover with position-based overlap
+      let cover = buildOpenCover topo
+      in computeNerve cover
 
 -- | Build Čech complex directly from open cover
 -- Alternative entry point that takes the open cover directly

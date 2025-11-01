@@ -26,6 +26,8 @@ library
     ComputationalScheme.Algorithm1.BindingExtractor
     ComputationalScheme.Algorithm2.Topology
     ComputationalScheme.Algorithm2.Scope
+    ComputationalScheme.Algorithm2.ScopeTree
+    ComputationalScheme.Algorithm2.ScopeAnalysis
     ComputationalScheme.Algorithm2.OpenCover
     ComputationalScheme.Algorithm3.Nerve
     ComputationalScheme.Algorithm3.SimplicialComplex

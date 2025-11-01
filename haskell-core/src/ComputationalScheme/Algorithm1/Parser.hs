@@ -11,7 +11,7 @@ module ComputationalScheme.Algorithm1.Parser where
 import ComputationalScheme.Algorithm1.AST
 import Data.Text (Text)
 import qualified Data.Text as T
-import Text.Megaparsec (try, anySingle, eof, choice, Parsec, ParseErrorBundle, getSourcePos, many, manyTill, unPos, sourceLine, sourceColumn, between, lookAhead)
+import Text.Megaparsec (try, anySingle, eof, choice, Parsec, ParseErrorBundle, getSourcePos, many, manyTill, unPos, sourceLine, sourceColumn, between, lookAhead, getOffset)
 import qualified Text.Megaparsec as MP
 import Text.Megaparsec.Char (char, space, alphaNumChar, space1, string)
 import qualified Text.Megaparsec.Char.Lexer as L
@@ -43,7 +43,8 @@ exprParser = lexeme $ choice
 constantParser :: Parser Expr
 constantParser = lexeme $ do
   loc <- getSourcePos
-  let srcLoc = SourceLoc (unPos (sourceLine loc)) (unPos (sourceColumn loc)) 0
+  offset <- getOffset
+  let srcLoc = SourceLoc (unPos (sourceLine loc)) (unPos (sourceColumn loc)) (fromIntegral offset)
   choice
     [ Const <$> numberConstant <*> pure srcLoc
     , Const <$> stringConstant <*> pure srcLoc
@@ -74,7 +75,8 @@ quoteConstant = char '\'' *> (Quote <$> exprParser)
 variableParser :: Parser Expr
 variableParser = lexeme $ do
   loc <- getSourcePos
-  let srcLoc = SourceLoc (unPos (sourceLine loc)) (unPos (sourceColumn loc)) 0
+  offset <- getOffset
+  let srcLoc = SourceLoc (unPos (sourceLine loc)) (unPos (sourceColumn loc)) (fromIntegral offset)
   name <- identifier
   return $ Var name srcLoc
 
@@ -86,7 +88,8 @@ identifier = T.pack <$> some (alphaNumChar <|> choice (map char ['-', '!', '$', 
 listParser :: Parser Expr
 listParser = lexeme $ between (char '(') (char ')') $ do
   loc <- getSourcePos
-  let srcLoc = SourceLoc (unPos (sourceLine loc)) (unPos (sourceColumn loc)) 0
+  offset <- getOffset
+  let srcLoc = SourceLoc (unPos (sourceLine loc)) (unPos (sourceColumn loc)) (fromIntegral offset)
   
   -- Peek at first symbol to determine form type
   first <- lookAhead (identifier <* space)

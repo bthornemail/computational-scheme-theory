@@ -12,6 +12,7 @@ import ComputationalScheme.Algorithm1.BindingExtractor
 import ComputationalScheme.Algorithm1.Parser
 import ComputationalScheme.Algorithm1.AlphaConversion
 import ComputationalScheme.Algorithm2.Scope
+import ComputationalScheme.Algorithm2.ScopeAnalysis
 import ComputationalScheme.Algorithm2.Topology
 import ComputationalScheme.Algorithm2.OpenCover
 import ComputationalScheme.Algorithm3.CechComplex
@@ -55,12 +56,12 @@ computeH1FromSource source = do
     Left err -> Left err
     Right r -> Right r
   
-  -- Step 3: Analyze scopes (simplified - would need full AST)
+  -- Step 3: Analyze scopes with enhanced tree-based analysis
   let convertedExpr = alphaConvert (head exprs)
-  let scopeMap = analyzeScopes convertedExpr
+  let (enhancedScopeMap, scopeTree) = analyzeScopesEnhanced convertedExpr
   
-  -- Step 4: Build topology
-  let topo = buildTopology rig scopeMap
+  -- Step 4: Build topology (using enhanced scope analysis)
+  let topo = buildTopologyEnhanced rig enhancedScopeMap scopeTree
   
   -- Step 5: Build Čech complex
   let complex = buildCechComplex topo
@@ -105,8 +106,8 @@ computeH1FromSourceDetailed source =
                 Left _ -> []
                 Right es -> es
               convertedExpr = if null exprs then undefined else alphaConvert (head exprs)
-              scopeMap = analyzeScopes convertedExpr
-              topo = buildTopology rig scopeMap
+              (enhancedScopeMap, scopeTree) = analyzeScopesEnhanced convertedExpr
+              topo = buildTopologyEnhanced rig enhancedScopeMap scopeTree
               complex = buildCechComplex topo
           in PipelineResult
             { h1Value = h1  -- PipelineResult.h1Value

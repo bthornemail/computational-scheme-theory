@@ -8,6 +8,7 @@ module ComputationalScheme.Algorithm2.OpenCover where
 
 import ComputationalScheme.Types
 import ComputationalScheme.Algorithm2.Topology (Topology(..), getVisibilityRegion)
+import ComputationalScheme.Algorithm2.ScopeTree
 import qualified Data.Set as Set
 import qualified Data.Map.Strict as Map
 import qualified Data.List as List
@@ -16,10 +17,36 @@ import qualified Data.List as List
 -- {D(f_i)} for all bindings f_i
 type OpenCover = [VisibilityRegion]
 
+-- | Enhanced open cover with scope tree information
+data EnhancedOpenCover = EnhancedOpenCover
+  { baseRegions :: [VisibilityRegion]              -- ^ Base regions for compatibility
+  , enhancedRegionsList :: [EnhancedVisibilityRegion]  -- ^ Enhanced regions with tree info (renamed to avoid conflict)
+  , coverScopeTree :: Maybe ScopeTree             -- ^ Scope tree for overlap detection
+  }
+  
+-- | Helper accessor to avoid ambiguity
+getEnhancedRegions :: EnhancedOpenCover -> [EnhancedVisibilityRegion]
+getEnhancedRegions (EnhancedOpenCover { enhancedRegionsList = rs }) = rs
+
+-- | Helper accessor to avoid ambiguity
+getCoverScopeTree :: EnhancedOpenCover -> Maybe ScopeTree
+getCoverScopeTree (EnhancedOpenCover { coverScopeTree = t }) = t
+
 -- | Build open cover from topology
 -- Extracts all visibility regions D(f) from the topology
 buildOpenCover :: Topology -> OpenCover
-buildOpenCover (Topology openSets _) = Map.elems openSets
+buildOpenCover (Topology openSets _ _ _) = Map.elems openSets
+
+-- | Build enhanced open cover from topology (with scope tree)
+buildEnhancedOpenCover :: Topology -> EnhancedOpenCover
+buildEnhancedOpenCover topo@(Topology openSets _ tree topoEnhancedMap) = 
+  let coverEnhanced = Map.elems topoEnhancedMap
+      baseRegs = Map.elems openSets
+  in EnhancedOpenCover
+      { baseRegions = baseRegs
+      , enhancedRegionsList = coverEnhanced  
+      , coverScopeTree = tree
+      }
 
 -- | Get pairs of open sets that have non-empty intersection
 -- Used for constructing 1-simplices in Algorithm 3
@@ -31,16 +58,37 @@ intersectingPairs cover =
             , hasNonEmptyIntersection r1 r2]
 
 -- | Check if two visibility regions have non-empty intersection
--- Two regions overlap if any of their scope regions have overlapping position ranges
+-- Uses tree-based overlap if available, otherwise falls back to position-based
 hasNonEmptyIntersection :: VisibilityRegion -> VisibilityRegion -> Bool
-hasNonEmptyIntersection (VisibilityRegion r1) (VisibilityRegion r2) =
-  -- Check if any region from r1 overlaps with any region from r2
+hasNonEmptyIntersection = hasNonEmptyIntersectionWithTree Nothing
+
+-- | Check intersection with optional scope tree
+hasNonEmptyIntersectionWithTree :: Maybe ScopeTree -> VisibilityRegion -> VisibilityRegion -> Bool
+hasNonEmptyIntersectionWithTree _ (VisibilityRegion r1) (VisibilityRegion r2) =
+  -- Fallback: position-based overlap
   any (\reg1 -> any (regionsOverlap reg1) (Set.toList r2)) (Set.toList r1)
   where
     -- Two ScopeRegions overlap if their position ranges intersect
     regionsOverlap :: ScopeRegion -> ScopeRegion -> Bool
     regionsOverlap reg1 reg2 =
       max (scopeStart reg1) (scopeStart reg2) <= min (scopeEnd reg1) (scopeEnd reg2)
+
+-- | Check intersection of enhanced regions (uses tree-based if available)
+hasNonEmptyIntersectionEnhanced :: EnhancedOpenCover -> Int -> Int -> Bool
+hasNonEmptyIntersectionEnhanced cover i j =
+  let coverEnhancedRegions = getEnhancedRegions cover
+      coverTree = getCoverScopeTree cover
+  in case (coverTree, 
+        if i < length coverEnhancedRegions then Just (coverEnhancedRegions !! i) else Nothing,
+        if j < length coverEnhancedRegions then Just (coverEnhancedRegions !! j) else Nothing) of
+    (Just tree, Just r1, Just r2) ->
+      -- Use tree-based overlap
+      treeBasedOverlap tree r1 r2
+    _ ->
+      -- Fall back to position-based
+      if i < length (baseRegions cover) && j < length (baseRegions cover)
+        then hasNonEmptyIntersection ((baseRegions cover) !! i) ((baseRegions cover) !! j)
+        else False
 
 -- | Get triples of open sets that have non-empty intersection
 -- Used for constructing 2-simplices in Algorithm 3

@@ -14,6 +14,7 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import Control.Monad.State
 import Control.Monad (forM_)
+import Debug.Trace (trace, traceShowId, traceShow)
 
 -- | Binding with its scope information
 data BindingScope = BindingScope
@@ -39,7 +40,11 @@ type BindingScopeMap = Map.Map BindingId VisibilityRegion
 -- | Analyze expression to extract scope regions for all bindings
 -- Returns a map from BindingId to VisibilityRegion (D(f) for each binding)
 analyzeScopes :: Expr -> BindingScopeMap
-analyzeScopes expr = evalState (analyzeScopesExpr expr) (Map.empty, 0, [])
+analyzeScopes expr = 
+  let result = evalState (analyzeScopesExpr expr) (Map.empty, 0, [])
+  in trace ("[Scope] Scope analysis complete: " ++ show (Map.size result) ++ " bindings found") $
+     trace ("[Scope] Bindings: " ++ show (map (T.unpack . unBindingId) (Map.keys result))) $
+     result
 
 -- | Analyze scopes in state monad (tracking current scope and active regions)
 -- State: (binding map, depth, active scope regions for nesting)
@@ -59,18 +64,25 @@ analyzeScopesExpr expr = do
       -- Create scope region for lambda body
       let region = ScopeRegion scopeStart scopeEnd "lambda"
       
+      trace ("[Scope] Lambda at depth " ++ show depth ++ ": start=" ++ show scopeStart ++ ", end=" ++ show scopeEnd ++ 
+             ", activeRegions=" ++ show (length activeRegions)) $ return ()
+      
       -- Mark parameters as visible in this region AND all outer regions (for nesting)
       let allRegions = region : activeRegions
+      let params = lambdaParams form
+      trace ("[Scope] Lambda params: " ++ show (map T.unpack params) ++ ", assigning " ++ show (length allRegions) ++ " regions") $ return ()
       modify (\(m, d, rs) -> (foldr (\param -> Map.insertWith 
         (\_ old -> VisibilityRegion $ Set.union (regions old) (Set.fromList allRegions))
         (BindingId param) 
         (VisibilityRegion $ Set.fromList allRegions)) 
-        m (lambdaParams form), d + 1, region:rs))
+        m params, d + 1, region:rs))
       
       -- Analyze body (with this region as active)
       forM_ (lambdaBody form) analyzeScopesExpr
+      (finalMap, _, _) <- get
       modify (\(m, d, rs) -> (m, d - 1, tail rs))
-      gets (\(m, _, _) -> m)
+      trace ("[Scope] Lambda complete: " ++ show (Map.size finalMap) ++ " bindings total") $
+        gets (\(m, _, _) -> m)
       
     Let form loc' -> do
       let scopeStart = locPos loc'
@@ -78,9 +90,14 @@ analyzeScopesExpr expr = do
       let scopeEnd = scopeStart + 1000 + depth * 100
       let region = ScopeRegion scopeStart scopeEnd "let"
       
+      trace ("[Scope] Let at depth " ++ show depth ++ ": start=" ++ show scopeStart ++ ", end=" ++ show scopeEnd ++
+             ", activeRegions=" ++ show (length activeRegions)) $ return ()
+      
       -- Mark bindings as visible in THIS region AND all outer regions (for nesting)
       -- This ensures nested lets create overlapping visibility regions
       let allRegions = region : activeRegions
+      let bindings = map fst (letBindings form)
+      trace ("[Scope] Let bindings: " ++ show (map T.unpack bindings) ++ ", assigning " ++ show (length allRegions) ++ " regions") $ return ()
       modify (\(m, d, rs) -> (foldr (\(name, _) -> Map.insertWith
         (\_ old -> VisibilityRegion $ Set.union (regions old) (Set.fromList allRegions))
         (BindingId name)
@@ -90,8 +107,10 @@ analyzeScopesExpr expr = do
       -- Analyze bindings and body (with this region as active)
       forM_ (map snd (letBindings form)) analyzeScopesExpr
       forM_ (letBody form) analyzeScopesExpr
+      (finalMap, _, _) <- get
       modify (\(m, d, rs) -> (m, d - 1, tail rs))
-      gets (\(m, _, _) -> m)
+      trace ("[Scope] Let complete: " ++ show (Map.size finalMap) ++ " bindings total") $ 
+        gets (\(m, _, _) -> m)
       
     LetRec form loc' -> do
       let scopeStart = locPos loc'
