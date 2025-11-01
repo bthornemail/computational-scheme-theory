@@ -31,9 +31,16 @@ intersectingPairs cover =
             , hasNonEmptyIntersection r1 r2]
 
 -- | Check if two visibility regions have non-empty intersection
+-- Two regions overlap if any of their scope regions have overlapping position ranges
 hasNonEmptyIntersection :: VisibilityRegion -> VisibilityRegion -> Bool
 hasNonEmptyIntersection (VisibilityRegion r1) (VisibilityRegion r2) =
-  not $ Set.null $ Set.intersection r1 r2
+  -- Check if any region from r1 overlaps with any region from r2
+  any (\reg1 -> any (regionsOverlap reg1) (Set.toList r2)) (Set.toList r1)
+  where
+    -- Two ScopeRegions overlap if their position ranges intersect
+    regionsOverlap :: ScopeRegion -> ScopeRegion -> Bool
+    regionsOverlap reg1 reg2 =
+      max (scopeStart reg1) (scopeStart reg2) <= min (scopeEnd reg1) (scopeEnd reg2)
 
 -- | Get triples of open sets that have non-empty intersection
 -- Used for constructing 2-simplices in Algorithm 3

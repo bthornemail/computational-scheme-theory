@@ -1,0 +1,5 @@
+(define (test x)
+  (let ((a x))
+    (let ((b (+ a 1)))
+      (let ((c (+ b 1)))
+        (+ a b c)))))

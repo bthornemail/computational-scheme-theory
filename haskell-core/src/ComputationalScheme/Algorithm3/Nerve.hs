@@ -44,14 +44,31 @@ computeNerve cover =
   in SimplicialComplex vertices edges triangles higher
 
 -- | Check if two visibility regions have non-empty intersection
+-- Two regions overlap if any of their scope regions have overlapping position ranges
 hasIntersection :: VisibilityRegion -> VisibilityRegion -> Bool
 hasIntersection (VisibilityRegion r1) (VisibilityRegion r2) =
-  not $ Set.null $ Set.intersection r1 r2
+  -- Check if any region from r1 overlaps with any region from r2
+  any (\reg1 -> any (regionsOverlap reg1) (Set.toList r2)) (Set.toList r1)
+  where
+    -- Two ScopeRegions overlap if their position ranges intersect
+    regionsOverlap :: ScopeRegion -> ScopeRegion -> Bool
+    regionsOverlap reg1 reg2 =
+      max (scopeStart reg1) (scopeStart reg2) <= min (scopeEnd reg1) (scopeEnd reg2)
 
 -- | Check if three visibility regions have non-empty triple intersection
+-- All three regions must have at least one overlapping position range
 hasTripleIntersection :: VisibilityRegion -> VisibilityRegion -> VisibilityRegion -> Bool
 hasTripleIntersection (VisibilityRegion r1) (VisibilityRegion r2) (VisibilityRegion r3) =
-  not $ Set.null $ Set.intersection (Set.intersection r1 r2) r3
+  -- Check if there exists a triple of regions (one from each) that all overlap
+  any (\reg1 -> any (\reg2 -> any (regionsAllOverlap reg1 reg2) (Set.toList r3)) (Set.toList r2)) (Set.toList r1)
+  where
+    -- Check if three regions all overlap pairwise
+    regionsAllOverlap :: ScopeRegion -> ScopeRegion -> ScopeRegion -> Bool
+    regionsAllOverlap reg1 reg2 reg3 =
+      let overlap12 = max (scopeStart reg1) (scopeStart reg2) <= min (scopeEnd reg1) (scopeEnd reg2)
+          overlap13 = max (scopeStart reg1) (scopeStart reg3) <= min (scopeEnd reg1) (scopeEnd reg3)
+          overlap23 = max (scopeStart reg2) (scopeStart reg3) <= min (scopeEnd reg2) (scopeEnd reg3)
+      in overlap12 && overlap13 && overlap23
 
 -- | Generate all pairs from a list
 allPairs :: [a] -> [(a, a)]
