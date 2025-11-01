@@ -93,14 +93,20 @@
 ;; Enhanced topology computation
 (define (compute-topology-enhanced rig enhanced-scope-map scope-tree)
   "Build topology from R_Scheme and enhanced scope map"
-  (hash 'open-sets (hash-map enhanced-scope-map
-                              (lambda (k v)
-                                (if (enhanced-visibility-region? v)
-                                    (cons k (enhanced-visibility-region-base-region v))
-                                    (cons k v))))
+  ;; Convert list to hash if needed
+  (define scope-map-hash
+    (if (hash? enhanced-scope-map)
+        enhanced-scope-map
+        (make-hash enhanced-scope-map)))
+  
+  (hash 'open-sets (make-hash
+                     (for/list ([(k v) (in-hash scope-map-hash)])
+                       (if (enhanced-visibility-region? v)
+                           (cons k (enhanced-visibility-region-base-region v))
+                           (cons k v))))
         'binding-count (set-count (r-scheme-bindings rig))
         'scope-tree scope-tree
-        'enhanced-regions enhanced-scope-map))
+        'enhanced-regions scope-map-hash))
 
 ;; Build Čech complex from topology
 (define (build-cech-complex topology)
