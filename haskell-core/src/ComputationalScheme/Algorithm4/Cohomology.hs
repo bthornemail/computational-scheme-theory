@@ -15,7 +15,7 @@ module ComputationalScheme.Algorithm4.Cohomology where
 import ComputationalScheme.Algorithm3.SimplicialComplex
 import ComputationalScheme.Algorithm4.IncidenceMatrix
 import ComputationalScheme.Algorithm4.ChainComplex
-import ComputationalScheme.Algorithm4.BettiNumbers
+-- import ComputationalScheme.Algorithm4.BettiNumbers  -- Removed to break circular dependency
 import Numeric.LinearAlgebra
 import qualified Data.Set as Set
 

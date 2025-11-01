@@ -9,6 +9,7 @@ module ComputationalScheme.Algorithm2.OpenCover where
 import ComputationalScheme.Types
 import ComputationalScheme.Algorithm2.Topology (Topology(..), getVisibilityRegion)
 import qualified Data.Set as Set
+import qualified Data.Map.Strict as Map
 import qualified Data.List as List
 
 -- | An open cover is just the collection of visibility regions

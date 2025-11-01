@@ -18,19 +18,20 @@ import Data.List (sort)
 -- Entry (i,j) = +1 if edge i connects to vertex j, -1 for orientation, 0 otherwise
 buildIncidenceMatrix0 :: SimplicialComplex -> Matrix Double
 buildIncidenceMatrix0 complex =
-  let vertices = sort $ Set.toList (simplices0 complex)
-      edges = sort $ Set.toList (simplices1 complex)
-      vertexIndex = Map.fromList $ zip vertices [0..]
-      edgeIndex = Map.fromList $ zip edges [0..]
-      numRows = length edges
-      numCols = length vertices
+  let verticesList = sort $ Set.toList (simplices0 complex)
+      edgesList = sort $ Set.toList (simplices1 complex)
+      vertexIndex = Map.fromList $ zip verticesList [0..]
+      edgeIndex = Map.fromList $ zip edgesList [0..]
+      numRows = length edgesList
+      numCols = length verticesList
   in buildMatrix numRows numCols $ \row col ->
-      case (edgeIndex Map.!? (edges !! row), vertexIndex Map.!? (vertices !! col)) of
-        (Just edgeIdx, Just vertIdx) ->
-          if Set.member (vertices !! col) (vertices (edges !! row))
-          then 1.0  -- Simplified: always +1 (orientation handled separately if needed)
-          else 0.0
-        _ -> 0.0
+      let edge = edgesList !! row
+          vertex = verticesList !! col
+          edgeVertices = vertices edge  -- vertices is a field accessor, returns Set.Set Int
+          vertexValue = head $ Set.toList (vertices vertex)  -- Extract the Int from the vertex simplex
+      in if Set.member vertexValue edgeVertices
+         then 1.0  -- Simplified: always +1 (orientation handled separately if needed)
+         else 0.0
 
 -- | Build incidence matrix M₁: rows = 2-simplices (triangles), cols = 1-simplices (edges)
 -- Entry (i,j) = +1 if triangle i contains edge j, 0 otherwise

@@ -34,16 +34,16 @@ library
     ComputationalScheme.Algorithm4.IncidenceMatrix
     ComputationalScheme.Algorithm4.Cohomology
     ComputationalScheme.Algorithm4.BettiNumbers
-    ComputationalScheme.Distributed.TropicalRig
-    ComputationalScheme.Distributed.VectorClock
-    ComputationalScheme.Distributed.Hypergraph
-    ComputationalScheme.Service.GRPC
     ComputationalScheme.Service.API
-    ComputationalScheme.Utils.Pretty
-    ComputationalScheme.Utils.Debug
+    -- ComputationalScheme.Distributed.TropicalRig      -- Phase 3: Distributed coordination
+    -- ComputationalScheme.Distributed.VectorClock      -- Phase 3: Distributed coordination
+    -- ComputationalScheme.Distributed.Hypergraph      -- Phase 3: Distributed coordination
+    -- ComputationalScheme.Service.GRPC                 -- Phase 1 Week 13: gRPC service
+    -- ComputationalScheme.Utils.Pretty                 -- Future: Pretty printing utilities
+    -- ComputationalScheme.Utils.Debug                 -- Future: Debug utilities
 
-  other-modules:
-    ComputationalScheme
+  -- other-modules:
+  --   ComputationalScheme  -- Not yet implemented
 
   hs-source-dirs: src
   build-depends:
@@ -57,9 +57,9 @@ library
     vector >=0.13,
     mtl >=2.3,
     QuickCheck >=2.14,
-    HUnit >=1.6,
-    grpc-haskell >=0.5,
-    grpc-haskell-core >=0.5
+    HUnit >=1.6
+    -- grpc-haskell >=0.5,          -- Optional: for service integration (Phase 1 Week 13)
+    -- grpc-haskell-core >=0.5      -- Optional: for service integration (Phase 1 Week 13)
 
   default-language: Haskell2010
   default-extensions:

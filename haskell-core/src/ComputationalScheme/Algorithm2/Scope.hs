@@ -55,7 +55,7 @@ analyzeScopesExpr expr = do
       let scopeEnd = locPos loc'  -- Simplified - would compute actual end
       
       -- Create scope region for lambda body
-      let region = ScopeRegion scopeStart scopeEnd (T.pack "lambda")
+      let region = ScopeRegion scopeStart scopeEnd "lambda"
       
       -- Mark parameters as visible in this region
       modify (\(m, d) -> (foldr (\param -> Map.insertWith 
@@ -70,7 +70,7 @@ analyzeScopesExpr expr = do
       gets fst
       
     Let form loc' -> do
-      let region = ScopeRegion (locPos loc') (locPos loc' + 100) (T.pack "let")
+      let region = ScopeRegion (locPos loc') (locPos loc' + 100) "let"
       
       -- Mark bindings as visible
       modify (\(m, d) -> (foldr (\(name, _) -> Map.insertWith
@@ -85,7 +85,7 @@ analyzeScopesExpr expr = do
       gets fst
       
     LetRec form loc' -> do
-      let region = ScopeRegion (locPos loc') (locPos loc' + 100) (T.pack "letrec")
+      let region = ScopeRegion (locPos loc') (locPos loc' + 100) "letrec"
       
       modify (\(m, d) -> (foldr (\(name, _) -> Map.insertWith
         (\_ old -> VisibilityRegion $ Set.insert region (regions old))
@@ -99,12 +99,12 @@ analyzeScopesExpr expr = do
       gets fst
       
     Define (DefineVar name _) loc' -> do
-      let region = ScopeRegion (locPos loc') (locPos loc' + 1000) (T.pack "define")
+      let region = ScopeRegion (locPos loc') (locPos loc' + 1000) "define"
       modify (\(m, d) -> (Map.insert (BindingId name) (VisibilityRegion $ Set.singleton region) m, d))
       gets fst
       
     Define (DefineFun name params body) loc' -> do
-      let region = ScopeRegion (locPos loc') (locPos loc' + 1000) (T.pack "define-fun")
+      let region = ScopeRegion (locPos loc') (locPos loc' + 1000) "define-fun"
       modify (\(m, d) -> (Map.insert (BindingId name) (VisibilityRegion $ Set.singleton region) $
         foldr (\param -> Map.insertWith
           (\_ old -> VisibilityRegion $ Set.insert region (regions old))

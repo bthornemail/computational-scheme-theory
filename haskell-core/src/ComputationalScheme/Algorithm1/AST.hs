@@ -107,16 +107,27 @@ isBindingForm expr = case expr of
 extractVariables :: Expr -> [Text]
 extractVariables = go []
   where
+    go :: [Text] -> Expr -> [Text]
     go acc (Var name _)                    = name : acc
-    go acc (Lambda form _)                 = foldr go acc (lambdaBody form)
-    go acc (Let form _)                     = foldr (go . snd) (foldr go acc (letBody form)) (letBindings form)
-    go acc (LetRec form _)                  = foldr (go . snd) (foldr go acc (letBody form)) (letBindings form)
+    go acc (Lambda form _)                 = foldr (\e acc' -> go acc' e) acc (lambdaBody form)
+    go acc (Let form _)                     = 
+      let bodyAcc = foldr (\e acc' -> go acc' e) acc (letBody form)
+          bindingsAcc = foldr (\(_, e) acc' -> go acc' e) bodyAcc (letBindings form)
+      in bindingsAcc
+    go acc (LetRec form _)                  = 
+      let bodyAcc = foldr (\e acc' -> go acc' e) acc (letBody form)
+          bindingsAcc = foldr (\(_, e) acc' -> go acc' e) bodyAcc (letBindings form)
+      in bindingsAcc
     go acc (Define (DefineVar _ e) _)       = go acc e
-    go acc (Define (DefineFun _ _ body) _) = foldr go acc body
+    go acc (Define (DefineFun _ _ body) _) = foldr (\e acc' -> go acc' e) acc body
     go acc (If form _)                     = go (go (go acc (ifTest form)) (ifThen form)) (ifElse form)
-    go acc (Cond clauses _)                = foldr (\clause -> foldr go (maybe id go (condTest clause) $ foldr go acc (condBody clause))) acc clauses
-    go acc (Application fn args _)         = foldr go (go acc fn) args
-    go acc (Begin exprs _)                  = foldr go acc exprs
+    go acc (Cond clauses _)                = 
+      foldr (\clause acc' -> 
+        let testAcc = maybe acc' (\test -> go acc' test) (condTest clause)
+            bodyAcc = foldr (\e acc'' -> go acc'' e) testAcc (condBody clause)
+        in bodyAcc) acc clauses
+    go acc (Application fn args _)         = foldr (\e acc' -> go acc' e) (go acc fn) args
+    go acc (Begin exprs _)                  = foldr (\e acc' -> go acc' e) acc exprs
     go acc (CallCC e _)                     = go acc e
     go acc _                                = acc
 

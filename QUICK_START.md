@@ -1,105 +1,116 @@
 # Quick Start Guide
 
-Get started with the Computational Scheme Theory validation system in 5 minutes.
+## Prerequisites
 
-## Prerequisites Check
+You need:
+- **GHC** (Glasgow Haskell Compiler) 9.0+
+- **Cabal** (Haskell package manager) 3.8+
+- **Racket** 8.0+
+- **Python** 3.10+
+- **System libraries**: BLAS and LAPACK (for hmatrix)
+
+## Step 1: Install System Dependencies
+
+Run the setup script (requires sudo):
 
 ```bash
-./scripts/verify-env.sh
+bash scripts/setup-system-deps.sh
 ```
 
-## Installation
+Or manually:
+```bash
+sudo apt update
+sudo apt install -y libblas-dev liblapack-dev python3-venv
+```
 
-### 1. Python Dependencies (Optional but Recommended)
+## Step 2: Set Up Python Virtual Environment
 
 ```bash
-cd python-coordinator
+cd /home/main/computational-scheme-theory
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install --upgrade pip setuptools wheel
+pip install -r python-coordinator/requirements.txt
 ```
 
-**Note**: The system works without installing dependencies (runs in placeholder mode).
-
-### 2. Generate Test Corpus
-
+**Note**: Always activate the virtual environment before running Python scripts:
 ```bash
-python3 test-corpus/scripts/generate_corpus.py
+source venv/bin/activate
 ```
 
-This creates 15 test programs in `test-corpus/`.
-
-## Quick Demo
-
-### Run Pipeline Demonstration
+## Step 3: Build Haskell Project
 
 ```bash
+cd haskell-core
+cabal update
+cabal build
+```
+
+If you see errors about missing BLAS/LAPACK, go back to Step 1.
+
+After building, you can test the executable:
+```bash
+cabal run computational-scheme-theory -- --help
+cabal run computational-scheme-theory -- --demo
+```
+
+## Step 4: Test Racket
+
+```bash
+cd racket-metrics
+racket -e '(displayln "Racket ready")'
+```
+
+## Step 5: Run Direct Computation
+
+Once both Haskell and Racket are built, you can run direct computation:
+
+```bash
+cd /home/main/computational-scheme-theory
+source venv/bin/activate
 python3 scripts/demo_pipeline.py
 ```
 
-Shows the complete pipeline from Scheme source to validation.
+Or test on a single program:
+```bash
+python3 scripts/test_direct_compute.py
+```
 
-### Run Single Program Validation
+## Step 6: Run Validation
 
 ```bash
+source venv/bin/activate
+python3 scripts/run_validation.py --help
 python3 scripts/run_validation.py --corpus test-corpus
 ```
 
-Validates all programs in the corpus (currently in placeholder mode).
+## Troubleshooting
 
-## What You Can Do Now
+### Haskell won't build - missing BLAS/LAPACK
+```bash
+sudo apt install -y libblas-dev liblapack-dev
+cd haskell-core
+cabal clean
+cabal build
+```
 
-### ✅ Working Features
+### Python packages fail to install
+Make sure you're using a virtual environment:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r python-coordinator/requirements.txt
+```
 
-1. **Test Corpus Management**
-   - Generate programs: `python3 test-corpus/scripts/generate_corpus.py`
-   - Validate corpus: `python3 test-corpus/scripts/validate_corpus.py`
-
-2. **Validation Pipeline**
-   - Run validation: `python3 scripts/run_validation.py`
-   - View results in JSON format
-   - Compute statistics and correlations
-
-3. **Haskell Computation** (when built)
-   - `cabal build` in `haskell-core/`
-   - Use `computeH1FromSource` function
-   - Run: `cabal run computational-scheme-theory -- compute-h1 file.scm`
-
-4. **Racket Computation** (when built)
-   - Use `compute-cyclomatic-complexity` function
-   - HTTP API available: `racket metrics-api.rkt`
-
-## Current Status
-
-- ✅ **Core Algorithms**: All 4 algorithms implemented (Haskell)
-- ✅ **V(G) Calculator**: Full implementation (Racket)
-- ✅ **Validation Logic**: Complete (Python)
-- ✅ **Test Corpus**: 15 programs generated
-- ⏳ **Service Integration**: Placeholder mode (needs gRPC setup)
-- ⏳ **Real Computation**: Requires services running
+### Racket module not found errors
+Make sure you're in the correct directory:
+```bash
+cd racket-metrics
+racket your-script.rkt
+```
 
 ## Next Steps
 
-1. **For Testing Algorithms**:
-   ```bash
-   cd haskell-core && cabal build
-   cd racket-metrics && raco test .
-   ```
-
-2. **For Service Integration**:
-   - Generate proto code: `make proto`
-   - Implement gRPC endpoints
-   - Connect services
-
-3. **For Full Validation**:
-   - Start Haskell service
-   - Start Racket service
-   - Run validation: `python3 scripts/run_validation.py`
-
-## Help
-
-- See `SETUP_GUIDE.md` for detailed setup
-- See `USAGE_EXAMPLES.md` for code examples
-- See `IMPLEMENTATION_STATUS.md` for current status
-- See `docs/10 - IMPLEMENTATION/` for design docs
-
+- Read `CURRENT_CAPABILITIES.md` for what's working
+- Read `docs/10 - IMPLEMENTATION/00-IMPLEMENTATION-OVERVIEW.md` for architecture
+- Generate test corpus: `python3 test-corpus/scripts/generate_corpus.py`

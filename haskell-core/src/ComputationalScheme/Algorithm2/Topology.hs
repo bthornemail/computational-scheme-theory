@@ -10,7 +10,7 @@
 module ComputationalScheme.Algorithm2.Topology where
 
 import ComputationalScheme.Types
-import ComputationalScheme.Rig
+import ComputationalScheme.Rig hiding (bindingCount)
 import ComputationalScheme.Algorithm2.Scope (BindingScopeMap)
 import Data.Text (Text)
 import qualified Data.Map.Strict as Map
@@ -30,7 +30,8 @@ buildTopology :: RScheme -> BindingScopeMap -> Topology
 buildTopology (RScheme bindings) scopeMap = Topology
   { openSets = Map.restrictKeys scopeMap bindings
   , bindingCount = Set.size bindings
-  }
+  } where
+    -- bindingCount is the field name, not the function from Rig
 
 -- | Get visibility region D(f) for a binding
 getVisibilityRegion :: Topology -> BindingId -> Maybe VisibilityRegion

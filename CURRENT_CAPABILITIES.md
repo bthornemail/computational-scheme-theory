@@ -59,20 +59,47 @@ corr = compute_correlation(results)
 
 ## ⚙️ Requires Tool Installation
 
+### System Dependencies
+
+**Install BLAS and LAPACK** (required for hmatrix):
+```bash
+# Run the setup script (requires sudo)
+bash scripts/setup-system-deps.sh
+
+# Or manually:
+sudo apt update
+sudo apt install -y libblas-dev liblapack-dev
+```
+
+### Python Environment
+
+**Set up virtual environment**:
+```bash
+cd /home/main/computational-scheme-theory
+python3 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip setuptools wheel
+pip install -r python-coordinator/requirements.txt
+```
+
+**Always activate before running Python scripts**:
+```bash
+source venv/bin/activate
+```
+
 ### Haskell Computation (Requires: GHC + Cabal)
 
-**Install**:
-```bash
-# Ubuntu/Debian
-sudo apt install ghc cabal-install
+**Already installed**: ✅ GHC 9.4.7, Cabal 3.8.1.0
 
-# Or use Stack
-curl -sSL https://get.haskellstack.org/ | sh
+**Install system libraries** (BLAS/LAPACK):
+```bash
+sudo apt install -y libblas-dev liblapack-dev
 ```
 
 **Build**:
 ```bash
 cd haskell-core
+cabal update
 cabal build
 ```
 

@@ -17,6 +17,7 @@ racket-metrics/compiled/
 racket-metrics/**/compiled/
 
 # Python
+venv/
 python-coordinator/venv/
 python-coordinator/env/
 python-coordinator/.venv/

@@ -10,7 +10,8 @@
 module ComputationalScheme.Algorithm4.BettiNumbers where
 
 import ComputationalScheme.Algorithm3.SimplicialComplex (SimplicialComplex(..), getSimplices)
-import ComputationalScheme.Algorithm4.Cohomology (computeH1, computeHn, CohomologyGroup(..))
+import ComputationalScheme.Algorithm4.Cohomology (computeH1, computeHn)
+import ComputationalScheme.Algorithm4.ChainComplex (CohomologyGroup(..))
 import Numeric.LinearAlgebra
 
 -- | Compute first Betti number β₁

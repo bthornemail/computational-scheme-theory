@@ -10,17 +10,20 @@ module ComputationalScheme.Algorithm1.Parser where
 import ComputationalScheme.Algorithm1.AST
 import Data.Text (Text)
 import qualified Data.Text as T
-import Text.Megaparsec hiding (parse)
+import Text.Megaparsec
+import qualified Text.Megaparsec as MP
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
-import Control.Monad (void)
-import Control.Applicative hiding (many, some)
+import Control.Monad (void, when)
+import Control.Applicative hiding (many, some, Const)
+import Data.Void (Void)
+import Data.Maybe (isNothing)
 
 type Parser = Parsec Void Text
 
 -- | Parse a complete Scheme program (list of expressions)
 parseProgram :: Text -> Either (ParseErrorBundle Text Void) [Expr]
-parseProgram = parse programParser ""
+parseProgram = MP.parse programParser ""
 
 -- | Main parser for a program (list of top-level expressions)
 programParser :: Parser [Expr]
@@ -51,7 +54,7 @@ numberConstant :: Parser Constant
 numberConstant = Number <$> L.signed space L.float
 
 stringConstant :: Parser Constant
-stringConstant = String <$> (char '"' *> manyTill L.charLiteral (char '"'))
+stringConstant = String . T.pack <$> (char '"' *> manyTill L.charLiteral (char '"'))
 
 boolConstant :: Parser Constant
 boolConstant = choice

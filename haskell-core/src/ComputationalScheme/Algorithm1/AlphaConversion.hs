@@ -13,6 +13,7 @@ import qualified Data.Text as T
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import Control.Monad.State
+import Control.Monad (forM)
 import Data.List (elemIndex)
 
 -- | Environment mapping original names to unique binding IDs

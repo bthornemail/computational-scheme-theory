@@ -64,9 +64,9 @@ isValid complex =
 
 -- | Get simplices of a specific dimension
 getSimplices :: Int -> SimplicialComplex -> Set.Set Simplex
-getSimplices 0 = simplices0
-getSimplices 1 = simplices1
-getSimplices 2 = simplices2
+getSimplices 0 complex = simplices0 complex
+getSimplices 1 complex = simplices1 complex
+getSimplices 2 complex = simplices2 complex
 getSimplices n complex
   | n >= 3 && n - 3 < length (simplicesN complex) = (simplicesN complex) !! (n - 3)
   | otherwise = Set.empty
