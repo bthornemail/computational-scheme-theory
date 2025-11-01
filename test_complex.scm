@@ -1,0 +1,7 @@
+(define (complex-test x y)
+  (let ((a (+ x y))
+        (b (* x y)))
+    (let ((c (+ a b)))
+      (if (> c 0)
+          (* c 2)
+          (- c 1)))))

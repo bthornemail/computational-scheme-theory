@@ -31,19 +31,18 @@
     (let-values ([(body-nodes body-edges) (ast->cfg ast start-node-id exit-id)])
       
       ;; Combine everything
-      (let ([all-nodes (hash-set* (hash)
-                                  entry-id entry-node
-                                  exit-id exit-node
-                                  start-node-id start-node
-                                  body-nodes)])
-        (cfg entry-id
-             exit-id
-             all-nodes
-             (cons (cfg-edge entry-id start-node-id #f EDGE-NORMAL)
-                   (append body-edges
-                           (map (λ (n-id) (cfg-edge n-id exit-id #f EDGE-RETURN))
-                                (get-exit-nodes body-nodes body-edges))))
-             (hash))))))
+      (let ([base-nodes (hash entry-id entry-node
+                              exit-id exit-node
+                              start-node-id start-node)])
+        (let ([all-nodes (hash-union base-nodes body-nodes)])
+          (cfg entry-id
+               exit-id
+               all-nodes
+               (cons (cfg-edge entry-id start-node-id #f EDGE-NORMAL)
+                     (append body-edges
+                             (map (λ (n-id) (cfg-edge n-id exit-id #f EDGE-RETURN))
+                                  (get-exit-nodes body-nodes body-edges))))
+               (hash)))))))
 
 ;; Convert AST to CFG nodes and edges
 ;; Returns: (values nodes edges)
@@ -76,17 +75,15 @@
                [join-node (cfg-node join-id NODE-JOIN '() loc)])
            
            ;; Combine
-           (values (hash-set* (hash)
-                              branch-id branch-node
-                              join-id join-node
-                              test-nodes
-                              then-nodes
-                              else-nodes)
-                   (append test-edges
-                           then-edges
-                           else-edges
-                           (list (cfg-edge branch-id (get-first-node-id then-nodes) test EDGE-TRUE)
-                                 (cfg-edge branch-id (get-first-node-id else-nodes) test EDGE-FALSE)))))))]
+           (let ([combined-nodes (hash-union (hash-union test-nodes then-nodes) else-nodes)])
+             (values (hash-set* combined-nodes
+                                branch-id branch-node
+                                join-id join-node)
+                     (append test-edges
+                             then-edges
+                             else-edges
+                             (list (cfg-edge branch-id (get-first-node-id then-nodes) test EDGE-TRUE)
+                                   (cfg-edge branch-id (get-first-node-id else-nodes) test EDGE-FALSE))))))))]
 
     ;; Lambda: creates nested CFG (could be analyzed separately)
     [(ast-lambda loc params body)
@@ -101,17 +98,14 @@
      (let ([id (fresh-node-id!)])
        (let-values ([(op-nodes op-edges) (ast->cfg operator entry-id exit-id)])
          (let-values ([(arg-nodes arg-edges)
-                        (for/fold ([all-nodes '()]
+                        (for/fold ([all-nodes (hash)]
                                    [all-edges '()])
                                   ([arg operands])
                           (let-values ([(n e) (ast->cfg arg entry-id exit-id)])
-                            (values (cons n all-nodes)
+                            (values (hash-union all-nodes n)
                                     (append all-edges e))))])
-           (values (hash-set* (for/fold ([result (make-hash)])
-                                         ([node-hash arg-nodes])
-                                 (hash-union result node-hash))
-                             id (cfg-node id NODE-BASIC (list node) loc)
-                             op-nodes)
+           (values (hash-set* (hash-union arg-nodes op-nodes)
+                             id (cfg-node id NODE-BASIC (list node) loc))
                    (append op-edges arg-edges)))))]
 
     ;; Begin: sequence of statements
@@ -135,12 +129,13 @@
                           (values (hash-union all-nodes n)
                                   (append all-edges e))))]
                   [(body-nodes body-edges)
-                    (for/fold ([all-nodes (hash)]
-                               [all-edges '()])
-                              ([expr body])
-                        (let-values ([(n e) (ast->cfg expr entry-id exit-id)])
-                          (values (hash-union all-nodes n)
-                                  (append all-edges e))))])
+                    (if (list? body)
+                        ;; Body is a list of expressions (treat as implicit begin)
+                        (if (null? body)
+                            (values (hash) '())
+                            (ast->cfg (ast-begin loc body) entry-id exit-id))
+                        ;; Body is a single expression (backward compatibility)
+                        (ast->cfg body entry-id exit-id))])
        (values (hash-union binding-nodes body-nodes)
                (append binding-edges body-edges)))]
 
@@ -154,12 +149,13 @@
                           (values (hash-union all-nodes n)
                                   (append all-edges e))))]
                   [(body-nodes body-edges)
-                    (for/fold ([all-nodes (hash)]
-                               [all-edges '()])
-                              ([expr body])
-                        (let-values ([(n e) (ast->cfg expr entry-id exit-id)])
-                          (values (hash-union all-nodes n)
-                                  (append all-edges e))))])
+                    (if (list? body)
+                        ;; Body is a list of expressions (treat as implicit begin)
+                        (if (null? body)
+                            (values (hash) '())
+                            (ast->cfg (ast-begin loc body) entry-id exit-id))
+                        ;; Body is a single expression (backward compatibility)
+                        (ast->cfg body entry-id exit-id))])
        (values (hash-union binding-nodes body-nodes)
                (append binding-edges body-edges)))]
     
@@ -186,4 +182,3 @@
   (for/fold ([result h1])
             ([(k v) (in-hash h2)])
     (hash-set result k v)))
-
