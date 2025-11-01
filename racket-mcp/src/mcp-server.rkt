@@ -37,10 +37,11 @@
 (define (handle-tools-call params)
   "Handle tools/call request - returns result in MCP content format"
   (with-handlers ([exn? (lambda (e)
-                         (hash 'content (list (hash 'type "text"
-                                                    'text (jsexpr->string (hash 'success #f 
-                                                                               'error (exn-message e)
-                                                                               'tool "tools/call")))))])
+                         (let ([error-hash (hash 'success #f 
+                                                 'error (exn-message e)
+                                                 'tool "tools/call")])
+                           (hash 'content (list (hash 'type "text"
+                                                      'text (jsexpr->string error-hash))))))])
     (let* ([name (hash-ref params 'name #f)]
            [arguments (hash-ref params 'arguments (hash))])
       (if name
@@ -48,8 +49,9 @@
             ;; MCP requires result.content array with text items
             (hash 'content (list (hash 'type "text"
                                        'text (jsexpr->string tool-result)))))
-          (hash 'content (list (hash 'type "text"
-                                     'text (jsexpr->string (hash 'success #f 'error "Missing tool name")))))))))
+          (let ([error-hash (hash 'success #f 'error "Missing tool name")])
+            (hash 'content (list (hash 'type "text"
+                                       'text (jsexpr->string error-hash)))))))))
 
 ;; Resources/list handler
 (define (handle-resources-list params)
