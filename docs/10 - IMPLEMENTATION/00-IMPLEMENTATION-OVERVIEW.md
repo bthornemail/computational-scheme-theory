@@ -80,7 +80,6 @@ This directory contains 6 comprehensive design documents created during the plan
 - Kubernetes for production
 
 **Integration Points**:
-- Haskell ↔ Python: gRPC
 - Racket ↔ Python: gRPC or JSON/HTTP
 - Python ↔ User: REST API or CLI
 

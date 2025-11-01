@@ -12,6 +12,8 @@
  (all-from-out "domain-mappings.rkt")
  (all-from-out "learning-engine.rkt")
  (all-from-out "context-manager.rkt")
+ (all-from-out "feedback-system.rkt")
+ (all-from-out "performance-monitoring.rkt")
  (all-from-out "layer1-interface.rkt")
  (all-from-out "layer2-query.rkt")
  (all-from-out "layer3-coordination.rkt")
@@ -28,6 +30,8 @@
          "domain-mappings.rkt"
          "learning-engine.rkt"
          "context-manager.rkt"
+         "feedback-system.rkt"
+         "performance-monitoring.rkt"
          "layer1-interface.rkt"
          "layer2-query.rkt"
          "layer3-coordination.rkt"
@@ -41,4 +45,3 @@
 (define (process-natural-language-query nl-text)
   "Main entry point: process natural language query through full pipeline"
   (process-nl-query nl-text))
-

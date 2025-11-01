@@ -36,18 +36,14 @@
 
 ;; Read a resource by URI
 (define (read-mcp-resource uri)
-  "Read resource content by URI (placeholder implementation)"
+  "Read resource content by URI - returns hash with 'error or 'text/'mimeType"
   (cond
     [(string-prefix? uri "computational-scheme://bindings")
-     (hash 'success #f
-           'error "Binding data not yet accessible - requires program context")]
+     (hash 'error "Binding data not yet accessible - requires program context")]
     [(string-prefix? uri "computational-scheme://topology")
-     (hash 'success #f
-           'error "Topology data not yet accessible - requires program context")]
+     (hash 'error "Topology data not yet accessible - requires program context")]
     [(string-prefix? uri "computational-scheme://knowledge-graph")
-     (hash 'success #f
-           'error "Knowledge graph not yet accessible - requires query context")]
+     (hash 'error "Knowledge graph not yet accessible - requires query context")]
     [else
-     (hash 'success #f
-           'error (format "Unknown resource URI: ~a" uri))]))
+     (hash 'error (format "Unknown resource URI: ~a" uri))]))
 

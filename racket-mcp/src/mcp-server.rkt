@@ -60,11 +60,31 @@
 
 ;; Resources/read handler
 (define (handle-resources-read params)
-  "Handle resources/read request"
-  (let ([uri (hash-ref params 'uri #f)])
-    (if uri
-        (read-mcp-resource uri)
-        (hash 'success #f 'error "Missing resource URI"))))
+  "Handle resources/read request - returns result in MCP contents format"
+  (with-handlers ([exn? (lambda (e)
+                         (let ([error-msg (format "Error reading resource: ~a" (exn-message e))])
+                           (hash 'contents (list (hash 'uri ""
+                                                       'mimeType "text/plain"
+                                                       'text error-msg)))))])
+    (let ([uri (hash-ref params 'uri #f)])
+      (if uri
+          (let ([resource-result (read-mcp-resource uri)])
+            ;; MCP requires result.contents array with content items
+            (if (hash-has-key? resource-result 'error)
+                ;; Error case - return error message in contents
+                (let ([error-text (hash-ref resource-result 'error "Unknown error")])
+                  (hash 'contents (list (hash 'uri uri
+                                              'mimeType "text/plain"
+                                              'text error-text))))
+                ;; Success case - return resource data
+                (let ([mime-type (hash-ref resource-result 'mimeType "application/json")]
+                      [text-content (hash-ref resource-result 'text "")])
+                  (hash 'contents (list (hash 'uri uri
+                                              'mimeType mime-type
+                                              'text text-content))))))
+          (hash 'contents (list (hash 'uri ""
+                                      'mimeType "text/plain"
+                                      'text "Missing resource URI")))))))
 
 ;; Method router
 (define (route-mcp-method method params)
