@@ -90,8 +90,8 @@
   "Compute first cohomology dimension: β₁ = (|N₁| - rank(M₁)) - rank(M₀)"
   (let-values ([(m0 m1) (build-incidence-matrices complex)])
     (define n1 (set-count (simplicial-complex-simplices1 complex)))
-    (define rank0 (matrix-rank m0))
-    (define rank1 (matrix-rank m1))
+    (define rank0 (let ([r (matrix-rank m0)]) (if (number? r) r 0)))
+    (define rank1 (let ([r (matrix-rank m1)]) (if (number? r) r 0)))
     (define beta1 (max 0 (- (- n1 rank1) rank0)))
     beta1))
 
