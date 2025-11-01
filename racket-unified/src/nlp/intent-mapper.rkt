@@ -23,15 +23,15 @@
   (if (not operation-type)
       (error "Cannot classify operation type")
       (case operation-type
-        [('compute-h1)
+        [(compute-h1)
          (map-compute-h1 frame)]
-        [('compute-vg)
+        [(compute-vg)
          (map-compute-vg frame)]
-        [('validate-hypothesis)
+        [(validate-hypothesis)
          (map-validate-hypothesis frame)]
-        [('analyze-patterns)
+        [(analyze-patterns)
          (map-analyze-patterns frame)]
-        [('compare-metrics)
+        [(compare-metrics)
          (map-compare-metrics frame)]
         [else
          (error "Unknown operation type:" operation-type)])))

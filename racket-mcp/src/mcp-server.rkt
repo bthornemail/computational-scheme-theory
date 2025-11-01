@@ -35,12 +35,21 @@
 
 ;; Tools/call handler
 (define (handle-tools-call params)
-  "Handle tools/call request"
-  (let* ([name (hash-ref params 'name #f)]
-         [arguments (hash-ref params 'arguments (hash))])
-    (if name
-        (call-mcp-tool name arguments)
-        (hash 'success #f 'error "Missing tool name"))))
+  "Handle tools/call request - returns result in MCP content format"
+  (with-handlers ([exn? (lambda (e)
+                         (hash 'content (list (hash 'type "text"
+                                                    'text (jsexpr->string (hash 'success #f 
+                                                                               'error (exn-message e)
+                                                                               'tool "tools/call")))))])
+    (let* ([name (hash-ref params 'name #f)]
+           [arguments (hash-ref params 'arguments (hash))])
+      (if name
+          (let ([tool-result (call-mcp-tool name arguments)])
+            ;; MCP requires result.content array with text items
+            (hash 'content (list (hash 'type "text"
+                                       'text (jsexpr->string tool-result)))))
+          (hash 'content (list (hash 'type "text"
+                                     'text (jsexpr->string (hash 'success #f 'error "Missing tool name")))))))))
 
 ;; Resources/list handler
 (define (handle-resources-list params)
@@ -112,20 +121,33 @@
         
         ;; Process request
         [else
-         (let* ([request-json (mcp-parse-request line)])
-           (if request-json
-               (let ([response (process-request request-json)])
-                 ;; Write response to stdout (JSON-RPC protocol)
-                 (displayln (jsexpr->string response))
-                 (flush-output))
-               (begin
-                 ;; Parse error
-                 (let ([response (mcp-create-error-response
-                                  #f
-                                  PARSE_ERROR
-                                  "Parse error")])
+         (with-handlers ([exn? (lambda (e)
+                                ;; Catch any unexpected errors and log to stderr
+                                (fprintf (current-error-port) 
+                                        "Error processing request: ~a\n" 
+                                        (exn-message e))
+                                (flush-output (current-error-port))
+                                ;; Send error response
+                                (let ([response (mcp-create-error-response
+                                                 #f
+                                                 INTERNAL_ERROR
+                                                 (format "Internal server error: ~a" (exn-message e)))])
+                                  (displayln (jsexpr->string response))
+                                  (flush-output)))])
+           (let* ([request-json (mcp-parse-request line)])
+             (if request-json
+                 (let ([response (process-request request-json)])
+                   ;; Write response to stdout (JSON-RPC protocol)
                    (displayln (jsexpr->string response))
-                   (flush-output))))
+                   (flush-output))
+                 (begin
+                   ;; Parse error
+                   (let ([response (mcp-create-error-response
+                                    #f
+                                    PARSE_ERROR
+                                    "Parse error")])
+                     (displayln (jsexpr->string response))
+                     (flush-output)))))
            (loop (+ line-count 1)))]))))
 
 ;; Main entry point

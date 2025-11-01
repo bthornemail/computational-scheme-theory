@@ -19,17 +19,20 @@
 ;; Tool: compute_h1
 (define (tool-compute-h1 params)
   "Compute H¹ cohomology from Scheme source code"
-  (let* ([source (hash-ref params 'source_code "")]
-         [result (compute-h1-from-source-detailed source)])
-    (if (pipeline-result-success result)
-        (hash 'success #t
-              'h1 (pipeline-result-h1 result)
-              'bindings (pipeline-result-num-bindings result)
-              'simplices_0 (pipeline-result-num-simplices0 result)
-              'simplices_1 (pipeline-result-num-simplices1 result)
-              'simplices_2 (pipeline-result-num-simplices2 result))
-        (hash 'success #f
-              'error (or (pipeline-result-error result) "Unknown error")))))
+  (with-handlers ([exn? (lambda (e)
+                         (hash 'success #f
+                               'error (format "Error computing H¹: ~a" (exn-message e))))])
+    (let* ([source (hash-ref params 'source_code "")]
+           [result (compute-h1-from-source-detailed source)])
+      (if (pipeline-result-success result)
+          (hash 'success #t
+                'h1 (pipeline-result-h1 result)
+                'bindings (pipeline-result-num-bindings result)
+                'simplices_0 (pipeline-result-num-simplices0 result)
+                'simplices_1 (pipeline-result-num-simplices1 result)
+                'simplices_2 (pipeline-result-num-simplices2 result))
+          (hash 'success #f
+                'error (or (pipeline-result-error result) "Unknown error"))))))
 
 ;; Tool: compute_vg (optional, requires service)
 (define (tool-compute-vg params)
@@ -130,9 +133,12 @@
 ;; Call a specific tool by name
 (define (call-mcp-tool tool-name params)
   "Call a tool by name with given parameters"
-  (let ([tool (findf (lambda (t) (equal? (hash-ref t 'name) tool-name)) mcp-tool-definitions)])
-    (if tool
-        (let ([handler (hash-ref tool 'handler)])
-          (handler params))
-        (hash 'success #f 'error (format "Tool '~a' not found" tool-name)))))
+  (with-handlers ([exn? (lambda (e)
+                         (hash 'success #f 
+                               'error (format "Error calling tool '~a': ~a" tool-name (exn-message e))))])
+    (let ([tool (findf (lambda (t) (equal? (hash-ref t 'name) tool-name)) mcp-tool-definitions)])
+      (if tool
+          (let ([handler (hash-ref tool 'handler)])
+            (handler params))
+          (hash 'success #f 'error (format "Tool '~a' not found" tool-name))))))
 

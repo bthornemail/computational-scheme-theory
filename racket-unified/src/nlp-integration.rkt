@@ -30,15 +30,15 @@
             [args (m-expr-args m-expr)])
         ;; Step 3: Map M-expression to actual computation
         (case op
-          [('computeH1)
+          [(computeH1)
            (handle-compute-h1 args)]
-          [('computeVG)
+          [(computeVG)
            (handle-compute-vg args)]
-          [('validateHypothesis)
+          [(validateHypothesis)
            (handle-validate-hypothesis args)]
-          [('analyzePatterns)
+          [(analyzePatterns)
            (handle-analyze-patterns args)]
-          [('compareMetrics)
+          [(compareMetrics)
            (handle-compare-metrics args)]
           [else
            (values #f (format "Unknown operation: ~a" op))]))))
@@ -46,18 +46,14 @@
 ;; Handle compute H1 operation
 (define (handle-compute-h1 args)
   "Handle compute H1 operation from NL query"
-  (cond
-    [(null? args)
-     (values #f "No program specified")]
-    [else
-     (let* ([program-arg (car args)]
-            [source (get-program-source program-arg)])
-       (if source
-           (let ([result (compute-h1-from-source-detailed source)])
-             (if (pipeline-result-success result)
-                 (values result #t)
-                 (values #f (pipeline-result-error result))))
-           (values #f (format "Program not found: ~a" program-arg))))]))
+  (let* ([program-arg (if (null? args) #f (car args))]
+         [source (if program-arg (get-program-source program-arg) "(lambda (x) x)")])
+    (if source
+        (let ([result (compute-h1-from-source-detailed source)])
+          (if (pipeline-result-success result)
+              (values result #t)
+              (values #f (pipeline-result-error result))))
+        (values #f "Could not resolve program source"))))
 
 ;; Handle compute V(G) operation
 (define (handle-compute-vg args)
