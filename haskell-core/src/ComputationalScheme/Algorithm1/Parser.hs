@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE LambdaCase #-}
 
 -- | S-expression parser for R5RS Scheme
 --
@@ -10,12 +11,13 @@ module ComputationalScheme.Algorithm1.Parser where
 import ComputationalScheme.Algorithm1.AST
 import Data.Text (Text)
 import qualified Data.Text as T
-import Text.Megaparsec (try, anySingle)
+import Text.Megaparsec (try, anySingle, eof, choice, Parsec, ParseErrorBundle, getSourcePos, many, manyTill, unPos, sourceLine, sourceColumn, between, lookAhead)
 import qualified Text.Megaparsec as MP
-import Text.Megaparsec.Char (char, space, alphaNumChar, space1, oneOf, string, eof)
+import Text.Megaparsec.Char (char, space, alphaNumChar, space1, string)
 import qualified Text.Megaparsec.Char.Lexer as L
 import Control.Monad (void, when)
 import Control.Applicative hiding (many, some, Const)
+import Control.Applicative (some)
 import Data.Void (Void)
 import Data.Maybe (isNothing)
 
@@ -51,7 +53,7 @@ constantParser = lexeme $ do
     ]
 
 numberConstant :: Parser Constant
-numberConstant = Number <$> L.signed space L.float
+numberConstant = Number <$> L.signed space (try L.float <|> (fromIntegral <$> L.decimal :: Parser Double))
 
 stringConstant :: Parser Constant
 stringConstant = String . T.pack <$> (char '"' *> manyTill L.charLiteral (char '"'))
@@ -78,7 +80,7 @@ variableParser = lexeme $ do
 
 -- | Parse identifier (variable name)
 identifier :: Parser Text
-identifier = T.pack <$> some (alphaNumChar <|> oneOf ['-', '!', '$', '%', '&', '*', '+', '/', ':', '<', '=', '>', '?', '@', '^', '_', '~'])
+identifier = T.pack <$> some (alphaNumChar <|> choice (map char ['-', '!', '$', '%', '&', '*', '+', '/', ':', '<', '=', '>', '?', '@', '^', '_', '~']))
 
 -- | Parse list forms (lambda, let, define, if, cond, application, etc.)
 listParser :: Parser Expr
@@ -143,11 +145,13 @@ defineParser srcLoc = do
     '(' -> do
       -- Function definition: (define (name params...) body...)
       (name:params) <- lexeme $ parens (many (lexeme identifier))
-      body <- some exprParser
+      -- body expressions come after the parameter list - parse until closing paren
+      -- Note: we're inside listParser's between, so we parse until outer ')'
+      body <- many exprParser
       return $ Define (DefineFun name params body) srcLoc
     _ -> do
       -- Variable definition: (define name val)
-      name <- identifier
+      name <- lexeme identifier
       val <- exprParser
       return $ Define (DefineVar name val) srcLoc
 
@@ -156,9 +160,7 @@ ifParser :: SourceLoc -> Parser Expr
 ifParser srcLoc = do
   void (string "if" <* space)
   test <- exprParser
-  space
   thenExpr <- exprParser
-  space
   elseExpr <- exprParser
   return $ If (IfForm test thenExpr elseExpr) srcLoc
 

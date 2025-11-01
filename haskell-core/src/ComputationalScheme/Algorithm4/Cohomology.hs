@@ -16,7 +16,7 @@ import ComputationalScheme.Algorithm3.SimplicialComplex
 import ComputationalScheme.Algorithm4.IncidenceMatrix
 import ComputationalScheme.Algorithm4.ChainComplex
 -- import ComputationalScheme.Algorithm4.BettiNumbers  -- Removed to break circular dependency
-import Numeric.LinearAlgebra
+import Numeric.LinearAlgebra (rank, rows, cols, Matrix)
 import qualified Data.Set as Set
 
 -- | Compute first cohomology group H¹
@@ -27,9 +27,9 @@ computeH1 complex = CohomologyGroup beta1
     -- Build incidence matrices
     (m0, m1) = getH1IncidenceMatrices complex
     
-    -- Compute ranks using hmatrix
-    rank0 = rank m0
-    rank1 = rank m1
+    -- Compute ranks using hmatrix (handle empty matrices)
+    rank0 = if rows m0 == 0 || cols m0 == 0 then 0 else rank m0
+    rank1 = if rows m1 == 0 || cols m1 == 0 then 0 else rank m1
     
     -- Number of 1-simplices (edges)
     n1 = Set.size (simplices1 complex)
@@ -39,7 +39,7 @@ computeH1 complex = CohomologyGroup beta1
     -- where:
     --   n₁ - rank(M₁) = dimension of 1-cocycles (ker ∂*_2)
     --   rank(M₀) = dimension of 1-coboundaries (im ∂*_1)
-    beta1 = (n1 - rank1) - rank0
+    beta1 = max 0 ((n1 - rank1) - rank0)  -- Ensure non-negative
 
 -- | Compute H¹ and return detailed result
 computeH1Detailed :: SimplicialComplex -> H1Result
