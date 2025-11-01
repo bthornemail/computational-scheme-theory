@@ -241,5 +241,8 @@
 ;; Build open cover for Čech complex
 (define (build-open-cover topology)
   "Build open cover from topology for Čech complex construction"
-  (hash-ref topology 'open-sets))
+  (let ([open-sets (hash-ref topology 'open-sets #f)])
+    (if (hash? open-sets)
+        open-sets
+        (error "Topology open-sets is not a hash:" open-sets))))
 

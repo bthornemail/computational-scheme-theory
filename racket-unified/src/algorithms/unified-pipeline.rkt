@@ -97,22 +97,28 @@
   (define scope-map-hash
     (if (hash? enhanced-scope-map)
         enhanced-scope-map
-        (make-hash enhanced-scope-map)))
+        (make-hash (if (list? enhanced-scope-map) enhanced-scope-map '()))))
   
-  (hash 'open-sets (make-hash
-                     (for/list ([(k v) (in-hash scope-map-hash)])
-                       (if (enhanced-visibility-region? v)
-                           (cons k (enhanced-visibility-region-base-region v))
-                           (cons k v))))
+  ;; Build open-sets hash with visibility regions
+  (define open-sets (make-hash))
+  (for ([(k v) (in-hash scope-map-hash)])
+    (hash-set! open-sets k
+               (if (enhanced-visibility-region? v)
+                   (enhanced-visibility-region-base-region v)
+                   v)))
+  
+  (hash 'open-sets open-sets
         'binding-count (set-count (r-scheme-bindings rig))
         'scope-tree scope-tree
         'enhanced-regions scope-map-hash))
 
-;; Build Čech complex from topology
+;; Build Čech complex from topology  
 (define (build-cech-complex topology)
   "Build Čech complex from topology"
   (let ([open-cover (build-open-cover topology)])
-    (compute-nerve open-cover)))
+    (if (hash? open-cover)
+        (compute-nerve open-cover)
+        (error "build-open-cover did not return a hash"))))
 
 ;; Detailed pipeline result
 (define (compute-h1-from-source-detailed source)

@@ -76,15 +76,21 @@
 ;; Check if two regions overlap
 (define (have-overlap region1 region2)
   "Check if two visibility regions have non-empty intersection"
-  (if (and (visibility-region? region1) (visibility-region? region2))
-      (let ([scopes1 (visibility-region-scopes region1)]
-            [bindings1 (visibility-region-bindings region1)]
-            [scopes2 (visibility-region-scopes region2)]
-            [bindings2 (visibility-region-bindings region2)])
-        ;; Overlap if they share scopes or bindings
-        (or (not (set-empty? (set-intersect scopes1 scopes2)))
-            (not (set-empty? (set-intersect bindings1 bindings2)))))
-      #f))
+  (cond
+    [(and (visibility-region? region1) (visibility-region? region2))
+     (let ([scopes1 (visibility-region-scopes region1)]
+           [bindings1 (visibility-region-bindings region1)]
+           [scopes2 (visibility-region-scopes region2)]
+           [bindings2 (visibility-region-bindings region2)])
+       ;; Overlap if they share scopes or bindings
+       (or (and (set? scopes1) (set? scopes2) (not (set-empty? (set-intersect scopes1 scopes2))))
+           (and (set? bindings1) (set? bindings2) (not (set-empty? (set-intersect bindings1 bindings2))))))]
+    [(and (enhanced-visibility-region? region1) (enhanced-visibility-region? region2))
+     ;; Handle enhanced visibility regions
+     (let ([base1 (enhanced-visibility-region-base-region region1)]
+           [base2 (enhanced-visibility-region-base-region region2)])
+       (have-overlap base1 base2))]
+    [else #f]))
 
 ;; Build Čech complex from topology
 (define (build-cech-complex topology)
