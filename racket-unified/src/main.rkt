@@ -7,7 +7,6 @@
          "prolog-engine.rkt"
          "m-s-compiler.rkt"
          "algorithms/unified-pipeline.rkt"
-         "bridge/haskell-bridge.rkt"
          "bridge/racket-bridge.rkt")
 
 ;; ============================================================
@@ -47,21 +46,9 @@
                                  (pipeline-result-num-simplices1 result)
                                  (pipeline-result-num-simplices2 result)))
               
-              ;; Try Haskell bridge if available
+              ;; Try Racket bridge if available
               (displayln "")
               (displayln "  Service Comparison:")
-              (when (haskell-service-available?)
-                (let-values ([(haskell-h1 error) (call-haskell-h1 source)])
-                  (if haskell-h1
-                      (let-values ([(match? diff msg) (compare-h1-results
-                                                        (pipeline-result-h1 result)
-                                                        haskell-h1
-                                                        0)])
-                        (displayln (format "  ✓ Haskell H¹ = ~a" haskell-h1))
-                        (displayln (format "    ~a" msg)))
-                      (displayln (format "  ⚠ Haskell service error: ~a" error)))))
-              
-              ;; Try Racket bridge if available
               (when (racket-service-available?)
                 (let-values ([(racket-vg error) (call-racket-vg source)])
                   (if racket-vg
@@ -74,8 +61,6 @@
                         (displayln (format "    Hypothesis H¹ = V(G): ~a" msg)))
                       (displayln (format "  ⚠ Racket service error: ~a" error)))))
               
-              (when (not (haskell-service-available?))
-                (displayln "  ℹ Haskell service not available (skipping comparison)"))
               (when (not (racket-service-available?))
                 (displayln "  ℹ Racket service not available (skipping validation)")))
             (displayln (format "  ✗ Error: ~a" (pipeline-result-error result)))))

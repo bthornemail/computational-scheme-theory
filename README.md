@@ -13,7 +13,7 @@ This hypothesis claims that the topological complexity of a program (measured by
 **Status**: ✅ **Phase 1 Core Implementation COMPLETE** 
 
 All core algorithms and infrastructure have been implemented:
-- ✅ Algorithm 1-4 (Haskell) - Complete pipeline for H¹ computation
+- ✅ Algorithm 1-4 (Pure Racket) - Complete unified pipeline for H¹ computation
 - ✅ V(G) Calculator (Racket) - Cyclomatic complexity computation
 - ✅ Validation Coordinator (Python) - Hypothesis testing
 - ✅ Test Corpus (15 programs) - Ready for expansion to 50
@@ -26,11 +26,10 @@ See `PROJECT_COMPLETE.md` for implementation summary.
 
 ### Prerequisites
 
-- **GHC** 9.0+ and **Cabal** 3.8+ (Haskell toolchain)
-- **Racket** 8.0+
-- **Python** 3.9+
-- **Docker** and **Docker Compose**
-- **Protocol Buffers** compiler (`protoc`)
+- **Racket** 8.0+ (Primary implementation)
+- **Python** 3.9+ (Optional: for coordinator)
+- **Docker** and **Docker Compose** (Optional)
+- **Protocol Buffers** compiler (`protoc`) (Optional)
 - **Git**
 
 ### Setup Environment
@@ -77,7 +76,7 @@ make clean
 
 ```
 computational-scheme-theory/
-├── haskell-core/          # Haskell mathematical core (computes H¹)
+├── racket-unified/          # Pure Racket unified implementation (current)
 ├── racket-metrics/         # Racket V(G) calculator
 ├── python-coordinator/     # Python orchestration service
 ├── proto/                  # Protocol buffer definitions
@@ -94,9 +93,10 @@ computational-scheme-theory/
 
 The system consists of three main services:
 
-1. **Haskell Mathematical Core** (`haskell-core/`)
-   - Implements four algorithms to compute Čech cohomology H¹
-   - See `haskell-core/README.md`
+1. **Unified Lisp Substrate** (`racket-unified/`)
+   - Pure Racket implementation of all four algorithms
+   - Complete unified system: M/S-expressions, Prolog/Datalog, Y/Z-combinators
+   - See `racket-unified/README.md`
 
 2. **Racket Metrics Calculator** (`racket-metrics/`)
    - Parses R5RS Scheme and computes cyclomatic complexity V(G)

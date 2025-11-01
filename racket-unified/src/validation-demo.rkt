@@ -2,7 +2,6 @@
 
 ;; Validation demo: Compare Lisp results with existing services
 (require "algorithms/unified-pipeline.rkt"
-         "bridge/haskell-bridge.rkt"
          "bridge/racket-bridge.rkt")
 
 (module+ main
@@ -17,7 +16,6 @@
       "(lambda (x) (lambda (y) (+ x y)))"))
   
   (displayln "Service Status:")
-  (displayln (format "  Haskell service: ~a" (if (haskell-service-available?) "✓ Available" "✗ Unavailable")))
   (displayln (format "  Racket service: ~a" (if (racket-service-available?) "✓ Available" "✗ Unavailable")))
   (displayln "")
   
@@ -41,18 +39,6 @@
             ;; Compare with services
             (displayln "")
             (displayln "Service Comparison:")
-            
-            ;; Haskell comparison
-            (when (haskell-service-available?)
-              (let-values ([(haskell-h1 error) (call-haskell-h1 source)])
-                (if haskell-h1
-                    (let-values ([(match? diff msg) (compare-h1-results
-                                                      (pipeline-result-h1 result)
-                                                      haskell-h1
-                                                      0)])
-                      (displayln (format "  Haskell H¹ = ~a" haskell-h1))
-                      (displayln (format "    ~a" msg)))
-                    (displayln (format "  Haskell error: ~a" error)))))
             
             ;; Racket comparison
             (when (racket-service-available?)

@@ -2,7 +2,6 @@
 
 ;; Public API for the Unified Lisp Substrate
 (require "algorithms/unified-pipeline.rkt"
-         "bridge/haskell-bridge.rkt"
          "bridge/racket-bridge.rkt")
 
 (provide
@@ -23,15 +22,11 @@
  pipeline-result-error
  
  ;; Service bridges
- haskell-service-available?
- call-haskell-h1
- compare-h1-results
  racket-service-available?
  call-racket-vg
  validate-hypothesis
 
  ;; Configuration
- *haskell-service-url*
  *racket-service-url*)
 
 ;; ============================================================
@@ -47,9 +42,6 @@
 ;;     → (values h1-value error-message)
 ;;
 ;; Service integration:
-;;
-;;   (call-haskell-h1 source)
-;;     → (values h1-value error-message)
 ;;
 ;;   (call-racket-vg source)
 ;;     → (values vg-value error-message)
@@ -73,18 +65,8 @@
       (printf "   Bindings: ~a\n" (pipeline-result-num-bindings result))))
   
   (displayln "")
-  (displayln "2. With service comparison:")
-  (when (haskell-service-available?)
-    (let-values ([(h1-lisp error1) (compute-h1-from-source "(lambda (x) x)")]
-                 [(h1-haskell error2) (call-haskell-h1 "(lambda (x) x)")])
-      (when (and h1-lisp h1-haskell)
-        (let-values ([(match? diff msg) (compare-h1-results h1-lisp h1-haskell 0)])
-          (printf "   Lisp: ~a, Haskell: ~a\n" h1-lisp h1-haskell)
-          (printf "   ~a\n" msg)))))
-  
-  (displayln "")
-  (displayln "3. Hypothesis validation:")
-  (when (and (racket-service-available?) (haskell-service-available?))
+  (displayln "2. Hypothesis validation:")
+  (when (racket-service-available?)
     (let-values ([(h1 error1) (compute-h1-from-source "(lambda (x) x)")]
                  [(vg error2) (call-racket-vg "(lambda (x) x)")])
       (when (and h1 vg)

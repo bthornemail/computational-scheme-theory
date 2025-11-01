@@ -2,7 +2,6 @@
 
 (require rackunit
          "../src/algorithms/unified-pipeline.rkt"
-         "../src/bridge/haskell-bridge.rkt"
          "../src/bridge/racket-bridge.rkt")
 
 (module+ test
@@ -36,7 +35,6 @@
   
   ;; Test 5: Service availability (non-blocking)
   (test-case "Service availability checks"
-    (check-not-exn (lambda () (haskell-service-available?)) "Haskell check should not throw")
     (check-not-exn (lambda () (racket-service-available?)) "Racket check should not throw"))
   
   (displayln "✓ All tests passed!"))

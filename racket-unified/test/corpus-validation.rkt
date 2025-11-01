@@ -2,7 +2,6 @@
 
 ;; Corpus validation: Compare Lisp results with existing system data
 (require "../src/algorithms/unified-pipeline.rkt"
-         "../src/bridge/haskell-bridge.rkt"
          "../src/bridge/racket-bridge.rkt"
          json
          racket/file
@@ -64,7 +63,6 @@
   "Process each program and compare results"
   (define stats (hash 'total 0
                       'lisp-success 0
-                      'haskell-available 0
                       'racket-available 0
                       'matches 0
                       'mismatches 0
@@ -107,16 +105,6 @@
                           (hash-update! stats 'mismatches add1)
                           (displayln (format "  ✗ Mismatch: expected ~a, got ~a" expected-h1 h1-lisp)))))
                   
-                  ;; Try Haskell bridge
-                  (when (haskell-service-available?)
-                    (hash-update! stats 'haskell-available add1)
-                    (let-values ([(haskell-h1 error) (call-haskell-h1 source)])
-                      (if haskell-h1
-                          (let-values ([(match? diff msg) (compare-h1-results h1-lisp haskell-h1 0)])
-                            (displayln (format "  Haskell H¹ = ~a" haskell-h1))
-                            (displayln (format "    ~a" msg)))
-                          (displayln (format "  Haskell error: ~a" error)))))
-                  
                   ;; Try Racket bridge
                   (when (racket-service-available?)
                     (hash-update! stats 'racket-available add1)
@@ -146,7 +134,6 @@
   (displayln (format "Matches: ~a" (hash-ref stats 'matches)))
   (displayln (format "Mismatches: ~a" (hash-ref stats 'mismatches)))
   (displayln (format "Errors: ~a" (hash-ref stats 'errors)))
-  (displayln (format "Haskell service calls: ~a" (hash-ref stats 'haskell-available)))
   (displayln (format "Racket service calls: ~a" (hash-ref stats 'racket-available))))
 
 (module+ main

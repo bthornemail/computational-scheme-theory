@@ -2,7 +2,6 @@
 
 ;; Validation suite: Test hypothesis H¹ = V(G) - k
 (require "../src/algorithms/unified-pipeline.rkt"
-         "../src/bridge/haskell-bridge.rkt"
          "../src/bridge/racket-bridge.rkt"
          racket/match)
 
@@ -23,7 +22,6 @@
     ))
   
   (displayln "Service Status:")
-  (displayln (format "  Haskell: ~a" (if (haskell-service-available?) "✓" "✗")))
   (displayln (format "  Racket: ~a" (if (racket-service-available?) "✓" "✗")))
   (displayln "")
   

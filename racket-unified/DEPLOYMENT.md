@@ -100,7 +100,7 @@ The system works in three modes:
 
 1. Start Haskell service:
 ```bash
-# In haskell-core/
+# Legacy: Previously in haskell-core/ (now removed - see git history)
 stack run
 ```
 
