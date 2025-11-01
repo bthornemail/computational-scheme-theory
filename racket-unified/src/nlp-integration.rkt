@@ -7,6 +7,8 @@
          "nlp/layer1-interface.rkt"
          "nlp/layer4-core.rkt"
          "algorithms/unified-pipeline.rkt"
+         "algorithms/cfg-builder.rkt"
+         "algorithms/cyclomatic.rkt"
          "m-expression.rkt")
 
 (provide
@@ -58,21 +60,38 @@
 ;; Handle compute V(G) operation
 (define (handle-compute-vg args)
   "Handle compute V(G) operation from NL query"
-  (cond
-    [(null? args)
-     (values #f "No program specified")]
-    [else
-     (let* ([program-arg (car args)]
-            [source (get-program-source program-arg)])
-       (if source
-           ;; Placeholder - would call V(G) computation
-           (values (format "V(G) computation for ~a" program-arg) #t)
-           (values #f (format "Program not found: ~a" program-arg))))]))
+  (let* ([program-arg (if (null? args) #f (car args))]
+         [source (if program-arg (get-program-source program-arg) "(lambda (x) x)")])
+    (if source
+        (with-handlers ([exn? (lambda (e)
+                                (values #f (format "V(G) computation failed: ~a" (exn-message e))))])
+          (let* ([cfg (build-cfg-from-source source)]
+                 [metrics (compute-cyclomatic-complexity cfg)])
+            (values metrics #t)))
+        (values #f "Could not resolve program source"))))
 
 ;; Handle validate hypothesis operation
 (define (handle-validate-hypothesis args)
-  "Handle validate hypothesis operation"
-  (values "Hypothesis validation (placeholder)" #t))
+  "Handle validate hypothesis operation H¹ = V(G) - k"
+  (let* ([program-arg (if (null? args) #f (car args))]
+         [source (if program-arg (get-program-source program-arg) "(lambda (x) x)")]
+         [k (if (and (not (null? args)) (> (length args) 1)) (cadr args) 0)])
+    (if source
+        (with-handlers ([exn? (lambda (e)
+                                (values #f (format "Hypothesis validation failed: ~a" (exn-message e))))])
+          (let* ([h1-result (compute-h1-from-source-detailed source)]
+                 [cfg (build-cfg-from-source source)]
+                 [vg-metrics (compute-cyclomatic-complexity cfg)]
+                 [h1 (pipeline-result-h1 h1-result)]
+                 [vg (complexity-metrics-v-g vg-metrics)]
+                 [difference (abs (- h1 (- vg k)))]
+                 [matches? (< difference 0.001)])
+            (values `((h1 ,h1)
+                      (vg ,vg)
+                      (k ,k)
+                      (difference ,difference)
+                      (matches? ,matches?)) #t)))
+        (values #f "Could not resolve program source"))))
 
 ;; Handle analyze patterns operation
 (define (handle-analyze-patterns args)

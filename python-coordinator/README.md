@@ -1,16 +1,18 @@
 # Python Coordinator Service
 
-The Python coordinator orchestrates validation experiments by communicating with the Haskell mathematical core and Racket metrics calculator services.
+The Python coordinator orchestrates validation experiments by using the unified Racket implementation for both H¹ and V(G) computation.
 
 ## Overview
 
 The coordinator service:
 
 1. Receives validation requests (single program or corpus)
-2. Calls Haskell service to compute H¹
-3. Calls Racket service to compute V(G)
+2. Calls Racket unified pipeline to compute H¹
+3. Calls Racket unified pipeline to compute V(G)
 4. Tests hypothesis: H¹ = V(G) - k
 5. Returns validation results with statistics
+
+**Note**: Both H¹ and V(G) are now computed using the unified Racket implementation (`racket-unified/src/algorithms/`). The direct computation mode uses subprocess calls to Racket scripts.
 
 ## Requirements
 

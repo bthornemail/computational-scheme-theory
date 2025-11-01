@@ -2,8 +2,10 @@
 Direct Computation Module
 
 This module provides direct computation of H¹ and V(G) without requiring
-services to be running. It uses subprocess calls to execute Haskell and Racket
-programs directly.
+services to be running. It uses subprocess calls to execute Racket programs
+from the unified implementation (racket-unified/src/algorithms/).
+
+Both H¹ and V(G) are computed using the unified Racket pipeline.
 """
 
 import subprocess
@@ -18,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 def compute_h1_direct(source_code: str, program_id: str, project_root: Path) -> Tuple[int, float]:
     """
-    Compute H¹ directly by calling Haskell executable
+    Compute H¹ directly by calling Racket unified pipeline
     
     Args:
         source_code: Scheme source code
@@ -37,37 +39,58 @@ def compute_h1_direct(source_code: str, program_id: str, project_root: Path) -> 
         temp_file = f.name
     
     try:
-        # Use cabal run instead of finding executable path
-        haskell_dir = project_root / "haskell-core"
+        # Use the unified Racket implementation
+        racket_unified_dir = project_root / "racket-unified" / "src"
         
-        # Call via cabal run (handles finding executable automatically)
-        result = subprocess.run(
-            ["cabal", "run", "computational-scheme-theory", "--", "compute-h1", temp_file],
-            capture_output=True,
-            text=True,
-            timeout=30,
-            cwd=haskell_dir
-        )
-        
-        if result.returncode == 0:
-            # Parse output: "H¹(X_Comp, O_Comp) = 2"
-            output = result.stdout.strip()
+        # Create a Racket script file that uses the unified pipeline
+        script_file = racket_unified_dir / "compute_h1_temp.rkt"
+        try:
+            with open(script_file, 'w') as f:
+                f.write(f"""#lang racket/base
+(require "algorithms/unified-pipeline.rkt")
+
+(define source (file->string "{temp_file}"))
+(with-handlers ([exn? (lambda (e) (displayln "0"))])
+  (define result (compute-h1-from-source-detailed source))
+  (if (pipeline-result-success result)
+      (displayln (pipeline-result-h1 result))
+      (displayln "0")))
+""")
+            
+            # Run Racket script from racket_unified_dir
+            result = subprocess.run(
+                ["racket", str(script_file)],
+                cwd=racket_unified_dir,
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+            
+            if result.returncode == 0:
+                try:
+                    h1 = int(result.stdout.strip())
+                    elapsed_ms = (time.time() - start_time) * 1000
+                    logger.info(f"Computed H¹={h1} for {program_id}")
+                    return h1, elapsed_ms
+                except ValueError:
+                    logger.warning(f"Could not parse H¹ from output: {result.stdout}")
+            
+            logger.warning(f"Racket H¹ computation failed: {result.stderr}")
+            return 0, (time.time() - start_time) * 1000
+            
+        finally:
+            # Clean up script file
             try:
-                h1 = int(output.split("=")[-1].strip())
-                elapsed_ms = (time.time() - start_time) * 1000
-                logger.info(f"Computed H¹={h1} for {program_id}")
-                return h1, elapsed_ms
-            except (ValueError, IndexError):
-                logger.warning(f"Could not parse H¹ from output: {output}")
-        
-        logger.warning(f"Haskell computation failed: {result.stderr}")
-        return 0, (time.time() - start_time) * 1000
+                if script_file.exists():
+                    os.unlink(script_file)
+            except:
+                pass
         
     except FileNotFoundError:
-        logger.warning("cabal not found, using placeholder")
+        logger.warning("racket not found, using placeholder")
         return 0, (time.time() - start_time) * 1000
     except subprocess.TimeoutExpired:
-        logger.error(f"Haskell computation timed out for {program_id}")
+        logger.error(f"Racket H¹ computation timed out for {program_id}")
         return 0, (time.time() - start_time) * 1000
     except Exception as e:
         logger.error(f"Error computing H¹: {e}")
@@ -101,32 +124,28 @@ def compute_vg_direct(source_code: str, program_id: str, project_root: Path) -> 
         temp_file = f.name
     
     try:
-        racket_dir = project_root / "racket-metrics"
+        # Use the new unified implementation
+        racket_unified_dir = project_root / "racket-unified" / "src"
         
-        # Create a Racket script file in racket_dir so modules can be found
-        script_file = racket_dir / "compute_vg_temp.rkt"
+        # Create a Racket script file that uses the unified pipeline
+        script_file = racket_unified_dir / "compute_vg_temp.rkt"
         try:
             with open(script_file, 'w') as f:
-                f.write(f"""#lang racket
-(require "cyclomatic.rkt"
-         "cfg-builder.rkt"
-         "r5rs-parser.rkt"
-         "cfg-types.rkt")
+                f.write(f"""#lang racket/base
+(require "algorithms/cfg-builder.rkt"
+         "algorithms/cyclomatic.rkt")
 
 (define source (file->string "{temp_file}"))
-(define ast-list (parse-r5rs source))
-(cond
-  [(null? ast-list) (displayln "0")]
-  [else
-   (define cfg (build-cfg (first ast-list)))
-   (define metrics (compute-cyclomatic-complexity cfg))
-   (displayln (complexity-metrics-v-g metrics))])
+(with-handlers ([exn? (lambda (e) (displayln "0"))])
+  (define cfg (build-cfg-from-source source))
+  (define metrics (compute-cyclomatic-complexity cfg))
+  (displayln (complexity-metrics-v-g metrics)))
 """)
             
-            # Run Racket script from racket_dir
+            # Run Racket script from racket_unified_dir
             result = subprocess.run(
                 ["racket", str(script_file)],
-                cwd=racket_dir,
+                cwd=racket_unified_dir,
                 capture_output=True,
                 text=True,
                 timeout=30
