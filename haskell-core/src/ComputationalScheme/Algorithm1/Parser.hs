@@ -10,9 +10,9 @@ module ComputationalScheme.Algorithm1.Parser where
 import ComputationalScheme.Algorithm1.AST
 import Data.Text (Text)
 import qualified Data.Text as T
-import Text.Megaparsec
+import Text.Megaparsec (try, anySingle)
 import qualified Text.Megaparsec as MP
-import Text.Megaparsec.Char
+import Text.Megaparsec.Char (char, space, alphaNumChar, space1, oneOf, string, eof)
 import qualified Text.Megaparsec.Char.Lexer as L
 import Control.Monad (void, when)
 import Control.Applicative hiding (many, some, Const)
@@ -137,19 +137,19 @@ letRecParser srcLoc = do
 defineParser :: SourceLoc -> Parser Expr
 defineParser srcLoc = do
   void (string "define" <* space)
-  name <- identifier
-  space
   
-  -- Check if next is list (function definition) or expression (variable definition)
-  choice
-    [ do
-        params <- parens $ many identifier
-        body <- some exprParser
-        return $ Define (DefineFun name params body) srcLoc
-    , do
-        val <- exprParser
-        return $ Define (DefineVar name val) srcLoc
-    ]
+  -- Check if next is list (function definition) or identifier (variable definition)
+  lookAhead anySingle >>= \case
+    '(' -> do
+      -- Function definition: (define (name params...) body...)
+      (name:params) <- lexeme $ parens (many (lexeme identifier))
+      body <- some exprParser
+      return $ Define (DefineFun name params body) srcLoc
+    _ -> do
+      -- Variable definition: (define name val)
+      name <- identifier
+      val <- exprParser
+      return $ Define (DefineVar name val) srcLoc
 
 -- | Parse if: (if test then else)
 ifParser :: SourceLoc -> Parser Expr
