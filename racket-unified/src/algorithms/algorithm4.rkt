@@ -27,13 +27,13 @@
   (define triangles (set->list (simplicial-complex-simplices2 complex)))
   (define vertices (set->list (simplicial-complex-simplices0 complex)))
   
-  ;; M₀: |vertices| x |edges|
+  ;; M₀: |vertices| x |edges|  (each row is a vertex, each column is an edge)
   (define m0
-    (for/list ([v vertices])
+    (for/list ([v (in-set (simplicial-complex-simplices0 complex))])
       (for/list ([e edges])
         (if (set-member? (simplex-vertices e) v) 1 0))))
   
-  ;; M₁: |edges| x |triangles|
+  ;; M₁: |edges| x |triangles|  (each row is an edge, each column is a triangle)
   (define m1
     (for/list ([e edges])
       (for/list ([t triangles])
@@ -44,35 +44,46 @@
 ;; Compute matrix rank (simplified Gaussian elimination)
 (define (matrix-rank matrix)
   "Compute rank of matrix using simplified Gaussian elimination"
-  (if (null? matrix)
+  (if (or (null? matrix) (null? (car matrix)))
       0
       (let* ([rows (length matrix)]
-             [cols (if (null? (car matrix)) 0 (length (car matrix)))])
+             [cols (length (car matrix))])
         (if (or (= rows 0) (= cols 0))
             0
-            ;; Simplified: use number of non-zero rows after row reduction
-            ;; For proper implementation, use proper Gaussian elimination
-            (let ([reduced (reduce-matrix matrix)])
-              (count (lambda (row) (not (all-zero? row))) reduced))))))
+            ;; Convert to list of vectors for easier manipulation
+            (let* ([vec-matrix (map list->vector matrix)]
+                   [rank (box 0)]
+                   [used-rows (mutable-set)])
+              ;; Simplified row reduction
+              (for ([col (in-range cols)])
+                (let ([pivot-row (box #f)])
+                  ;; Find pivot row
+                  (for ([row (in-range rows)])
+                    (when (and (not (set-member? used-rows row))
+                               (not (zero? (vector-ref (list-ref vec-matrix row) col)))
+                               (not (unbox pivot-row)))
+                      (set-box! pivot-row row)
+                      (set-add! used-rows row)
+                      (set-box! rank (+ (unbox rank) 1))))
+                  ;; Eliminate column
+                  (when (unbox pivot-row)
+                    (let ([pivot-val (vector-ref (list-ref vec-matrix (unbox pivot-row)) col)])
+                      (when (not (zero? pivot-val))
+                        (for ([row (in-range rows)])
+                          (when (not (= row (unbox pivot-row)))
+                            (let ([val (vector-ref (list-ref vec-matrix row) col)])
+                              (when (not (zero? val))
+                                (for ([c (in-range cols)])
+                                  (vector-set! (list-ref vec-matrix row) c
+                                               (modulo (- (vector-ref (list-ref vec-matrix row) c)
+                                                          (* val (vector-ref (list-ref vec-matrix (unbox pivot-row)) c)))
+                                                       2))))))))))
+              (unbox rank))))))))
 
-;; Helper: Reduce matrix (simplified)
-(define (reduce-matrix matrix)
-  "Simplified row reduction"
-  (if (null? matrix)
-      '()
-      (let ([first-row (car matrix)]
-            [rest (cdr matrix)])
-        (if (all-zero? first-row)
-            (reduce-matrix rest)
-            (cons first-row
-                  (reduce-matrix (map (lambda (row)
-                                         (map - row first-row))
-                                       rest)))))))
-
-;; Helper: Check if row is all zeros
-(define (all-zero? row)
-  "Check if row contains only zeros"
-  (andmap zero? row))
+;; Helper: Check if set is subset
+(define (subset? s1 s2)
+  "Check if s1 is subset of s2"
+  (set-empty? (set-subtract s1 s2)))
 
 ;; Compute H¹ cohomology
 (define (compute-h1 complex)
@@ -87,7 +98,5 @@
 ;; Complete pipeline: Source → H¹
 (define (compute-h1-from-source source)
   "Complete pipeline from Scheme source to H¹ value"
-  ;; This will integrate all algorithms once they're complete
-  ;; For now, return placeholder
+  ;; This is handled by unified-pipeline.rkt
   0)
-

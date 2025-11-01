@@ -194,7 +194,42 @@
   (analyze-expr-enhanced expr root-id 0)
   ;; Compute final visibility (binding visible in definition scope + all descendant scopes)
   (define final-tree (scope-tree root-id nodes))
-  (values binding-map final-tree))
+  
+  ;; Expand visibility to include all descendant scopes
+  (define expanded-map (make-hash))
+  (for ([(binding-id region) (in-hash binding-map)])
+    (cond
+      [(enhanced-visibility-region? region)
+       (let* ([base-scope-ids (enhanced-visibility-region-scope-ids region)]
+              [descendant-scopes (compute-descendant-scopes base-scope-ids final-tree)])
+         (hash-set! expanded-map binding-id
+                    (enhanced-visibility-region
+                     (enhanced-visibility-region-base-region region)
+                     (set-union base-scope-ids descendant-scopes)
+                     (enhanced-visibility-region-usage-pattern region))))]
+      [else
+       ;; If not an enhanced region, keep as-is
+       (hash-set! expanded-map binding-id region)]))
+  
+  (values expanded-map final-tree))
+
+;; Compute all descendant scopes
+(define (compute-descendant-scopes scope-ids scope-tree)
+  "Compute all descendant scopes of given scope IDs"
+  (define nodes (scope-tree-nodes scope-tree))
+  (define all-descendants (mutable-set))
+  
+  (define (collect-descendants scope-id)
+    (when (hash-has-key? nodes scope-id)
+      (let ([node (hash-ref nodes scope-id)])
+        (for ([child-id (scope-node-children node)])
+          (set-add! all-descendants child-id)
+          (collect-descendants child-id)))))
+  
+  (for ([scope-id (in-set scope-ids)])
+    (collect-descendants scope-id))
+  
+  all-descendants)
 
 ;; Compute Zariski topology
 (define (compute-topology rig scope-map)
