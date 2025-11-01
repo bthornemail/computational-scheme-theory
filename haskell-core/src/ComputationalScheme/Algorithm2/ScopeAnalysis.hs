@@ -11,6 +11,7 @@ module ComputationalScheme.Algorithm2.ScopeAnalysis where
 import ComputationalScheme.Types
 import ComputationalScheme.Algorithm1.AST
 import ComputationalScheme.Algorithm1.AST (SourceLoc(..), exprLoc, locPos)
+import ComputationalScheme.Algorithm2.ScopeTree (getDescendants)
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Map.Strict as Map
@@ -71,7 +72,10 @@ analyzeScopesEnhanced expr =
         , usagePatterns = Map.empty
         }
       (_, finalState) = runState (analyzeScopesExprEnhanced expr) initialState
-  in (bindingMap finalState, scopeTree finalState)
+      finalTree = scopeTree finalState
+      -- Compute final visibility: bindings visible in definition scope + all descendant scopes
+      finalBindings = computeFinalVisibility finalTree (bindingMap finalState)
+  in (finalBindings, finalTree)
 
 -- | Analyze expression in enhanced state monad
 analyzeScopesExprEnhanced :: Expr -> State EnhancedScopeState ()
@@ -228,13 +232,13 @@ analyzeScopesExprEnhanced expr = do
       modify $ \s -> s { currentScope = Nothing }
     
     Var name loc' -> do
-      -- Track usage of variable
-      -- When a binding is referenced, it becomes visible in the current scope
+      -- Track usage of variable (but don't modify visibility here)
+      -- Visibility will be computed after scope tree is complete based on lexical scoping
       let bindingId = BindingId name
       state <- get
       case Map.lookup bindingId (bindingMap state) of
         Just region -> do
-          -- Update usage pattern
+          -- Update usage pattern only
           let pattern = case Map.lookup bindingId (usagePatterns state) of
                 Just p -> p { 
                   usageLocations = locPos loc' : usageLocations p,
@@ -242,23 +246,12 @@ analyzeScopesExprEnhanced expr = do
                 }
                 Nothing -> UsagePattern bindingId [locPos loc'] [getCurrentContext state]
           
-          -- IMPORTANT: Add current scope to binding's scope visibility
-          -- This creates overlaps when bindings are referenced in nested scopes
-          currentScopeId <- gets currentScope
-          case currentScopeId of
-            Just scopeId -> do
-              let updatedScopeIds = Set.insert scopeId (scopeIds region)
-              let updatedRegion = region { scopeIds = updatedScopeIds, usagePattern = pattern }
-              modify $ \s -> s
-                { bindingMap = Map.insert bindingId updatedRegion (bindingMap s)
-                , usagePatterns = Map.insert bindingId pattern (usagePatterns s)
-                }
-            Nothing -> do
-              -- Top-level reference, no scope to add
-              modify $ \s -> s
-                { bindingMap = Map.insert bindingId (region { usagePattern = pattern }) (bindingMap s)
-                , usagePatterns = Map.insert bindingId pattern (usagePatterns s)
-                }
+          -- Update usage pattern but NOT scope visibility
+          -- Final visibility will be computed from scope tree (definition scope + descendants)
+          modify $ \s -> s
+            { bindingMap = Map.insert bindingId (region { usagePattern = pattern }) (bindingMap s)
+            , usagePatterns = Map.insert bindingId pattern (usagePatterns s)
+            }
         Nothing -> return ()  -- Undefined variable, ignore
     
     If form loc' -> do
@@ -321,9 +314,21 @@ createEnhancedRegion loc scopeId pattern =
         }
   in EnhancedVisibilityRegion
       { baseRegion = baseRegion
-      , scopeIds = Set.singleton scopeId
+      , scopeIds = Set.singleton scopeId  -- Definition scope only; descendants added later
       , usagePattern = pattern
       }
+
+-- | Compute final visibility regions after scope tree is complete
+-- Each binding is visible in its definition scope and all descendant scopes (lexical scoping)
+computeFinalVisibility :: ScopeTree -> Map.Map BindingId EnhancedVisibilityRegion -> Map.Map BindingId EnhancedVisibilityRegion
+computeFinalVisibility tree bindingMap =
+  Map.mapWithKey (\_bindingId region -> 
+    let defScopeIds = scopeIds region
+        -- For each definition scope, include the scope itself and all its descendants
+        -- getDescendants already includes the scope itself
+        allVisibleScopes = Set.unions $ map (\defScope -> getDescendants tree defScope) (Set.toList defScopeIds)
+    in region { scopeIds = allVisibleScopes }
+  ) bindingMap
 
 -- | Add binding to a scope node
 addBindingToScope :: ScopeTree -> ScopeId -> BindingId -> ScopeTree
