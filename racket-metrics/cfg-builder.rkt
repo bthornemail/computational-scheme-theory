@@ -31,7 +31,7 @@
     (let-values ([(body-nodes body-edges) (ast->cfg ast start-node-id exit-id)])
       
       ;; Combine everything
-      (let ([all-nodes (hash-set* (make-hash)
+      (let ([all-nodes (hash-set* (hash)
                                   entry-id entry-node
                                   exit-id exit-node
                                   start-node-id start-node
@@ -76,7 +76,7 @@
                [join-node (cfg-node join-id NODE-JOIN '() loc)])
            
            ;; Combine
-           (values (hash-set* (make-hash)
+           (values (hash-set* (hash)
                               branch-id branch-node
                               join-id join-node
                               test-nodes
@@ -117,7 +117,7 @@
     ;; Begin: sequence of statements
     [(ast-begin loc exprs)
      (let-values ([(nodes edges)
-                    (for/fold ([all-nodes (make-hash)]
+                    (for/fold ([all-nodes (hash)]
                                [all-edges '()])
                               ([expr exprs])
                         (let-values ([(expr-nodes expr-edges) (ast->cfg expr entry-id exit-id)])
@@ -128,14 +128,14 @@
     ;; Let: bindings then body
     [(ast-let loc bindings body)
      (let-values ([(binding-nodes binding-edges)
-                    (for/fold ([all-nodes (make-hash)]
+                    (for/fold ([all-nodes (hash)]
                                [all-edges '()])
                               ([binding (map cdr bindings)])
                         (let-values ([(n e) (ast->cfg binding entry-id exit-id)])
                           (values (hash-union all-nodes n)
                                   (append all-edges e))))]
                   [(body-nodes body-edges)
-                    (for/fold ([all-nodes (make-hash)]
+                    (for/fold ([all-nodes (hash)]
                                [all-edges '()])
                               ([expr body])
                         (let-values ([(n e) (ast->cfg expr entry-id exit-id)])
@@ -147,14 +147,14 @@
     ;; Letrec: similar to let but with back-edges
     [(ast-letrec loc bindings body)
      (let-values ([(binding-nodes binding-edges)
-                    (for/fold ([all-nodes (make-hash)]
+                    (for/fold ([all-nodes (hash)]
                                [all-edges '()])
                               ([binding (map cdr bindings)])
                         (let-values ([(n e) (ast->cfg binding entry-id exit-id)])
                           (values (hash-union all-nodes n)
                                   (append all-edges e))))]
                   [(body-nodes body-edges)
-                    (for/fold ([all-nodes (make-hash)]
+                    (for/fold ([all-nodes (hash)]
                                [all-edges '()])
                               ([expr body])
                         (let-values ([(n e) (ast->cfg expr entry-id exit-id)])
@@ -181,7 +181,7 @@
     (filter (λ (node-id) (not (hash-ref has-outgoing node-id #f)))
             (hash-keys nodes))))
 
-;; Helper: union of two hashes
+;; Helper: union of two hashes (works with immutable hashes)
 (define (hash-union h1 h2)
   (for/fold ([result h1])
             ([(k v) (in-hash h2)])

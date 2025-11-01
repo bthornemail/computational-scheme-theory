@@ -1,0 +1,664 @@
+{
+  "results": [
+    {
+      "program_id": "B011",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B017",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "baseline-005",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B003",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B020",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "baseline-004",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "baseline-003",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B001",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B008",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "baseline-002",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B019",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B002",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B004",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B010",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B016",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B018",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B005",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B006",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B007",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B012",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B014",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "baseline-001",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B015",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B013",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "B009",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "SC008",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "SC003",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "SC001",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "SC004",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "SC012",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "simple-control-001",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "SC002",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "SC011",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "SC007",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "SC009",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "SC013",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "simple-control-002",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "SC010",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "simple-control-004",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "SC015",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "SC005",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "SC006",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "simple-control-005",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "SC014",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "simple-control-003",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "R014",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "R015",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "R001",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "R004",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "R003",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "recursion-005",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "R005",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "recursion-001",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "R008",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "recursion-004",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "R007",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "R009",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "recursion-002",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "R006",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "R011",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "recursion-003",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "R013",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "R010",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "R012",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    },
+    {
+      "program_id": "R002",
+      "h1": 0,
+      "vg": 0,
+      "k": 0,
+      "difference": 0,
+      "hypothesis_holds": true,
+      "success": true,
+      "error": null
+    }
+  ],
+  "statistics": {
+    "total": 65,
+    "succeeded": 65,
+    "failed": 0,
+    "hypothesis_holds_count": 65,
+    "hypothesis_fails_count": 0,
+    "hypothesis_success_rate": 1.0,
+    "mean_difference": 0.0,
+    "correlation": 0.0
+  }
+}

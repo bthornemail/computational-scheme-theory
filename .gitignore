@@ -84,3 +84,4 @@ Thumbs.db
 docs/_build/
 docs/.doctrees/
 
+test-corpus/*
