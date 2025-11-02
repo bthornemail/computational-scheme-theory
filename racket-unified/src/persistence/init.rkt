@@ -7,7 +7,8 @@
 (provide
  initialize-persistence
  persistence-health-check
- redis-conn)
+ redis-conn
+ get-redis-connection)
 
 ;; ============================================================
 ;; PERSISTENCE INITIALIZATION
@@ -55,4 +56,9 @@
           (set! results (cons '(redis #f) results))))
     
     results))
+
+;; Get Redis connection (helper function)
+(define (get-redis-connection)
+  "Get current Redis connection"
+  (redis-conn))
 

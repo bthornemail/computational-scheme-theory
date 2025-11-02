@@ -108,9 +108,8 @@
   (define-values (remaining intent-frame)
     (parse-intent tokens (semantic-frame '() '() '() #f)))
   
-  (if (null? remaining)
-      (values intent-frame intent-frame)
-      (error "Parse failed: unconsumed tokens" remaining)))
+  ;; Be lenient - use what we parsed even if some tokens remain
+  (values intent-frame intent-frame))
 
 ;; Parse <Intent> ::= <ActionVerb> <Object> [<Parameter>*]
 (define (parse-intent tokens frame)
@@ -119,11 +118,39 @@
     [(null? tokens)
      (values tokens frame)]
     [else
-     (define-values (tokens1 frame1)
-       (parse-action-verb tokens frame))
-     (if (semantic-frame-intent-type frame1)
-         (parse-object tokens1 frame1)
-         (values tokens frame))]))
+     ;; First, try to find action verb anywhere in the tokens
+     (let ([action-verb-token (ormap (lambda (t)
+                                       (if (eq? (token-type t) 'action-verb) t #f))
+                                     tokens)])
+       (if action-verb-token
+           ;; Found action verb - parse from there
+           (let ([verb-pos (for/first ([i (in-naturals)]
+                                       [t (in-list tokens)]
+                                       #:when (and (token? t) (eq? (token-type t) 'action-verb)))
+                             i)])
+             (if verb-pos
+                 (let ([after-verb (drop tokens (+ verb-pos 1))])
+                   ;; Parse action verb
+                   (let-values ([(tokens1 frame1)
+                                 (parse-action-verb (list action-verb-token) frame)])
+                     ;; Then parse object from remaining tokens
+                     (let-values ([(tokens2 frame2) (parse-object after-verb frame1)])
+                       ;; Try to parse modifiers if any remain
+                       (if (and (not (null? tokens2))
+                                (ormap (lambda (t) (eq? (token-type t) 'modifier-keyword)) tokens2))
+                           (parse-modifier tokens2 frame2)
+                           (values tokens2 frame2)))))
+                 (values tokens frame)))
+           ;; No action verb found - try normal order
+           (let-values ([(tokens1 frame1)
+                         (parse-action-verb tokens frame)])
+             (if (semantic-frame-intent-type frame1)
+                 (let-values ([(tokens2 frame2) (parse-object tokens1 frame1)])
+                   (if (and (not (null? tokens2))
+                            (ormap (lambda (t) (eq? (token-type t) 'modifier-keyword)) tokens2))
+                       (parse-modifier tokens2 frame2)
+                       (values tokens2 frame2)))
+                 (values tokens frame)))))]))
 
 ;; Parse <ActionVerb> ::= "compute" | "validate" | "analyze" | ...
 (define (parse-action-verb tokens frame)
@@ -137,12 +164,16 @@
     [else
      (values tokens frame)]))
 
-;; Parse <Object> ::= "H1" | "V(G)" | "cohomology" | ...
+;; Parse <Object> ::= "H1" | "V(G)" | "cohomology" | "hypothesis" | ...
 (define (parse-object tokens frame)
   "Parse object production rule"
   (match tokens
     [`(,(token 'object obj) . ,rest)
      (define concepts (cons (list 'object obj) (semantic-frame-concepts frame)))
+     (values rest (struct-copy semantic-frame frame [concepts concepts]))]
+    ;; Also accept entity-type "hypothesis" as an object for validate operations
+    [`(,(token 'entity-type "hypothesis") . ,rest)
+     (define concepts (cons (list 'object "hypothesis") (semantic-frame-concepts frame)))
      (values rest (struct-copy semantic-frame frame [concepts concepts]))]
     [else
      (values tokens frame)]))

@@ -88,3 +88,45 @@
   "Create M-expression for Y-combinator: yCombinator[f]"
   (m-expr 'yCombinator (list func-expr)))
 
+;; M-expressions for Combinator Algebra Extension (Appendix Z)
+
+;; createYCombinatorRing[name; baseRing; recursiveStructure]
+(define (create-y-ring-m-expr name base-ring generator)
+  "Create M-expression for Y-combinator ring: createYCombinatorRing[name; baseRing; recursiveStructure]"
+  (m-expr 'createYCombinatorRing (list name base-ring generator)))
+
+;; recursiveStructure[generator]
+(define (recursive-structure-m-expr generator)
+  "Create M-expression for recursive structure: recursiveStructure[generator]"
+  (m-expr 'recursiveStructure (list generator)))
+
+;; fixedPointAlgebra[function]
+(define (fixed-point-algebra-m-expr function)
+  "Create M-expression for fixed-point algebra: fixedPointAlgebra[function]"
+  (m-expr 'fixedPointAlgebra (list function)))
+
+;; createZCombinatorField[name; baseField; fixedPointFinder]
+(define (create-z-field-m-expr name base-field finder)
+  "Create M-expression for Z-combinator field: createZCombinatorField[name; baseField; fixedPointFinder]"
+  (m-expr 'createZCombinatorField (list name base-field finder)))
+
+;; fixedPoint[function]
+(define (fixed-point-m-expr function)
+  "Create M-expression for fixed point: fixedPoint[function]"
+  (m-expr 'fixedPoint (list function)))
+
+;; iterativeRefinement[equation; initial]
+(define (iterative-refinement-m-expr equation initial)
+  "Create M-expression for iterative refinement: iterativeRefinement[equation; initial]"
+  (m-expr 'iterativeRefinement (list equation initial)))
+
+;; zFieldConsensus[field; nodes; consensusFunction]
+(define (z-field-consensus-m-expr field-name nodes consensus-function)
+  "Create M-expression for Z-field consensus: zFieldConsensus[field; nodes; consensusFunction]"
+  (m-expr 'zFieldConsensus (list field-name nodes consensus-function)))
+
+;; yRingConsensus[ring; initialStates; protocol]
+(define (y-ring-consensus-m-expr ring-name initial-states protocol)
+  "Create M-expression for Y-ring consensus: yRingConsensus[ring; initialStates; protocol]"
+  (m-expr 'yRingConsensus (list ring-name initial-states protocol)))
+

@@ -11,6 +11,7 @@
          "algorithms/cfg-builder.rkt"
          "algorithms/cyclomatic.rkt"
          "algorithms/incidence-structure.rkt"
+         "algorithms/combinator-algebra.rkt"
          "m-expression.rkt")
 
 (provide
@@ -85,6 +86,23 @@
            (handle-export-polynomial args)]
           [(getPatternDimensions)
            (handle-get-pattern-dimensions args)]
+          ;; Combinator Algebra Extension (Appendix Z)
+          [(createYCombinatorRing)
+           (handle-create-y-ring args)]
+          [(createZCombinatorField)
+           (handle-create-z-field args)]
+          [(recursiveStructure)
+           (handle-recursive-structure args)]
+          [(fixedPointAlgebra)
+           (handle-fixed-point-algebra args)]
+          [(fixedPoint)
+           (handle-fixed-point args)]
+          [(iterativeRefinement)
+           (handle-iterative-refinement args)]
+          [(zFieldConsensus)
+           (handle-z-field-consensus args)]
+          [(yRingConsensus)
+           (handle-y-ring-consensus args)]
           [else
            (values #f (format "Unknown operation: ~a" op))]))))
 
