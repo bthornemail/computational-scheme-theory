@@ -16,7 +16,10 @@ logger = logging.getLogger(__name__)
 class ValidationResult:
     """Result of validating a single program against the hypothesis"""
     program_id: str
-    h1: int  # From Haskell service
+    h1: int  # H¹ cohomology
+    h2: int = 0  # H² cohomology
+    h3: int = 0  # H³ cohomology
+    h4: int = 0  # H⁴ cohomology
     vg: int  # From Racket service
     k: int  # Normalization constant
     difference: int  # |H¹ - (V(G) - k)|

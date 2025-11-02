@@ -18,9 +18,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def compute_h1_direct(source_code: str, program_id: str, project_root: Path) -> Tuple[int, float]:
+def compute_h1_direct(source_code: str, program_id: str, project_root: Path) -> Tuple[int, int, int, int, float]:
     """
-    Compute H¹ directly by calling Racket unified pipeline
+    Compute H¹-H⁴ directly by calling Racket unified pipeline
     
     Args:
         source_code: Scheme source code
@@ -28,7 +28,7 @@ def compute_h1_direct(source_code: str, program_id: str, project_root: Path) -> 
         project_root: Root of the project
         
     Returns:
-        Tuple of (h1_value, computation_time_ms)
+        Tuple of (h1_value, h2_value, h3_value, h4_value, computation_time_ms)
     """
     import time
     start_time = time.time()
@@ -51,11 +51,15 @@ def compute_h1_direct(source_code: str, program_id: str, project_root: Path) -> 
          "algorithms/unified-pipeline.rkt")
 
 (define source (file->string "{temp_file}"))
-(with-handlers ([exn? (lambda (e) (displayln "0"))])
+(with-handlers ([exn? (lambda (e) (displayln "0 0 0 0"))])
   (define result (compute-h1-from-source-detailed source))
   (if (pipeline-result-success result)
-      (displayln (pipeline-result-h1 result))
-      (displayln "0")))
+      (displayln (string-append
+                   (number->string (pipeline-result-h1 result)) " "
+                   (number->string (pipeline-result-h2-value result)) " "
+                   (number->string (pipeline-result-h3-value result)) " "
+                   (number->string (pipeline-result-h4-value result))))
+      (displayln "0 0 0 0")))
 """)
             
             # Run Racket script from racket_unified_dir using absolute path
@@ -69,15 +73,19 @@ def compute_h1_direct(source_code: str, program_id: str, project_root: Path) -> 
             
             if result.returncode == 0:
                 try:
-                    h1 = int(result.stdout.strip())
+                    parts = result.stdout.strip().split()
+                    h1 = int(parts[0]) if len(parts) > 0 else 0
+                    h2 = int(parts[1]) if len(parts) > 1 else 0
+                    h3 = int(parts[2]) if len(parts) > 2 else 0
+                    h4 = int(parts[3]) if len(parts) > 3 else 0
                     elapsed_ms = (time.time() - start_time) * 1000
-                    logger.info(f"Computed H¹={h1} for {program_id}")
-                    return h1, elapsed_ms
-                except ValueError:
-                    logger.warning(f"Could not parse H¹ from output: {result.stdout}")
+                    logger.info(f"Computed H¹={h1}, H²={h2}, H³={h3}, H⁴={h4} for {program_id}")
+                    return h1, h2, h3, h4, elapsed_ms
+                except (ValueError, IndexError):
+                    logger.warning(f"Could not parse cohomology values from output: {result.stdout}")
             
-            logger.warning(f"Racket H¹ computation failed: {result.stderr}")
-            return 0, (time.time() - start_time) * 1000
+            logger.warning(f"Racket H¹-H⁴ computation failed: {result.stderr}")
+            return 0, 0, 0, 0, (time.time() - start_time) * 1000
             
         finally:
             # Clean up script file
@@ -89,13 +97,13 @@ def compute_h1_direct(source_code: str, program_id: str, project_root: Path) -> 
         
     except FileNotFoundError:
         logger.warning("racket not found, using placeholder")
-        return 0, (time.time() - start_time) * 1000
+        return 0, 0, 0, 0, (time.time() - start_time) * 1000
     except subprocess.TimeoutExpired:
-        logger.error(f"Racket H¹ computation timed out for {program_id}")
-        return 0, (time.time() - start_time) * 1000
+        logger.error(f"Racket H¹-H⁴ computation timed out for {program_id}")
+        return 0, 0, 0, 0, (time.time() - start_time) * 1000
     except Exception as e:
-        logger.error(f"Error computing H¹: {e}")
-        return 0, (time.time() - start_time) * 1000
+        logger.error(f"Error computing H¹-H⁴: {e}")
+        return 0, 0, 0, 0, (time.time() - start_time) * 1000
     finally:
         # Clean up temp file
         try:
@@ -216,11 +224,14 @@ class DirectComputeCoordinator:
         
         try:
             # Compute both values directly
-            h1, h1_time = compute_h1_direct(source_code, program_id, self.project_root)
+            h1, h2, h3, h4, h1_time = compute_h1_direct(source_code, program_id, self.project_root)
             vg, vg_time = compute_vg_direct(source_code, program_id, self.project_root)
             
             # Validate hypothesis
             result = self.validator.validate_program(program_id, h1, vg)
+            result.h2 = h2
+            result.h3 = h3
+            result.h4 = h4
             result.h1_time_ms = h1_time
             result.vg_time_ms = vg_time
             result.total_time_ms = h1_time + vg_time
@@ -233,6 +244,9 @@ class DirectComputeCoordinator:
             return ValidationResult(
                 program_id=program_id,
                 h1=0,
+                h2=0,
+                h3=0,
+                h4=0,
                 vg=0,
                 k=0,
                 difference=0,

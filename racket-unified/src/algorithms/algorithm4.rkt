@@ -10,7 +10,9 @@
  build-incidence-matrices
  matrix-rank
  compute-h1
- compute-h1-from-source)
+ compute-h1-from-source
+ compute-beta1-from-graph
+ compute-beta0-connected-components)
 
 ;; ============================================================
 ;; ALGORITHM 4: COHOMOLOGY COMPUTATION
@@ -94,6 +96,55 @@
     (define rank1 (let ([r (matrix-rank m1)]) (if (number? r) r 0)))
     (define beta1 (max 0 (- (- n1 rank1) rank0)))
     beta1))
+
+;; Compute β₀ (number of connected components) from 1-skeleton graph
+(define (compute-beta0-connected-components complex)
+  "Compute β₀ (number of connected components) from the 1-skeleton of the complex using DFS"
+  (define vertices (set->list (simplicial-complex-simplices0 complex)))
+  (define edges (set->list (simplicial-complex-simplices1 complex)))
+  
+  ;; Build adjacency list from edges
+  (define adj-list (make-hash))
+  (for ([v vertices])
+    (hash-set! adj-list v (mutable-set)))
+  
+  (for ([e edges])
+    (define vs (set->list (simplex-vertices e)))
+    (when (= (length vs) 2)
+      (define v1 (list-ref vs 0))
+      (define v2 (list-ref vs 1))
+      (set-add! (hash-ref adj-list v1) v2)
+      (set-add! (hash-ref adj-list v2) v1)))
+  
+  ;; DFS to count connected components
+  (define visited (mutable-set))
+  (define component-count (box 0))
+  
+  (define (dfs v)
+    (unless (set-member? visited v)
+      (set-add! visited v)
+      (for ([neighbor (in-set (hash-ref adj-list v))])
+        (dfs neighbor))))
+  
+  (for ([v vertices])
+    (unless (set-member? visited v)
+      (set-box! component-count (+ (unbox component-count) 1))
+      (dfs v)))
+  
+  (unbox component-count))
+
+;; Compute β₁ directly from graph structure: β₁ = |E| - |V| + β₀
+(define (compute-beta1-from-graph complex)
+  "Compute first Betti number β₁ directly from the 1-skeleton graph structure
+   Formula: β₁(G) = |E| - |V| + β₀
+   where |E| = number of edges (1-simplices)
+         |V| = number of vertices (0-simplices)
+         β₀ = number of connected components"
+  (define num-vertices (set-count (simplicial-complex-simplices0 complex)))
+  (define num-edges (set-count (simplicial-complex-simplices1 complex)))
+  (define beta0 (compute-beta0-connected-components complex))
+  (define beta1 (max 0 (- (+ num-edges beta0) num-vertices)))
+  beta1)
 
 ;; Complete pipeline: Source → H¹
 (define (compute-h1-from-source source)
