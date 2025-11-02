@@ -1,7 +1,7 @@
 # Dimensional Framework: Integration Status
 
 **Date**: 2025-01-31  
-**Status**: ✅ **FULLY OPERATIONAL**
+**Status**: ✅ **CORE COMPLETE - Extensions Pending**
 
 ---
 
@@ -102,10 +102,33 @@ Pattern Matching  ≅  Polynomial Factorization  ≅  Church Numerals  ≅  Dime
 
 ---
 
+## Recent Enhancements (2025-01-31)
+
+### Pattern-Based Dimension Detection ✅
+- Added `detect-pattern-dimension` function
+- Analyzes form structure (lists, vectors, pairs, AST)
+- Integrated with dimension assignment: `dimension = max(access_count, pattern_dim)`
+
+### Polynomial Export ✅
+- Added `binding->polynomial` function
+- Added `incidence-structure->polynomial-ring` function
+- Functions exported for external use
+
+### Python Pipeline Integration ✅
+- Access counting in `DatalogGenerator`
+- Dimensional tracking in `Point` dataclass
+- Dimensional weighting in `compute_H1`
+
+## Pending Features
+
+1. **Integration Tests** - Test suite for new features
+2. **Zero Locus Queries** - Research concept, not yet implemented
+3. **Polynomial Operations** - Additional algebraic operations
+
 ## Status
 
-✅ **COMPLETE AND OPERATIONAL**
+✅ **CORE COMPLETE - Extensions Pending**
 
-The dimensional framework is fully integrated, tested, and verified. The ellipsis `...` is recognized as the literal topological symbol it represents.
+The dimensional framework core is fully integrated, tested, and verified. Pattern detection and polynomial export are implemented. The ellipsis `...` is recognized as the literal topological symbol it represents.
 
 

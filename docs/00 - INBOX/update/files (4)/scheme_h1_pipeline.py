@@ -181,6 +181,7 @@ class DatalogGenerator:
         self.constraints: Set[Tuple[str, str]] = set()  # (constraint, scope)
         self.incidences: Set[Tuple[str, str]] = set()  # (binding, constraint)
         self.dependencies: Set[Tuple[str, str]] = set()  # (from, to)
+        self.access_map: Dict[str, int] = {}  # binding-name -> access count
     
     def fresh_scope(self) -> str:
         """Generate fresh scope identifier"""
@@ -224,8 +225,48 @@ class DatalogGenerator:
         
         return False
     
+    def count_accesses(self, expr: MExpr) -> None:
+        """Count how many times each binding is accessed (Church numeral computation)
+        Each variable reference increments access count, which becomes dimension
+        """
+        if isinstance(expr, Var):
+            # Variable reference - increment access count
+            name = expr.name
+            self.access_map[name] = self.access_map.get(name, 0) + 1
+        
+        elif isinstance(expr, Lambda):
+            # Recurse on body
+            self.count_accesses(expr.body)
+        
+        elif isinstance(expr, Apply):
+            # Recurse on function and all arguments
+            self.count_accesses(expr.func)
+            for arg in expr.args:
+                self.count_accesses(arg)
+        
+        elif isinstance(expr, If):
+            # Recurse on all branches
+            self.count_accesses(expr.test)
+            self.count_accesses(expr.then_branch)
+            self.count_accesses(expr.else_branch)
+        
+        elif isinstance(expr, Let):
+            # Recurse on binding values and body
+            for _, value in expr.bindings:
+                self.count_accesses(value)
+            self.count_accesses(expr.body)
+        
+        elif isinstance(expr, Define):
+            # Recurse on value
+            self.count_accesses(expr.value)
+        
+        # Literal and Undefined don't have accesses
+    
     def generate(self, expr: MExpr, scope: str = None) -> None:
         """Generate Datalog facts from M-expression"""
+        
+        # Count accesses first (Church numeral computation)
+        self.count_accesses(expr)
         
         if scope is None:
             scope = self.fresh_scope()
@@ -379,15 +420,21 @@ class SimpleDatalog:
 from h1_incidence_computation import Point, Hyperplane, IncidenceStructure
 
 def build_incidence_from_datalog(generator: DatalogGenerator) -> IncidenceStructure:
-    """Build incidence structure from Datalog facts"""
+    """Build incidence structure from Datalog facts
+    Uses access_map to populate dimension and access_count fields
+    """
     
-    # Extract points (bindings)
+    # Extract points (bindings) with dimensional tracking
     points = []
     point_map = {}
     
     for name, scope, type_class in generator.bindings:
         is_proj = (type_class == "projective")
-        point = Point(f"{name}@{scope}", is_proj)
+        # Get access count from access_map (Church numeral)
+        access_count = generator.access_map.get(name, 0)
+        # Dimension = access count = Church numeral = polynomial degree
+        dimension = access_count
+        point = Point(f"{name}@{scope}", is_proj, dimension, access_count)
         points.append(point)
         point_map[f"{name}@{scope}"] = len(points) - 1
     

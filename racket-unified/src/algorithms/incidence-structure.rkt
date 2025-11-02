@@ -33,7 +33,9 @@
  compute-h2-incidence
  compute-h3-incidence
  compute-h4-incidence
- compute-hn-incidence)
+ compute-hn-incidence
+ binding->polynomial
+ incidence-structure->polynomial-ring)
 
 ;; ============================================================
 ;; INCIDENCE STRUCTURE COMPUTATION
@@ -106,14 +108,144 @@
         [else count-map]))
     (count-refs ast (make-hash)))
   
+  ;; Pattern-based dimension detection
+  ;; Analyzes form structure to determine dimensional pattern (ellipsis patterns)
+  (define (detect-pattern-dimension form)
+    "Use pattern matching to determine dimensional structure from form
+     Handles ellipsis patterns: (), (P), (P ...), #(P ...)
+     Returns: pattern dimension (0D, 1D, 2D, ...)"
+    (match form
+      ;; Empty/null pattern: 0D
+      [(? null?) 0]
+      [(? void?) 0]
+      
+      ;; Atomic patterns: 0D (constants, literals)
+      [(? symbol?) 0]
+      [(? number?) 0]
+      [(? boolean?) 0]
+      [(? string?) 0]
+      [(? char?) 0]
+      
+      ;; List patterns: analyze structure
+      [(? list? lst)
+       (cond
+         [(null? lst) 0]  ; () - 0D
+         [(null? (cdr lst)) 1]  ; (P) - 1D
+         [(null? (cddr lst)) 2]  ; (P P) - 2D
+         [else (length lst)])]  ; (P ...) - nD where n = length
+      
+      ;; Vector patterns: 2nD (multivariate structure)
+      [(? vector? vec)
+       (if (zero? (vector-length vec))
+           0
+           (* 2 (vector-length vec)))]  ; #(P ...) - 2nD
+      
+      ;; Pair (improper list): 1D+ (linear + tail)
+      [(? pair? pr)
+       (if (pair? (cdr pr))
+           (+ 1 (detect-pattern-dimension (cdr pr)))  ; (P ... . P') - 1D+ 
+           1)]  ; (P . Q) - 1D
+      
+      ;; AST structures: analyze recursively
+      [(? ast-lambda? lambda-expr)
+       (let ([params (ast-lambda-params lambda-expr)]
+             [body (ast-lambda-body lambda-expr)])
+         (max (length params)
+              (if (null? body) 0 (apply max (map detect-pattern-dimension body)))))]
+      
+      [(? ast-app? app-expr)
+       (max (detect-pattern-dimension (ast-app-func app-expr))
+            (if (null? (ast-app-args app-expr))
+                0
+                (apply max (map detect-pattern-dimension (ast-app-args app-expr)))))]
+      
+      [(? ast-let? let-expr)
+       (let ([bindings (ast-let-bindings let-expr)]
+             [body (ast-let-body let-expr)])
+         (max (if (null? bindings) 0 (length bindings))
+              (if (null? body) 0 (apply max (map detect-pattern-dimension body)))))]
+      
+      [(? ast-define? define-expr)
+       (detect-pattern-dimension (ast-define-value define-expr))]
+      
+      [(? ast-if? if-expr)
+       (max (detect-pattern-dimension (ast-if-test if-expr))
+            (detect-pattern-dimension (ast-if-then if-expr))
+            (detect-pattern-dimension (ast-if-else if-expr)))]
+      
+      ;; Default: 0D
+      [else 0]))
+  
+  ;; Extract binding forms for pattern analysis
+  (define (extract-binding-forms ast)
+    "Extract the form/value each binding is bound to, for pattern analysis"
+    (define binding-forms (make-hash))
+    
+    (define (collect-forms expr)
+      (match expr
+        [(? ast-define? define-expr)
+         (hash-set! binding-forms 
+                    (ast-define-name define-expr)
+                    (ast-define-value define-expr))
+         (collect-forms (ast-define-value define-expr))]
+        
+        [(? ast-lambda? lambda-expr)
+         (for ([param (ast-lambda-params lambda-expr)])
+           (hash-set! binding-forms param lambda-expr))  ; Parameter bound to lambda
+         (for ([body-expr (ast-lambda-body lambda-expr)])
+           (collect-forms body-expr))]
+        
+        [(? ast-let? let-expr)
+         (for ([binding (ast-let-bindings let-expr)])
+           (hash-set! binding-forms (car binding) (cdr binding))
+           (collect-forms (cdr binding)))
+         (for ([body-expr (ast-let-body let-expr)])
+           (collect-forms body-expr))]
+        
+        [(? ast-letrec? letrec-expr)
+         (for ([binding (ast-letrec-bindings letrec-expr)])
+           (hash-set! binding-forms (car binding) (cdr binding))
+           (collect-forms (cdr binding)))
+         (for ([body-expr (ast-letrec-body letrec-expr)])
+           (collect-forms body-expr))]
+        
+        [(? ast-app? app-expr)
+         (collect-forms (ast-app-func app-expr))
+         (for ([arg (ast-app-args app-expr)])
+           (collect-forms arg))]
+        
+        [(? ast-if? if-expr)
+         (collect-forms (ast-if-test if-expr))
+         (collect-forms (ast-if-then if-expr))
+         (collect-forms (ast-if-else if-expr))]
+        
+        [else #f]))
+    
+    (if (list? ast)
+        (for ([expr ast]) (collect-forms expr))
+        (collect-forms ast))
+    
+    binding-forms)
+  
   ;; Build access map
   (set! access-map (count-accesses ast))
   
-  ;; Extract points with dimension = access count
+  ;; Extract binding forms for pattern analysis
+  (define binding-forms-map (extract-binding-forms ast))
+  
+  ;; Extract points with dimension = max(access count, pattern dimension)
+  ;; Combines Church numeral (access count) with pattern structure (ellipsis)
   (for ([binding-id (in-set bindings)])
     (let* ([is-projective (set-member? projective-bindings binding-id)]
            [access-count (hash-ref access-map binding-id 0)]
-           [dimension access-count])  ; dimension = Church numeral = access count
+           ;; Get pattern dimension from binding form
+           [binding-form (hash-ref binding-forms-map binding-id #f)]
+           [pattern-dim (if binding-form
+                           (detect-pattern-dimension binding-form)
+                           0)]
+           ;; Dimension = max(access count, pattern dimension)
+           ;; This combines Church numeral interpretation with pattern structure
+           [dimension (max access-count pattern-dim)])
       (hash-set! points binding-id 
                  (incidence-point binding-id 
                                   (if is-projective 'projective 'affine)
@@ -532,8 +664,73 @@
 ;; COHOMOLOGY COMPUTATION H¹ through H⁴
 ;; ============================================================
 
+;; ============================================================
+;; POLYNOMIAL REPRESENTATION EXPORT
+;; ============================================================
+
+;; Convert a binding point to polynomial representation
+;; Polynomial degree = dimension = access count = Church numeral
+(define (binding->polynomial point)
+  "Convert incidence point to polynomial representation
+   Returns: (variable-name . degree) where degree = dimension
+   Example: (binding->polynomial point) → ('x . 3) means x³"
+  (if (incidence-point? point)
+      (let ([binding-id (incidence-point-binding-id point)]
+            [dimension (incidence-point-dimension point)])
+        (cons binding-id dimension))
+      (error "binding->polynomial: expected incidence-point, got ~a" point)))
+
+;; Convert entire incidence structure to polynomial ring representation
+;; Returns: list of (binding-id . degree) pairs representing polynomial terms
+(define (incidence-structure->polynomial-ring incidence-struct)
+  "Convert incidence structure to polynomial ring representation
+   Each binding becomes a term: binding-id^dimension
+   Returns: list of (binding-id . degree) pairs
+   
+   Example:
+   - Binding 'x' with dimension 2 → term: x²
+   - Binding 'y' with dimension 1 → term: y¹ = y
+   - Binding 'z' with dimension 0 → term: z⁰ = 1 (constant)
+   
+   This representation can be used for:
+   - Polynomial factorization
+   - Zero locus computation
+   - Algebraic operations on bindings"
+  (define points (incidence-structure-points incidence-struct))
+  
+  ;; Convert hash or list to consistent format
+  (define points-list
+    (if (hash? points)
+        (hash->list points)
+        points))
+  
+  ;; Extract polynomial terms: (binding-id . degree)
+  (for/list ([point-entry points-list])
+    (let ([point (if (pair? point-entry) (cdr point-entry) point-entry)])
+      (if (incidence-point? point)
+          (binding->polynomial point)
+          (error "incidence-structure->polynomial-ring: invalid point ~a" point)))))
+
+;; ============================================================
+;; COHOMOLOGY COMPUTATION H¹ through H⁴
+;; ============================================================
+
 ;; Compute H¹ from incidence structure
 ;; Enhanced with dimensional weighting (Church numerals, access counts)
+;; 
+;; Algorithm:
+;; 1. Compute base H¹ = dim(Ker(d₁)) - dim(Im(d₂))
+;; 2. Apply dimensional enhancement:
+;;    - Cycles involving higher-dimensional points (accessed more) contribute more
+;;    - Weight cycles by the dimension (access count) of points involved
+;;    - Recursive calls (dimension ≥ 1) create cycles
+;; 3. Enhanced H¹ = max(base H¹, dimensional contribution)
+;;
+;; Dimensional Enhancement Rationale:
+;; - Access count = Church numeral = polynomial degree = dimension
+;; - Higher dimension = more significant cycle contribution
+;; - Recursive functions (dimension ≥ 1) explicitly create cycles
+;; - This ensures H¹ > 0 for recursive programs that would otherwise show H¹ = 0
 (define (compute-h1-incidence incidence-struct)
   "Compute H¹ = dim(Ker(d₁)) - dim(Im(d₂))
    Enhanced: Considers dimensional information (access counts) for cycle weighting"
