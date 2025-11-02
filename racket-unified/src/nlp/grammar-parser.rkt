@@ -3,7 +3,10 @@
 (require racket/match
          racket/string
          racket/list
-         "semantic-frame.rkt")
+         "semantic-frame.rkt"
+         "synonyms.rkt"
+         "fuzzy-matching.rkt"
+         "context-expansion.rkt")
 
 (provide
  parse-query
@@ -19,38 +22,84 @@
 ;; ============================================================
 
 ;; Grammar non-terminals and terminals from Formalized Grammar spec
-(define ACTION-VERBS '("compute" "validate" "analyze" "compare" "explain" "show"))
+(define ACTION-VERBS '("compute" "validate" "analyze" "compare" "explain" "show" "export" "get"))
 ;; Objects: include lowercase variants since tokenizer lowercases input
-(define OBJECTS '("H1" "H¹" "h1" "h¹" "V(G)" "v(g)" "cohomology" "complexity" "binding algebra" "topology" "beta1"))
+(define OBJECTS '("H1" "H¹" "h1" "h¹" "V(G)" "v(g)" "cohomology" "complexity" "binding algebra" "topology" "beta1"
+                  "polynomial" "polynomials" "pattern" "patterns" "dimension" "dimensions"))
 (define MODIFIER-KEYWORDS '("for" "with" "against" "using"))
 (define ENTITY-TYPES '("program" "corpus" "hypothesis"))
 
 ;; Token structure
 (struct token (type value) #:transparent)
 
-;; Tokenize natural language text
+;; Tokenize natural language text (basic version)
 (define (tokenize nl-text)
-  "Tokenize natural language text into tokens"
-  (define words (string-split (string-downcase nl-text) #:repeat? #t))
-  (map (lambda (word)
-         (cond
-           [(member word ACTION-VERBS)
-            (token 'action-verb word)]
-           [(member word OBJECTS)
-            (token 'object word)]
-           [(member word MODIFIER-KEYWORDS)
-            (token 'modifier-keyword word)]
-           [(member word ENTITY-TYPES)
-            (token 'entity-type word)]
-           [(regexp-match? #px"^k=\\d+$" word)
-            (token 'parameter word)]
-           [(regexp-match? #px"^[a-zA-Z0-9_]+$" word)
-            (token 'identifier word)]
-           [(regexp-match? #px"^\\d+$" word)
-            (token 'number word)]
-           [else
-            (token 'word word)]))
-       words))
+  "Tokenize natural language text into tokens (basic version)"
+  (tokenize-enhanced nl-text))
+
+;; Enhanced tokenization with synonym expansion, fuzzy matching, and context
+(define (tokenize-enhanced nl-text)
+  "Enhanced tokenization with synonyms, fuzzy matching, and context awareness"
+  ;; Step 1: Preprocess multi-word phrases
+  (define preprocessed (preprocess-phrases nl-text))
+  
+  ;; Step 2: Split into words
+  (define words (string-split (string-downcase preprocessed) #:repeat? #t))
+  
+  ;; Step 3: Tokenize with synonym normalization
+  (define tokens-with-synonyms
+    (map (lambda (word)
+           ;; Normalize via synonyms first
+           (define normalized-verb (normalize-action-verb word))
+           (define normalized-obj (normalize-object word))
+           
+           (cond
+             ;; Check normalized action verbs
+             [(or (member normalized-verb ACTION-VERBS)
+                  (member word ACTION-VERBS))
+              (token 'action-verb (if (not (equal? normalized-verb word)) 
+                                     normalized-verb 
+                                     word))]
+             
+             ;; Check normalized objects
+             [(or (member normalized-obj OBJECTS)
+                  (member word OBJECTS))
+              (token 'object (if (not (equal? normalized-obj word))
+                                normalized-obj
+                                word))]
+             
+             [(member word MODIFIER-KEYWORDS)
+              (token 'modifier-keyword word)]
+             
+             [(member word ENTITY-TYPES)
+              (token 'entity-type word)]
+             
+             [(regexp-match? #px"^k=\\d+$" word)
+              (token 'parameter word)]
+             
+             [(regexp-match? #px"^[a-zA-Z0-9_-]+$" word)
+              ;; Try fuzzy matching for unknown words
+              (let-values ([(verb-match verb-score) 
+                            (fuzzy-match-list word ACTION-VERBS 0.75)]
+                           [(obj-match obj-score) 
+                            (fuzzy-match-list word OBJECTS 0.75)])
+                (cond
+                  [(and verb-match (> verb-score 0.75))
+                   (token 'action-verb verb-match)]
+                  [(and obj-match (> obj-score 0.75))
+                   (token 'object obj-match)]
+                  [else
+                   (token 'identifier word)]))]
+             
+             [(regexp-match? #px"^\\d+$" word)
+              (token 'number word)]
+             
+             [else
+              (token 'word word)]))
+         words))
+  
+  ;; Step 4: Apply context-aware expansion
+  (apply-context-expansion tokens-with-synonyms))
 
 ;; Parse query using EBNF production rules
 (define (parse-query nl-text)

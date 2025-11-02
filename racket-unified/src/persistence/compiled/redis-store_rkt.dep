@@ -1,0 +1,1 @@
+("8.10" ta6le ("f98b26e8fd85e67d7046e44eb340619b9c3de36d" . "cd3a3454e9b42ef468844f05e0bf42b492dc41d0") #"/home/main/computational-scheme-theory/racket-unified/src/persistence/config.rkt" (collects #"racket" #"base.rkt") (collects #"racket" #"port.rkt") (collects #"racket" #"runtime-config.rkt") (collects #"racket" #"string.rkt") (collects #"racket" #"tcp.rkt"))

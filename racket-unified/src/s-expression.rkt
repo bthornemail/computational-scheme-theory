@@ -1,6 +1,8 @@
 #lang racket/base
 
-(require racket/match)
+(require racket/match
+         "persistence/event-store-file.rkt"
+         "persistence/config.rkt")
 
 (provide
  s-expr
@@ -12,7 +14,8 @@
  apply-binding-created
  apply-scope-entered
  append-event!
- event-store)
+ event-store
+ initialize-event-store)
 
 ;; ============================================================
 ;; S-EXPRESSIONS (Object-Language)
@@ -28,12 +31,24 @@
   (s-expr type data))
 
 ;; Event store (append-only log of S-expressions)
+;; Now backed by file persistence
 (define event-store (make-parameter '()))
 
-;; Append event to store
+;; Initialize event store from file
+(define (initialize-event-store)
+  "Initialize event store by loading events from file"
+  (ensure-event-log-directory)
+  (let ([loaded-events (load-events-from-file)])
+    (event-store loaded-events)
+    (length loaded-events)))
+
+;; Append event to store (both in-memory and file)
 (define (append-event! event)
-  "Append S-expression event to event store"
-  (event-store (append (event-store) (list event))))
+  "Append S-expression event to event store and file"
+  ;; Update in-memory store
+  (event-store (append (event-store) (list event)))
+  ;; Persist to file
+  (append-event-to-file event))
 
 ;; Execute S-expression (homoiconicity in action)
 (define (execute-s-expr se)

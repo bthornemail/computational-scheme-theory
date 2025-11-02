@@ -33,6 +33,10 @@
          (map-analyze-patterns frame)]
         [(compare-metrics)
          (map-compare-metrics frame)]
+        [(export-polynomial)
+         (map-export-polynomial frame)]
+        [(get-pattern-dimensions)
+         (map-get-pattern-dimensions frame)]
         [else
          (error "Unknown operation type:" operation-type)])))
 
@@ -62,6 +66,18 @@
      'analyze-patterns]
     [(and intent-type (string=? (string-downcase intent-type) "compare"))
      'compare-metrics]
+    [(and intent-type (string=? (string-downcase intent-type) "export"))
+     (cond
+       [(ormap (lambda (v) (member (string-downcase v) '("polynomial" "polynomials"))) object-values-lower)
+        'export-polynomial]
+       [else
+        'export-operation])]
+    [(and intent-type (string=? (string-downcase intent-type) "get"))
+     (cond
+       [(ormap (lambda (v) (member (string-downcase v) '("pattern" "patterns" "dimension" "dimensions"))) object-values-lower)
+        'get-pattern-dimensions]
+       [else
+        'get-operation])]
     [else
      #f]))
 
@@ -143,4 +159,36 @@
 (define (map-compare-metrics frame)
   "Map frame to compare metrics M-expression"
   (m-expr 'compareMetrics '()))
+
+;; Map to export polynomial operation
+(define (map-export-polynomial frame)
+  "Map frame to export polynomial M-expression"
+  (define entities (filter (lambda (c) (eq? (car c) 'entity))
+                          (semantic-frame-concepts frame)))
+  
+  (define program-name
+    (ormap (lambda (c)
+             (match c
+               [`(entity "program" ,id)
+                id]
+               [else #f]))
+           entities))
+  
+  (m-expr 'exportPolynomial (if program-name (list program-name) '())))
+
+;; Map to get pattern dimensions operation
+(define (map-get-pattern-dimensions frame)
+  "Map frame to get pattern dimensions M-expression"
+  (define entities (filter (lambda (c) (eq? (car c) 'entity))
+                          (semantic-frame-concepts frame)))
+  
+  (define program-name
+    (ormap (lambda (c)
+             (match c
+               [`(entity "program" ,id)
+                id]
+               [else #f]))
+           entities))
+  
+  (m-expr 'getPatternDimensions (if program-name (list program-name) '())))
 

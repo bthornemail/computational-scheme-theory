@@ -22,3 +22,19 @@ black>=23.0.0
 mypy>=1.7.0
 flake8>=6.1.0
 
+# LLM Integration (optional - install as needed)
+# OpenAI API support
+openai>=1.0.0
+
+# Local models via transformers (requires PyTorch)
+transformers>=4.35.0
+torch>=2.0.0
+sentence-transformers>=2.2.0
+
+# Numerical computations for embeddings
+numpy>=1.24.0
+
+# Ollama support (optional, for local LLM service)
+# Note: ollama package available via: pip install ollama
+# Or use requests directly (already included above)
+
