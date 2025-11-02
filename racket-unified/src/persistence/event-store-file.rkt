@@ -1,8 +1,8 @@
 #lang racket/base
 
 (require racket/file
+         racket/path
          racket/port
-         "../s-expression.rkt"
          "config.rkt")
 
 (provide
@@ -18,8 +18,9 @@
 ;; Ensure event log directory exists
 (define (ensure-event-log-directory)
   "Ensure event log directory exists"
-  (let ([log-path (get-event-log-path)]
-        [dir (path-only (string->path log-path))])
+  (let* ([log-path (get-event-log-path)]
+         [log-path-obj (if (string? log-path) (string->path log-path) log-path)]
+         [dir (path-only log-path-obj)])
     (when dir
       (make-directory* dir))))
 

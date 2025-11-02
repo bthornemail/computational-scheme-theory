@@ -1,8 +1,6 @@
 #lang racket/base
 
-(require racket/match
-         "persistence/event-store-file.rkt"
-         "persistence/config.rkt")
+(require racket/match)
 
 (provide
  s-expr
@@ -37,8 +35,9 @@
 ;; Initialize event store from file
 (define (initialize-event-store)
   "Initialize event store by loading events from file"
-  (ensure-event-log-directory)
-  (let ([loaded-events (load-events-from-file)])
+  (dynamic-require "persistence/event-store-file.rkt" 'ensure-event-log-directory)
+  (let* ([load-events (dynamic-require "persistence/event-store-file.rkt" 'load-events-from-file)]
+         [loaded-events (load-events)])
     (event-store loaded-events)
     (length loaded-events)))
 
@@ -48,7 +47,8 @@
   ;; Update in-memory store
   (event-store (append (event-store) (list event)))
   ;; Persist to file
-  (append-event-to-file event))
+  (let ([append-fn (dynamic-require "persistence/event-store-file.rkt" 'append-event-to-file)])
+    (append-fn event)))
 
 ;; Execute S-expression (homoiconicity in action)
 (define (execute-s-expr se)

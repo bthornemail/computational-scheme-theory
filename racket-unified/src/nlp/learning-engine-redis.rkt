@@ -68,29 +68,29 @@
 ;; Get performance for specific rule
 (define (get-rule-performance-redis engine rule-id)
   "Get performance statistics for a rule from Redis"
-  (let ([conn (learning-engine-redis-conn engine)]
-        [rule-key (format "learning:rule:~a" rule-id)])
-    (let ([hash-data (redis-hgetall conn rule-key)])
-      (if (and hash-data (not (null? hash-data)))
-          (let ([success-str (assoc-ref hash-data "success")]
-                [failure-str (assoc-ref hash-data "failure")]
-                [total-str (assoc-ref hash-data "total")]
-                [rate-str (assoc-ref hash-data "rate")])
-            (if (and success-str failure-str total-str rate-str)
-                (list 'rule-performance
-                      rule-id
-                      (string->number success-str)
-                      (string->number failure-str)
-                      (string->number total-str)
-                      (string->number rate-str))
-                #f))
-          #f))))
+  (let* ([conn (learning-engine-redis-conn engine)]
+         [rule-key (format "learning:rule:~a" rule-id)]
+         [hash-data (redis-hgetall conn rule-key)])
+    (if (and hash-data (not (null? hash-data)))
+        (let ([success-str (assoc-ref hash-data "success")]
+              [failure-str (assoc-ref hash-data "failure")]
+              [total-str (assoc-ref hash-data "total")]
+              [rate-str (assoc-ref hash-data "rate")])
+          (if (and success-str failure-str total-str rate-str)
+              (list 'rule-performance
+                    rule-id
+                    (string->number success-str)
+                    (string->number failure-str)
+                    (string->number total-str)
+                    (string->number rate-str))
+              #f))
+        #f)))
 
 ;; Get all rule performance statistics
 (define (get-all-rule-performance-redis engine)
   "Get all rule performance statistics from Redis"
-  (let ([conn (learning-engine-redis-conn engine)]
-        [rule-ids (redis-smembers conn "learning:rules")])
+  (let* ([conn (learning-engine-redis-conn engine)]
+         [rule-ids (redis-smembers conn "learning:rules")])
     (filter-map (lambda (rule-id)
                   (get-rule-performance-redis engine rule-id))
                 rule-ids)))

@@ -9,7 +9,8 @@
          "algorithms/unified-pipeline.rkt"
          "bridge/racket-bridge.rkt"
          "nlp/layer4-core.rkt"
-         "nlp-integration.rkt")
+         "nlp-integration.rkt"
+         "persistence/init.rkt")
 
 ;; ============================================================
 ;; THE UNIFIED LISP SUBSTRATE
@@ -70,6 +71,11 @@
       (displayln ""))))
 
 (module+ main
+  ;; Initialize persistence systems
+  (displayln "Initializing persistence systems...")
+  (initialize-persistence)
+  (displayln "")
+  
   (displayln "╔══════════════════════════════════════════════════════════╗")
   (displayln "║     UNIFIED LISP SUBSTRATE - COMPLETE SYSTEM           ║")
   (displayln "║  M/S-Expressions + Prolog/Datalog + Y/Z-Combinators    ║")

@@ -2,9 +2,9 @@
 
 (require racket/match
          racket/set
+         racket/string
          "../persistence/redis-store.rkt"
          "../persistence/config.rkt"
-         "../s-expression.rkt"
          "semantic-lattice.rkt"
          "semantic-frame.rkt")
 
@@ -64,6 +64,11 @@
   (let ([pair (assoc key alist)])
     (if pair (cdr pair) #f)))
 
+;; Helper: string-replace (if not available)
+(define (string-replace str from to)
+  "Replace substring in string"
+  (regexp-replace* (regexp-quote from) str to))
+
 ;; Add concept to knowledge graph (Redis backend)
 (define (add-concept-redis graph concept-type name parents)
   "Add concept to knowledge graph using Redis"
@@ -109,9 +114,12 @@
 ;; Save in-memory knowledge graph to Redis
 (define (save-knowledge-graph-to-redis graph-memory conn)
   "Migrate in-memory knowledge graph to Redis"
-  (let ([vertices (knowledge-graph-vertices graph-memory)]
-        [edges (knowledge-graph-edges graph-memory)]
-        [labels (knowledge-graph-labels graph-memory)])
+  (let* ([kg-vertices (dynamic-require "../nlp/knowledge-graph.rkt" 'knowledge-graph-vertices)]
+         [kg-edges (dynamic-require "../nlp/knowledge-graph.rkt" 'knowledge-graph-edges)]
+         [kg-labels (dynamic-require "../nlp/knowledge-graph.rkt" 'knowledge-graph-labels)]
+         [vertices (kg-vertices graph-memory)]
+         [edges (kg-edges graph-memory)]
+         [labels (kg-labels graph-memory)])
     
     ;; Save vertices
     (for ([vertex (in-set vertices)])
@@ -167,26 +175,28 @@
 ;; Update graph from parse event (Redis backend)
 (define (update-graph-from-event-redis graph event)
   "Update knowledge graph from parse event using Redis"
-  (match (s-expr-type event)
-    ['query-parsed
-     (let ([event-data (s-expr-data event)])
-       (if (and (list? event-data) (assoc 'semantic-frame event-data))
-           (let ([semantic-frame (cadr (assoc 'semantic-frame event-data))])
-             (add-concepts-from-frame-redis graph semantic-frame))
-           graph))]
-    ['verb-parsed
-     (let ([event-data (s-expr-data event)])
-       (if (and (list? event-data) (assoc 'verb event-data))
-           (let ([verb (cadr (assoc 'verb event-data))])
-             (add-concept-redis graph 'action-verb verb '("ProgramOperation")))
-           graph))]
-    ['entity-resolved
-     (let ([event-data (s-expr-data event)])
-       (if (and (list? event-data) (assoc 'entity event-data))
-           (let ([entity (cadr (assoc 'entity event-data))])
-             (add-concept-redis graph 'entity entity '("ProgramEntity")))
-           graph))]
-    [else graph]))
+  (let ([s-expr-type-fn (dynamic-require "../s-expression.rkt" 's-expr-type)]
+        [s-expr-data-fn (dynamic-require "../s-expression.rkt" 's-expr-data)])
+    (match (s-expr-type-fn event)
+      ['query-parsed
+       (let ([event-data (s-expr-data-fn event)])
+         (if (and (list? event-data) (assoc 'semantic-frame event-data))
+             (let ([semantic-frame (cadr (assoc 'semantic-frame event-data))])
+               (add-concepts-from-frame-redis graph semantic-frame))
+             graph))]
+      ['verb-parsed
+       (let ([event-data (s-expr-data-fn event)])
+         (if (and (list? event-data) (assoc 'verb event-data))
+             (let ([verb (cadr (assoc 'verb event-data))])
+               (add-concept-redis graph 'action-verb verb '("ProgramOperation")))
+             graph))]
+      ['entity-resolved
+       (let ([event-data (s-expr-data-fn event)])
+         (if (and (list? event-data) (assoc 'entity event-data))
+             (let ([entity (cadr (assoc 'entity event-data))])
+               (add-concept-redis graph 'entity entity '("ProgramEntity")))
+             graph))]
+      [else graph])))
 
 ;; Helper: Add concepts from semantic frame (Redis)
 (define (add-concepts-from-frame-redis graph frame)
